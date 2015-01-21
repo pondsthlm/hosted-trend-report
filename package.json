@@ -8,11 +8,17 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test && jshint ."
+    "test": "mocha test && jshint .",
+    "prepublish": "if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
+    "ci": "npm install && npm prune && npm ls && npm test",
+    "deploy-staging": "./scripts/deploy.sh staging",
+    "deploy-production": "./scripts/deploy.sh production"
   },
   "author": "Expressen AB",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^0.4.0"
+    "dotenv": "^0.4.0",
+    "express": "^4.11.0",
+    "log": "^1.4.0"
   }
 }
