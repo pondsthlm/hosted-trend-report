@@ -1,0 +1,15 @@
+{
+  "name": "expstarterapp",
+  "version": "0.0.1",
+  "description": "Empty starter app for Expressen node apps",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test && jshint ."
+  },
+  "author": "Expressen AB",
+  "license": "ISC"
+}
