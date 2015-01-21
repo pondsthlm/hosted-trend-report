@@ -1,1 +1,4 @@
-{}
+{
+  "log": "stdout",
+  "logLevel": "debug"
+}
