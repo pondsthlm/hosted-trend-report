@@ -11,5 +11,8 @@
     "test": "mocha test && jshint ."
   },
   "author": "Expressen AB",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^0.4.0"
+  }
 }
