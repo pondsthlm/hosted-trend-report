@@ -8,7 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test && jshint .",
+    "test": "mocha test && jshint . && jscs .",
     "prepublish": "if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-staging": "./scripts/deploy.sh staging",
@@ -20,5 +20,11 @@
     "dotenv": "^0.4.0",
     "express": "^4.11.0",
     "log": "^1.4.0"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "jscs": "^1.10.0",
+    "jshint": "^2.6.0",
+    "mocha": "^2.1.0"
   }
 }
