@@ -15,7 +15,8 @@
     "deploy-production": "./scripts/deploy.sh production"
   },
   "author": "Expressen AB",
-  "license": "ISC",
+  "license": "proprietary",
+  "private": true,
   "dependencies": {
     "dotenv": "^0.4.0",
     "express": "^4.11.0",
