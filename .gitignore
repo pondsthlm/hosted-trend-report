@@ -35,3 +35,8 @@ node_modules
 # Users Environment Variables
 .lock-wscript
 *.orig
+
+# Folders where compiled css and js go
+/public/stylesheets/
+/public/js/
+
