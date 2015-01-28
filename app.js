@@ -1,13 +1,9 @@
 // In app.js
-var express = require("express");
-var app = express();
 var logger = require("./lib/logger.js");
 var packageInfo = require("./package.json");
 
-// Don't limit outgoing HTTP requests
-require("http").globalAgent.maxSockets = Infinity;
-require("https").globalAgent.maxSockets = Infinity;
-
+var setupApp = require("./lib/init/setupApp.js");
+var app = setupApp();
 
 module.exports = app; // Expose app to tests
 
