@@ -54,7 +54,7 @@ for server in $SERVERS; do
     && echo "==> Upload package" \
     && cat "./$PACKAGE" | ssh web@$server "tar zx --strip-components 1 -C $RELEASE_DIR/." \
     && sshAndLog "Update npm" "$NPM_CMD" \
-    && sshAndLog "Stop service" "$STOP_CMD" || echo "process was not running" \
+    && (sshAndLog "Stop service" "$STOP_CMD" || echo "process was not running") \
     && sshAndLog "Update symlink" "$UPDATE_CUR_SYMLINK_CMD" \
     && sshAndLog "Start service" "$START_CMD" \
     && sshAndLog "Update crontab" "$CRONTAB_CMD" \
