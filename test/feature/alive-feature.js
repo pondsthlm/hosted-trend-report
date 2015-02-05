@@ -6,10 +6,10 @@ var request = require("supertest");
 var app = require("../../");
 
 Feature("_alive", function () {
-  var aliveFilePath = path.join(__dirname, "..", "..", "config", "alive");
+  var aliveFilePath = path.join(__dirname, "..", "..", "config", "_alive");
 
   Scenario("Basic alive check", function () {
-    Given("The file config/alive exists", function (done) {
+    Given("The file config/_alive exists", function (done) {
       fs.exists(aliveFilePath, function (exists) {
         if (!exists) return done(new Error(aliveFilePath + " does not exist!"));
 
@@ -38,7 +38,7 @@ Feature("_alive", function () {
       fs.writeFile(aliveFilePath, fileData, done);
     });
 
-    Given("The file config/alive has been removed", function (done) {
+    Given("The file config/_alive has been removed", function (done) {
       fs.unlink(aliveFilePath, done);
     });
     When("Requesting /_alive will return 404 No", function (done) {

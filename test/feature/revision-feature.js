@@ -6,10 +6,10 @@ var request = require("supertest");
 var app = require("../../");
 
 Feature("_revision", function () {
-  var revisionFilePath = path.join(__dirname, "..", "..", "config", "revision");
+  var revisionFilePath = path.join(__dirname, "..", "..", "config", "_revision");
 
   Scenario("Getting revision when it is there", function () {
-    Given("The file config/revision exists", function (done) {
+    Given("The file config/_revision exists", function (done) {
       fs.writeFile(revisionFilePath, "some-revision", done);
     });
     When("Requesting /_revision will return 200 and the revision from the file", function (done) {
@@ -22,7 +22,7 @@ Feature("_revision", function () {
   });
 
   Scenario("Getting revision when it is not there", function () {
-    Given("The file config/revision has been removed", function (done) {
+    Given("The file config/_revision has been removed", function (done) {
       fs.unlink(revisionFilePath, done);
     });
     When("Requesting /_revision will return 404 Not Found", function (done) {
