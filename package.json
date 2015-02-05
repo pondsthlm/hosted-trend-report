@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "mocha test && jshint . && jscs .",
-    "prepublish": "if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
+    "prepublish": "npm run-script revision && if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
+    "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-staging": "./scripts/deploy.sh staging",
     "deploy-production": "./scripts/deploy.sh production"
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "chai": "^1.10.0",
+    "coffee-script": "^1.9.0",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-jshint": "^0.11.0",
@@ -36,6 +38,8 @@
     "jscs": "^1.10.0",
     "jshint": "^2.6.0",
     "jshint-stylish": "^1.0.0",
-    "mocha": "^2.1.0"
+    "mocha": "^2.1.0",
+    "mocha-cakes": "^0.9.0",
+    "supertest": "^0.15.0"
   }
 }

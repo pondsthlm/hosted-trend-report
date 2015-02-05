@@ -40,3 +40,5 @@ node_modules
 /public/stylesheets/
 /public/js/
 
+# Revision file
+config/revision
