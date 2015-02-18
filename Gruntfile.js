@@ -44,7 +44,7 @@ module.exports = function (grunt) {
       }
     },
 
-    // Make sure code styles are up to par and there are no obvious mistakes
+    // Make sure code style is good for client side resources
     jshint: {
       options: {
         jshintrc: ".jshintrc",
@@ -52,7 +52,8 @@ module.exports = function (grunt) {
       },
       all: [
         "Gruntfile.js",
-        "app/assets/**/*.js"
+        "app/assets/js/**/*.js",
+        "!app/assets/js/vendor/**/*.js"
       ]
     },
 
@@ -64,6 +65,9 @@ module.exports = function (grunt) {
           sourceMapIncludeSources: true
         },
         files: {
+          "public/js/all.min.js": [
+            "app/assets/js/**/*.js"
+          ]
         }
       }
     }
@@ -72,13 +76,13 @@ module.exports = function (grunt) {
 
   grunt.registerTask("dist", [
     "sass",
-    "uglify:all"
+    "uglify"
   ]);
   grunt.registerTask("build", [
     "scsslint",
     "sass",
     "jshint",
-    "uglify:all"
+    "uglify"
   ]);
   grunt.registerTask("default", "build");
 };
