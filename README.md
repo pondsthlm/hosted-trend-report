@@ -1,14 +1,51 @@
-# This is a node starter app
+# Node Starter App
 
+## Description
 
-The general goal of the project structure is:
+Fork this project when creating new Node.js projects. The goal of the project structure is:
 
 * Any developer should be able to quickly understand the project, develop it and deploy it
 
 Checking out code and running `npm install && npm test` should take you as far as possible.
 
-# Common project structure
+## Local setup
 
+```bash
+$ npm install # install dependencies
+$ npm test # run tests
+$ npm install -g nodemon # install process monitor
+$ nodemon # start server and restart on any file changes
+```
+
+## Branch strategy
+
+Prefer development straight on the master branch. Make small isolated commits.
+Never commit anything that breaks tests, they should work every commit so that
+`git bisect` can be used if necessary.
+
+For larger changes, or when you want feedback before committing to master, use
+feature branches with [git flow](http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/)
+inspired names such as `features/add-cachebuster` or `spike/swith-to-iojs` and
+make a pull request from [github](https://github.com/).
+
+## Testing strategy
+
+Tests go in the `test` directory. All tests must be deterministic and fast.
+Use [mocha](http://mochajs.org/) for unit style tests and follow the
+naming/structure from the project. Unit tests for module `lib/foo.js` go in
+`test/lib/fooTest.js`. Use [mocha-cakes](https://github.com/quangv/mocha-cakes)
+for end to end tests and put them in `test/features`. Use [nock](https://github.com/pgte/nock)
+and [supertest](https://github.com/visionmedia/supertest) in the feature tests.
+
+## Deploy
+
+```bash
+$ npm run deploy-staging
+$ npm run deploy-production
+```
+
+
+# Common project structure
 
 ```
 ## Directories
@@ -214,5 +251,3 @@ NOTE: Some services still use an old, custom [grunt task](https://github.com/Exp
 # TODO
 
 * npm test should detect which required software (redis, elasticsearch, mongodb etc) that is missing and clearly specify what's missing
-* Create a template project which includes the above recommendations + any standard code we use in every project
-* Improve deployment by making sure the deployed code knows its revision
