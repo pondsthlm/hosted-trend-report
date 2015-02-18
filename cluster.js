@@ -27,7 +27,6 @@ cluster.on("exit", function (deadWorker, code, signal) {
 
 function workerEnv(originalId) {
   return {
-    START_LISTENER: "true",
     NODE_TIME: originalId <= 2
   };
 }
