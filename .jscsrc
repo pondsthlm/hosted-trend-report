@@ -1,5 +1,5 @@
 {
-  "excludeFiles": ["**/node_modules", "bower_components", "tmp", "public", "app/assets/js/burt.js", "app/assets/js/vendor", "test-karma/vendor"],
+  "excludeFiles": ["**/node_modules", "tmp", "public", "app/assets/js/vendor"],
 
   "requireCurlyBraces": [
     "else",
@@ -15,7 +15,6 @@
   "disallowMultipleLineStrings": true,
   "disallowMixedSpacesAndTabs": true,
   "disallowTrailingWhitespace": true,
-
 
   "requireSpaceAfterKeywords": [
     "if",
