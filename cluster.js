@@ -1,4 +1,4 @@
-var config = require("./config");
+var config = require("exp-config");
 var cluster = require("cluster");
 var os = require("os");
 var logger = require("./lib/logger.js");
