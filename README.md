@@ -128,9 +128,9 @@ Avoid:
 
 # Configuration
 
-Configuration is handled via a mix of configuration files and environment variables. The file [config/index.js](https://github.com/ExpressenAB/ariel/blob/5c84bfa462558e4987c577b2ebe4484457b59085/config/index.js) is currently duplicated in each project and reads configuration for the correct environment (controlled by `NODE_ENV` environment variable).
+Configuration is handled with [exp-config](https://github.com/ExpressenAB/exp-config) via a mix of configuration files and environment variables. It reads configuration for the correct environment (controlled by the `NODE_ENV` environment variable).
 
-Include this file like this: `require("../config");` Apart from reading the correct json file it will also read, if available, a file called `.env` in the project's root directory. In this file you can override entries in the config files. Here is an example .env file:
+Apart from reading the correct json file it will also read, if available, a file called `.env` in the project's root directory. In this file you can override entries in the config files. Here is an example .env file:
 
 ```shell
 # Prod
@@ -234,7 +234,7 @@ A [bash script](https://github.com/ExpressenAB/quiz/blob/master/scripts/deploy.s
 
 [forever](https://github.com/nodejitsu/forever) is used to run the service which means it will restart on crashes and collect all output on stdout and stderr in a log file.
 
-These are the prerequsites for someone to deploy using `deploy.sh`:
+These are the pre-requsites for someone to deploy using `deploy.sh`:
 
 * The server has been setup with [Triton](https://github.com/ExpressenAB/triton) which contains server configuration for each service.
 * Environment configuration stored in the config/ directory one json file per environment
@@ -245,7 +245,7 @@ These are the prerequsites for someone to deploy using `deploy.sh`:
 
 NOTE: Some services still use an old, custom [grunt task](https://github.com/ExpressenAB/ariel/blob/master/tasks/deploy.js) for this. Don't do this in new projects. The grunt task has this additional prerequisite:
 
-* A [config/deploy.json](https://github.com/ExpressenAB/ariel/blob/master/config/deploy.json) file that specifies the available servers with information such as configuration file name, port etc.
+* A [config/deploy.json](https://github.com/ExpressenAB/ursula/blob/a6ec4ffea2eee2385132f56e50ef16857f855de4/config/deploy.json) file that specifies the available servers with information such as configuration file name, port etc.
 
 
 # TODO
