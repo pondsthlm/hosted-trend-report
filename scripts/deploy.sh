@@ -87,25 +87,25 @@ function sshAndLog {
   COLOR='\033[0;33m'
   RESET_COLOR='\033[0m'
 
-  echo "==> $CMD_NAME" \
-    && echo -e "$COLOR$CMD$RESET_COLOR" \
-    && ssh web@$server "$CMD"
+  echo "==> $CMD_NAME"
+  echo -e "$COLOR$CMD$RESET_COLOR"
+  ssh web@$server "$CMD"
 }
 
 for server in $SERVERS; do
-  echo "==> Deploying to $server" \
-    && sshAndLog "Creating directories" "$MKDIRS_CMD && $SHAREDMODULES_CMD" \
-    && echo "==> Upload package" \
-    && cat "./$PACKAGE" | ssh web@$server "tar zx --strip-components 1 -C $RELEASE_DIR/." \
-    && sshAndLog "Update npm" "$NPM_CMD"
+  echo "==> Deploying to $server"
+  sshAndLog "Creating directories" "$MKDIRS_CMD && $SHAREDMODULES_CMD"
+  echo "==> Upload package"
+  cat "./$PACKAGE" | ssh web@$server "tar zx --strip-components 1 -C $RELEASE_DIR/."
+  sshAndLog "Update npm" "$NPM_CMD"
 
-  sshAndLog "Stop service" "$STOP_CMD" || echo "process was not running" \
-    && sshAndLog "Update symlink" "$UPDATE_CUR_SYMLINK_CMD" \
-    && sshAndLog "Start service" "$START_CMD" \
-    && sshAndLog "Update crontab" "$CRONTAB_CMD" \
-    && sshAndLog "Cleanup" "$CLEANUP_CMD"
+  sshAndLog "Stop service" "$STOP_CMD" || echo "process was not running"
+  sshAndLog "Update symlink" "$UPDATE_CUR_SYMLINK_CMD"
+  sshAndLog "Start service" "$START_CMD"
+  sshAndLog "Update crontab" "$CRONTAB_CMD"
+  sshAndLog "Cleanup" "$CLEANUP_CMD"
 done
 
-if [[ "$ENVIRONMENT" = "production" ]]; then
+if [[ "$ENVIRONMENT" == "production" ]]; then
   echo "Don't forget to add a message to the #lanseringar channel in Slack about the release."
 fi
