@@ -3,6 +3,10 @@
 ENVIRONMENT=$1
 SERVERS_OVERRIDE=$2
 
+# Replace with name/port for your service
+SERVICE_NAME="nodestarterapp"
+PORT=7000
+
 RUNTESTS=0              # Control whether to run npm test before deploying.
 FORCECOMMITS=0          # Control whether the script enforces all changes to be committed to the git repo.
 
@@ -13,6 +17,7 @@ elif [[ "$ENVIRONMENT" = "epistage" ]]; then
 elif [[ "$ENVIRONMENT" = "livedata" ]]; then
   SERVERS="node-test-2.expressen.se node-test-3.expressen.se node-test-4.expressen.se"
 elif [[ "$ENVIRONMENT" = "production" ]]; then
+  # TODO Replace with the service's production servers
   SERVERS=""
   RUNTESTS=1
   FORCECOMMITS=1
@@ -30,9 +35,6 @@ fi
 if [[ -n $SERVERS_OVERRIDE ]]; then
   SERVERS=$SERVERS_OVERRIDE
 fi
-
-SERVICE_NAME="<EXAMPLE APP>"
-PORT=3000
 
 NODE_ENV="$ENVIRONMENT"
 REVISION_FILE="$(git rev-parse --show-toplevel)/public/revision"

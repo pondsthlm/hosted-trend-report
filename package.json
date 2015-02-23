@@ -12,7 +12,9 @@
     "prepublish": "npm run-script revision && if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
-    "deploy-staging": "./scripts/deploy.sh staging",
+    "deploy-epitest": "./scripts/deploy.sh epitest",
+    "deploy-epistage": "./scripts/deploy.sh epistage",
+    "deploy-livedata": "./scripts/deploy.sh livedata",
     "deploy-production": "./scripts/deploy.sh production"
   },
   "author": "Expressen AB",
