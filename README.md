@@ -25,7 +25,7 @@ Never commit anything that breaks tests, they should work every commit so that
 
 For larger changes, or when you want feedback before committing to master, use
 feature branches with [git flow](http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/)
-inspired names such as `features/add-cachebuster` or `spike/swith-to-iojs` and
+inspired names such as `features/add-cachebuster` or `spike/switch-to-iojs` and
 make a pull request from [github](https://github.com/).
 
 ## Testing strategy
