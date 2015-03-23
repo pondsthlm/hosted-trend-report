@@ -46,7 +46,8 @@ LOG_FILE="/home/web/log/$SERVICE_NAME.log"
 
 MKDIRS_CMD="mkdir -p $RELEASE_DIR"
 SHAREDMODULES_CMD="mkdir -p $SHAREDMODULES_DIR && ln -s $SHAREDMODULES_DIR $RELEASE_DIR/node_modules"
-NPM_CMD="cd $RELEASE_DIR && npm prune --production && npm install --production"
+NVM_CMD="cd $RELEASE_DIR && nvm install"
+NPM_CMD="cd $RELEASE_DIR && nvm use && npm prune && npm install --production"
 UPDATE_CUR_SYMLINK_CMD="ln -sfT $RELEASE_DIR $CUR_DIR"
 STOP_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV PORT=$PORT forever stop $CUR_DIR/cluster.js"
 START_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV PORT=$PORT forever -c 'node --nouse-idle-notification' start -l $LOG_FILE -a --workingDir $CUR_DIR $CUR_DIR/cluster.js"
@@ -97,6 +98,7 @@ for server in $SERVERS; do
   sshAndLog "Creating directories" "$MKDIRS_CMD && $SHAREDMODULES_CMD"
   echo "==> Upload package"
   cat "./$PACKAGE" | ssh web@$server "tar zx --strip-components 1 -C $RELEASE_DIR/."
+  sshAndLog "Ensure node version via nvm" "$NVM_CMD"
   sshAndLog "Update npm" "$NPM_CMD"
 
   sshAndLog "Stop service" "$STOP_CMD" || echo "process was not running"
