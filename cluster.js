@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require("exp-config");
 var cluster = require("cluster");
 var os = require("os");

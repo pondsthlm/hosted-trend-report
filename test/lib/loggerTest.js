@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require("fs");
 var logger = require("../../lib/logger.js");
 
