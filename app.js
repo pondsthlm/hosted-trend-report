@@ -1,3 +1,5 @@
+"use strict";
+
 // In app.js
 var logger = require("./lib/logger.js");
 var packageInfo = require("./package.json");
