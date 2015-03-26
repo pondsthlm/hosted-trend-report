@@ -1,0 +1,8 @@
+{
+  "extends": "../../../.jshintrc",
+  "browser": true,
+  "node": false,
+  "globals": {
+    "console": true
+  }
+}
