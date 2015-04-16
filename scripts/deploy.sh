@@ -37,7 +37,7 @@ if [[ -n $SERVERS_OVERRIDE ]]; then
 fi
 
 NODE_ENV="$ENVIRONMENT"
-REVISION_FILE="$(git rev-parse --show-toplevel)/public/revision"
+REVISION_FILE="$(git rev-parse --show-toplevel)/config/_revision"
 DATE=$(date "+%Y-%m-%dT%H.%M.%S")
 RELEASE_DIR="/home/web/$SERVICE_NAME/releases/$DATE"
 CUR_DIR="/home/web/$SERVICE_NAME/current"
