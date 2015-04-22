@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "description": "Empty starter app for Expressen node apps",
   "main": "app.js",
+  "homepage": "https://github.com/ExpressenAB/node-starterapp",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ExpressenAB/node-starterapp.git"
+  },
   "directories": {
     "doc": "docs",
     "test": "test"
