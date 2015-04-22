@@ -43,6 +43,10 @@
     "beforeAlternate": true
   },
   "requireSpaceBeforeBlockStatements": true,
+  "requireSpacesInAnonymousFunctionExpression": {
+    "beforeOpeningRoundBrace": true,
+    "beforeOpeningCurlyBrace": true
+  },
   "requireSpacesInFunctionExpression": {
     "beforeOpeningCurlyBrace": true
   },
