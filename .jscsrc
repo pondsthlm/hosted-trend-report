@@ -12,6 +12,7 @@
   "requireOperatorBeforeLineBreak": true,
   "validateIndentation": 2,
 
+  "disallowMultipleLineBreaks": true,
   "disallowMultipleLineStrings": true,
   "disallowMixedSpacesAndTabs": true,
   "disallowTrailingWhitespace": true,
