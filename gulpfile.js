@@ -1,14 +1,15 @@
 "use strict";
 
 var gulp = require("gulp");
-var sass = require("gulp-sass");
+var stylus = require("gulp-stylus");
+var stylint = require("gulp-stylint");
 var jshint = require("gulp-jshint");
 var rename = require("gulp-rename");
+var sourcemaps = require("gulp-sourcemaps");
 var uglify = require("gulp-uglify");
 var browserify = require("browserify");
 var source = require("vinyl-source-stream");
 var buffer = require("vinyl-buffer");
-var scsslint = require("gulp-scss-lint");
 var jscs = require("gulp-jscs");
 var concat = require("gulp-concat");
 var util = require("gulp-util");
@@ -25,12 +26,12 @@ var sourcePaths = {
   clientScripts: "./app/assets/js/**/*.js",
   vendorScripts: "./app/assets/js/vendor/**/*.js",
   js: "{app,config,lib,test}/**/*.js",
-  scss: "./app/assets/scss/**/*.scss",
+  stylus: "./app/assets/stylus/**/*.styl",
 };
 
 var destPaths = {
   scripts: "./public/js/",
-  scss: "./public/stylesheets/"
+  stylus: "./public/stylesheets/"
 };
 
 var getBundleName = function () {
@@ -55,10 +56,13 @@ function vendorScriptsTask() {
 }
 
 function styleSheetsTask() {
-  return gulp.src(sourcePaths.scss)
-    .pipe(sass())
+  return gulp.src(sourcePaths.stylus)
+    .pipe(sourcemaps.init())
+    .pipe(stylus({ compress: true }))
     .on("error", errorHandler)
-    .pipe(gulp.dest(destPaths.scss));
+    .pipe(rename({suffix: ".min"}))
+    .pipe(sourcemaps.write("."))
+    .pipe(gulp.dest(destPaths.stylus));
 }
 
 function browserifyTask() {
@@ -94,10 +98,9 @@ gulp.task("jscs", function () {
     .pipe(jscs());
 });
 
-gulp.task("scss-lint", function () {
-  return gulp.src(sourcePaths.scss)
-    .pipe(scsslint({config: ".scss-lint-config.yml"}))
-    .pipe(scsslint.failReporter());
+gulp.task("stylint", function () {
+  return gulp.src(sourcePaths.stylus)
+    .pipe(stylint());
 });
 
 gulp.task("vendorscripts", function () {
@@ -131,9 +134,9 @@ gulp.task("watch", function () {
   gulp.watch(sourcePaths.js, ["jscs", "jshint"]);
   gulp.watch(sourcePaths.clientScripts, ["browserify"]);
   gulp.watch(sourcePaths.vendorScripts, ["vendorscripts"]);
-  gulp.watch(sourcePaths.scss, ["stylesheets", "scss-lint"]);
+  gulp.watch(sourcePaths.stylus, ["stylesheets", "stylint"]);
 });
 
 gulp.task("dist", ["stylesheets", "browserify", "vendorscripts"]);
 
-gulp.task("default", ["watch", "dist", "scss-lint"]);
+gulp.task("default", ["watch", "dist", "stylint"]);
