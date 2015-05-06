@@ -1,6 +1,6 @@
 {
   "name": "expstarterapp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Empty starter app for Expressen node apps",
   "main": "app.js",
   "homepage": "https://github.com/ExpressenAB/node-starterapp",
