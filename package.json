@@ -14,7 +14,7 @@
   },
   "scripts": {
     "test": "mocha && jshint . && jscs .",
-    "prepublish": "npm run-script revision && if which gulp ; then gulp dist ; else echo 'no gulp' ; fi",
+    "prepublish": "npm run-script revision && if which gulp ; then GULP_ENV=build gulp dist ; else echo 'no gulp' ; fi",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-epitest": "./scripts/deploy.sh epitest",

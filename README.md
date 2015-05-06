@@ -60,7 +60,7 @@ test/ - test code
 tmp/ - everything in here is ignored, put your own one off experiments here
 
 ## Files
-Gruntfile.js - if grunt is used as task manager
+gulpfile.js - if gulp is used as task manager
 README.md - see below
 cluster.js - start the service clustered
 nodemon.json - define when to auto-restart the service during development
@@ -102,7 +102,7 @@ Minimize the need to run commands manually by bundling them in the scripts secti
 {
   "scripts": {
     "test": "mocha && jshint . && jscs .",
-    "prepublish": "if which grunt ; then grunt dist ; else echo 'no grunt' ; fi",
+    "prepublish": "if which gulp ; then GULP_ENV=build gulp dist ; else echo 'no gulp' ; fi",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-staging": "./scripts/deploy.sh staging",
     "deploy-production": "./scripts/deploy.sh production"
@@ -112,19 +112,19 @@ Minimize the need to run commands manually by bundling them in the scripts secti
 
 Notes:
 
-* npm may launch for example [grunt](http://gruntjs.com/) if necessary for certain steps
+* npm may launch for example [gulp](http://gulpjs.com/) if necessary for certain steps
 * prepublish runs on `npm install` and must return successful exit code even when only production dependencies are installed. That's why the if statement is necessary above. In development, install will build client side CSS/JS but in production those files
 
 The project's main file should be set in package.json's field "main". This will make the application easy to start with `node .` or `nodemon`.
 
 The tools `jshint` and `jscs` should be used to verify that the code is well structured and looks nice. To make sure the code stays nice these tools are run on `npm test` (see scripts above).
 
-All tools used (above: `mocha`, `jshint`, `jscs`, `grunt`) should be configured in such a way that they can be run manually when needed. Prefer checked in configuration files (for example `mocha.opts`) over specifying many command line arguments. When debugging a specific test case you should be able to run just `mocha` without any special arguments.
+All tools used (above: `mocha`, `jshint`, `jscs`, `gulp`) should be configured in such a way that they can be run manually when needed. Prefer checked in configuration files (for example `mocha.opts`) over specifying many command line arguments. When debugging a specific test case you should be able to run just `mocha` without any special arguments.
 
 Avoid:
 
-* duplicating functionality in `npm` and `grunt`. If `npm test` runs `jshint` don't have a `grunt` task for `jshint` as well.
-* relying on globally installed `npm` modules (`mocha`, `grunt` etc.), include them in `package.json` as dependencies or dev dependencies instead. Put `node_modules/.bin` in your `PATH` to run the binaries manually!
+* duplicating functionality in `npm` and `gulp`. If `npm test` runs `jshint` don't have a `gulp` task for `jshint` as well.
+* relying on globally installed `npm` modules (`mocha`, `gulp` etc.), include them in `package.json` as dependencies or dev dependencies instead. Put `node_modules/.bin` in your `PATH` to run the binaries manually!
 
 # Configuration
 
