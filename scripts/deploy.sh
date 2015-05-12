@@ -109,5 +109,8 @@ for server in $SERVERS; do
 done
 
 if [[ "$ENVIRONMENT" == "production" ]]; then
+  echo "Updating 'deployed' tag in git."
+  git tag -f deployed
+  git push --force origin deployed
   echo "Don't forget to add a message to the #lanseringar channel in Slack about the release."
 fi
