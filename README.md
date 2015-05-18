@@ -251,3 +251,43 @@ NOTE: Some services still use an old, custom [grunt task](https://github.com/Exp
 # TODO
 
 * npm test should detect which required software (redis, elasticsearch, mongodb etc) that is missing and clearly specify what's missing
+
+Repeatable Builds
+-----
+
+### Summary
+
+We use `npm shrinkwrap` to produce the `npm-shrinkwrap.json` file on a regular basis. We do this by having Jenkins run the script
+`./scripts/shrinkwrap.sh` on some form of schedule (maybe once a night?)
+
+This script compares the shrinkwrap file checked in, with one created from scratch. If they differ, the script will fail and Jenkins will report an error. If
+the script was started with an argument (a branch name for a branch that will be committed to and pushed to github) if `npm-shrinkwrap.json` was updated. There
+will also be a PR created for this branch which should contain only an update to `npm-shrinkwrap.json`.
+
+The team is then responsible for accepting (or rejecting) the PR.
+
+Run without the branch name argument, the script does everything except branching and issuing the PR.
+
+### What about `package.json`?
+
+This file will still need to be present. It contains the source of truth and should be modified when dependencies change (added, removed or version changes).
+The `npm-shrinkwrap.json` will have to updated accordingly though. I.e. if `package.json` changed (from a dependency perspective), it is highly unlikely that
+the `npm-shrinkwrap.json` file will remain unchanged. Run the `./scripts/shrinkwrap.sh` file locally and check in the new version or run `npm shrinkwrap --dev`
+
+### Jenkins
+
+A suggested Jenkins job could be configured as follows.
+
+```
+source /home/jenkins/nvm/nvm.sh
+nvm install
+./scripts/shrinkwrap.sh master-shrinkwrapped
+```
+
+Maybe with a schedule like the following:
+
+```
+H H(0-3) * * *
+```
+
+which will run the job sometime between midnight and 03.00 every night.
