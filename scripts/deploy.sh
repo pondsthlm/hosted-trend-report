@@ -67,8 +67,8 @@ fi
 # Make sure all changes are committed before deploying to a production environment.
 if [[ $FORCECOMMITS -eq 1 ]]; then
   if [[ `git status --porcelain` ]]; then
-    echo "You have not committed your changes to the git repo. Please do so and run the script again."
-    exit 10
+    echo "Error: You have not committed your changes to git."
+    exit 1
   fi
 fi
 
@@ -86,7 +86,7 @@ PACKAGE=$(npm pack | tail -1)
 if [[ $? != 0 ]]; then
   rm "$REVISION_FILE"
   echo "Error: could not build package"
-  exit 2
+  exit 1
 fi
 rm "$REVISION_FILE"
 
