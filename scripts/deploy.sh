@@ -21,6 +21,7 @@ elif [[ "$ENVIRONMENT" = "production" ]]; then
   SERVERS=""
   RUNTESTS=1
   FORCECOMMITS=1
+  MASTERONLY=1
 elif [[ "$ENVIRONMENT" = "nowhere" ]]; then
   # Used for testing this script, won't deploy anywhere.
   SERVERS=""
@@ -54,6 +55,14 @@ START_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV PORT=$PORT forever --spinSleepTime 
 CLEANUP_CMD="cd /home/web/$SERVICE_NAME/releases && ls -tr | head -n -5 | xargs --no-run-if-empty rm -r"
 CRONTAB_CONTENT="@reboot sleep 5 && $START_CMD"
 CRONTAB_CMD="echo -e \"\$(crontab -l | grep -v $SERVICE_NAME) \n$CRONTAB_CONTENT\" | crontab - "
+
+# Ensure we are on master branch before deploying to a production environment.
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+if [[ $MASTERONLY -eq 1 && "$BRANCH" != "master" && "$ENVIRONMENT" = "production" && "$DEPLOY_FROM_BRANCH" != "true" ]]; then
+    echo "Error: You must be on master branch to deploy to production"
+    echo "Set DEPLOY_FROM_BRANCH=true to override and deploy from branch \"$BRANCH\""
+    exit 1
+fi
 
 # Make sure all changes are committed before deploying to a production environment.
 if [[ $FORCECOMMITS -eq 1 ]]; then
