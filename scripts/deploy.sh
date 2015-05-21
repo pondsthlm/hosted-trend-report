@@ -21,6 +21,7 @@ elif [[ "$ENVIRONMENT" = "production" ]]; then
   SERVERS=""
   RUNTESTS=1
   FORCECOMMITS=1
+  MASTERONLY=1
 elif [[ "$ENVIRONMENT" = "nowhere" ]]; then
   # Used for testing this script, won't deploy anywhere.
   SERVERS=""
@@ -55,11 +56,19 @@ CLEANUP_CMD="cd /home/web/$SERVICE_NAME/releases && ls -tr | head -n -5 | xargs 
 CRONTAB_CONTENT="@reboot sleep 5 && $START_CMD"
 CRONTAB_CMD="echo -e \"\$(crontab -l | grep -v $SERVICE_NAME) \n$CRONTAB_CONTENT\" | crontab - "
 
+# Ensure we are on master branch before deploying to a production environment.
+BRANCH=`git rev-parse --abbrev-ref HEAD`
+if [[ $MASTERONLY -eq 1 && "$BRANCH" != "master" && "$ENVIRONMENT" = "production" && "$DEPLOY_FROM_BRANCH" != "true" ]]; then
+    echo "Error: You must be on master branch to deploy to production"
+    echo "Set DEPLOY_FROM_BRANCH=true to override and deploy from branch \"$BRANCH\""
+    exit 1
+fi
+
 # Make sure all changes are committed before deploying to a production environment.
 if [[ $FORCECOMMITS -eq 1 ]]; then
   if [[ `git status --porcelain` ]]; then
-    echo "You have not committed your changes to the git repo. Please do so and run the script again."
-    exit 10
+    echo "Error: You have not committed your changes to git."
+    exit 1
   fi
 fi
 
@@ -77,7 +86,7 @@ PACKAGE=$(npm pack | tail -1)
 if [[ $? != 0 ]]; then
   rm "$REVISION_FILE"
   echo "Error: could not build package"
-  exit 2
+  exit 1
 fi
 rm "$REVISION_FILE"
 
