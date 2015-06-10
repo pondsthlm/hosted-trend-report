@@ -8,6 +8,21 @@ Fork this project when creating new Node.js projects. The goal of the project st
 
 Checking out code and running `npm install && npm test` should take you as far as possible.
 
+## To get changes/files 
+
+To get changes or files from this repo do
+
+```bash
+git remote add starterapp git@github.com:ExpressenAB/node-starterapp.git
+git fetch starterapp
+
+# apply a commit
+git cherry-pick <some-commit>
+
+# get a file from the starterapp
+git checkout starterapp -- <path-to-file>
+```
+
 ## Local setup
 
 ```bash
