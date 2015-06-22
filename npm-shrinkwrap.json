@@ -138,7 +138,7 @@
         },
         "console-browserify": {
           "version": "1.1.0",
-          "from": "console-browserify@^1.1.0",
+          "from": "console-browserify@1.1.x",
           "resolved": "https://registry.npmjs.org/console-browserify/-/console-browserify-1.1.0.tgz",
           "dependencies": {
             "date-now": {
@@ -366,7 +366,7 @@
         },
         "glob": {
           "version": "4.5.3",
-          "from": "glob@^4.0.5",
+          "from": "glob@^4.3.1",
           "resolved": "https://registry.npmjs.org/glob/-/glob-4.5.3.tgz",
           "dependencies": {
             "inflight": {
@@ -1269,7 +1269,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "1.1.1",
-                  "from": "ansi-regex@^1.0.0",
+                  "from": "ansi-regex@1.1.1",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-1.1.1.tgz"
                 }
               }
@@ -1797,7 +1797,7 @@
         },
         "through2": {
           "version": "0.6.5",
-          "from": "through2@^0.6.5",
+          "from": "through2@~0.6.5",
           "resolved": "https://registry.npmjs.org/through2/-/through2-0.6.5.tgz",
           "dependencies": {
             "readable-stream": {
@@ -2224,7 +2224,7 @@
         },
         "through2": {
           "version": "0.6.5",
-          "from": "through2@^0.6.1",
+          "from": "through2@^0.6.3",
           "resolved": "https://registry.npmjs.org/through2/-/through2-0.6.5.tgz",
           "dependencies": {
             "readable-stream": {
@@ -2791,7 +2791,7 @@
         },
         "through2": {
           "version": "0.6.5",
-          "from": "through2@^0.6.1",
+          "from": "through2@^0.6.3",
           "resolved": "https://registry.npmjs.org/through2/-/through2-0.6.5.tgz",
           "dependencies": {
             "readable-stream": {
@@ -2816,7 +2816,7 @@
                 },
                 "inherits": {
                   "version": "2.0.1",
-                  "from": "inherits@2",
+                  "from": "inherits@~2.0.1",
                   "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
                 }
               }
@@ -2881,7 +2881,7 @@
                 },
                 "inherits": {
                   "version": "2.0.1",
-                  "from": "inherits@2",
+                  "from": "inherits@~2.0.1",
                   "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
                 },
                 "minimatch": {
@@ -3192,14 +3192,14 @@
             },
             "xtend": {
               "version": "4.0.0",
-              "from": "xtend@>=4.0.0 <4.1.0-0",
+              "from": "xtend@~4.0.0",
               "resolved": "https://registry.npmjs.org/xtend/-/xtend-4.0.0.tgz"
             }
           }
         },
         "vinyl-sourcemaps-apply": {
           "version": "0.1.4",
-          "from": "vinyl-sourcemaps-apply@>=0.1.1 <0.2.0-0",
+          "from": "vinyl-sourcemaps-apply@^0.1.4",
           "resolved": "https://registry.npmjs.org/vinyl-sourcemaps-apply/-/vinyl-sourcemaps-apply-0.1.4.tgz",
           "dependencies": {
             "source-map": {
@@ -3598,7 +3598,7 @@
                     },
                     "inherits": {
                       "version": "2.0.1",
-                      "from": "inherits@2",
+                      "from": "inherits@~2.0.1",
                       "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
                     }
                   }
@@ -3765,7 +3765,7 @@
         },
         "exit": {
           "version": "0.1.2",
-          "from": "exit@~0.1.2",
+          "from": "exit@0.1.x",
           "resolved": "https://registry.npmjs.org/exit/-/exit-0.1.2.tgz"
         },
         "glob": {
@@ -3874,7 +3874,7 @@
         },
         "minimatch": {
           "version": "2.0.8",
-          "from": "minimatch@~2.0.1",
+          "from": "minimatch@2.0.x",
           "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.8.tgz",
           "dependencies": {
             "brace-expansion": {
@@ -4371,7 +4371,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "1.1.1",
-                  "from": "ansi-regex@^1.1.0",
+                  "from": "ansi-regex@^1.0.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-1.1.1.tgz"
                 }
               }
@@ -4770,7 +4770,7 @@
                 },
                 "inherits": {
                   "version": "2.0.1",
-                  "from": "inherits@~2.0.1",
+                  "from": "inherits@2",
                   "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.1.tgz"
                 }
               }
