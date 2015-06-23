@@ -1,5 +1,5 @@
 {
-  "excludeFiles": ["**/node_modules", "tmp", "public", "app/assets/js/vendor"],
+  "excludeFiles": ["**/node_modules", "tmp", "public", "app/assets/js/vendor", "coverage"],
 
   "requireCurlyBraces": [
     "else",
