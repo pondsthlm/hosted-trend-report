@@ -4,7 +4,7 @@ ENVIRONMENT=$1
 SERVERS_OVERRIDE=$2
 
 # Replace with name for your service
-# Also make sure to update config/pm2.json to match your service name/port
+# Also make sure to update config/pm2.json && pm2 save to match your service name/port
 SERVICE_NAME="nodestarterapp"
 
 RUNTESTS=0              # Control whether to run npm test before deploying.
@@ -49,7 +49,7 @@ SHAREDMODULES_CMD="mkdir -p $SHAREDMODULES_DIR && ln -s $SHAREDMODULES_DIR $RELE
 NVM_CMD="cd $RELEASE_DIR && nvm install"
 NPM_CMD="cd $RELEASE_DIR && nvm use && npm prune && npm install --production"
 UPDATE_CUR_SYMLINK_CMD="ln -sfT $RELEASE_DIR $CUR_DIR"
-START_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV pm2 startOrRestart config/pm2.json"
+START_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV pm2 startOrRestart config/pm2.json && pm2 save"
 CLEANUP_CMD="cd /home/web/$SERVICE_NAME/releases && ls -tr | head -n -5 | xargs --no-run-if-empty rm -r"
 CRONTAB_CONTENT="@reboot sleep 5 && $START_CMD"
 CRONTAB_CMD="echo -e \"\$(crontab -l | grep -v $SERVICE_NAME) \n$CRONTAB_CONTENT\" | crontab - "
