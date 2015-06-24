@@ -51,8 +51,6 @@ NPM_CMD="cd $RELEASE_DIR && nvm use && npm prune && npm install --production"
 UPDATE_CUR_SYMLINK_CMD="ln -sfT $RELEASE_DIR $CUR_DIR"
 START_CMD="cd $CUR_DIR && NODE_ENV=$NODE_ENV pm2 startOrRestart config/pm2.json && pm2 save"
 CLEANUP_CMD="cd /home/web/$SERVICE_NAME/releases && ls -tr | head -n -5 | xargs --no-run-if-empty rm -r"
-CRONTAB_CONTENT="@reboot sleep 5 && $START_CMD"
-CRONTAB_CMD="echo -e \"\$(crontab -l | grep -v $SERVICE_NAME) \n$CRONTAB_CONTENT\" | crontab - "
 
 # Ensure we are on master branch before deploying to a production environment.
 BRANCH=`git rev-parse --abbrev-ref HEAD`
@@ -110,7 +108,6 @@ for server in $SERVERS; do
 
   sshAndLog "Update symlink" "$UPDATE_CUR_SYMLINK_CMD"
   sshAndLog "Start service" "$START_CMD"
-  sshAndLog "Update crontab" "$CRONTAB_CMD"
   sshAndLog "Cleanup" "$CLEANUP_CMD"
 done
 
