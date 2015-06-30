@@ -1,5 +1,5 @@
 {
-  "name": "expstarterapp",
+  "name": "nodestarterapp",
   "version": "0.0.2",
   "description": "Empty starter app for Expressen node apps",
   "main": "app.js",
@@ -12,15 +12,27 @@
     "doc": "docs",
     "test": "test"
   },
+  "config": {
+    "exp-deploy": {
+      "environments": {
+        "epitest": {"servers": ["node-test-5.expressen.se"]},
+        "epistage": {"servers": ["node-test-6.expressen.se"]},
+        "livedata": {"servers": [
+          "node-test-2.expressen.se", "node-test-3.expressen.se", "node-test-4.expressen.se"
+        ]},
+        "production": {"servers" : ["your-prod-server-1", "your-prod-server-2"]}
+      }
+    }
+  },
   "scripts": {
     "test": "mocha && jshint . && jscs .",
-    "prepublish": "npm run-script revision && if which gulp ; then GULP_ENV=build gulp dist ; else echo 'no gulp' ; fi",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
-    "deploy-epitest": "./scripts/deploy.sh epitest",
-    "deploy-epistage": "./scripts/deploy.sh epistage",
-    "deploy-livedata": "./scripts/deploy.sh livedata",
-    "deploy-production": "./scripts/deploy.sh production",
+    "deploy-epitest": "exp-deploy epitest",
+    "deploy-epistage": "exp-deploy epistage",
+    "deploy-livedata": "exp-deploy livedata",
+    "deploy-production": "exp-deploy production",
+    "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
   },
   "author": "Expressen AB",
@@ -39,6 +51,7 @@
     "browserify": "^10.1.0",
     "chai": "^1.10.0",
     "coffee-script": "^1.9.0",
+    "exp-deploy": "^0.0.2",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
     "gulp-jscs": "^1.6.0",
