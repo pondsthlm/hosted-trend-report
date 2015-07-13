@@ -1,0 +1,17 @@
+# Runs the app as a docker container, to get started on your machine:
+# * install boot2docker
+# build the container:  docker build -t node-starterapp .
+# run the container: docker run -d -i -p 3000:3000 node-starterapp
+# To run the container as e dev env, the src directory needs to mounted in container as a volume.
+#
+FROM exp-nodejs:12.7-1
+MAINTAINER Infra team Expressen <infra@expressen.se>
+ENV NODE_ENV=production
+RUN mkdir -p /exp-container/exec /home/web && ln -s /var/log /home/web/
+COPY docker/exec/*.sh /exp-container/exec/
+ADD docker/start.sh /start.sh
+COPY . /src
+RUN mkdir /node_modules && cd /src && ln -s /node_modules . && NODE_ENV=$NODE_ENV npm install
+EXPOSE 3000
+
+CMD ["/start.sh"]

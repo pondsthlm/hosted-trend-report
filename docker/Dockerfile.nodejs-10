@@ -1,0 +1,33 @@
+# Runs the app as a docker container, to get started on your machine:
+# * install boot2docker
+# build the container:  docker build -t node-starterapp .
+# run the container: docker run -d -i -p 3000:3000 node-starterapp
+# To run the container as e dev env, the src directory needs to mounted in container as a volume.
+#
+FROM centos:7
+ENV REFRESHED_AT 2015-07-13
+MAINTAINER Infra team Expressen <infra@expressen.se>
+RUN  yum -y install http://ftp.lysator.liu.se/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
+ENV VERSION=v0.10.40 CMD=node DOMAIN=nodejs.org
+RUN yum -y update
+RUN yum -y install varnish && rpm -ivh https://repo.dex.nu/artifactory/dex-yum/consul-template-0.10.0-3.el7.centos.x86_64.rpm
+RUN yum -y install tar curl make gcc gcc-c++ python linux-headers paxctl libgcc libstdc++ && \
+  curl -sSL https://${DOMAIN}/dist/${VERSION}/${CMD}-${VERSION}.tar.gz | tar -xz && \
+  cd /${CMD}-${VERSION} && \
+  ./configure && \
+  CXX="g++ -Wno-unused-local-typedefs" make && \
+  CXX="g++ -Wno-unused-local-typedefs" make install && \
+  cd /tmp && \
+  rm -rf /tmp/node-v* && \
+  npm install -g npm && \
+  printf '\n# Node.js\nexport PATH="node_modules/.bin:$PATH"' >> /root/.bashrc
+
+RUN npm install pm2@latest -g
+
+VOLUME ["/src"]
+WORKDIR /src
+
+CMD []
+
+
+
