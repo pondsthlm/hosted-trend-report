@@ -14,7 +14,7 @@ The exp-container setup adds a few "extra" for running docker containers:
 - Service discovery. To add the container to the Consul service discovery, add environmnet variables when starting the container.
 
 ### Service discovery ###
-To start the container with support for service discovery add SERVICE_NAME and SERVICE_TAGS to the docker supplied env vars:
+To start the container with support for service discovery add SERVICE_NAME and SERVICE_TAGS to the docker supplied env vars, all production docker hosts runs a container namned gliderlabs/registrator which takes care of registering services:
 
  ```bash
 docker run -d -p 80 \
@@ -25,7 +25,7 @@ docker run -d -p 80 \
     node-starterapp:latest
  ```
 
-The above example will register the container in Consul as node-starterapp.service.exp.dex.nu, it will alsp we reachable at production.node-starterapp.service.exp.dex.nu.
+The above example will register the container in Consul as node-starterapp.service.exp.dex.nu, it will also be reachable at production.node-starterapp.service.exp.dex.nu.
 
 ### Varnish inline ###
 The Varnish inline feature accepts a numer of environment variables (all with defaults):
@@ -49,7 +49,7 @@ Get an account on repo.dex.nu, then:
 curl -u <user> https://devops-docker.repo.dex.nu/v2/auth > ~/.dockercfg
 ```
 
-Check the .docker.cfg in your home directory, it shoild look something like:
+Check the .docker.cfg in your home directory, it should look something like:
 ```bash
 $ cat ~/.dockercfg
 {
@@ -75,6 +75,7 @@ First install boot2docker:
 ```bash
 $ boot2docker init
 ```
+- add a new shared folder pointing to /Volumes/Data/${USER}/path/to/your/repos in the Virtual Box GUI, name it "src".
 - start boot2docker:
 ```bash
 $ boot2docker start && boot2docker shellinit
@@ -85,23 +86,6 @@ $ boot2docker start && boot2docker shellinit
 $ eval "$(boot2docker shellinit)"
 ```
 
-In order to devolp using docker you need to mount your current source dirctory to /src inside the container:
-1. Create a volume container:
-```bash
-$ # Make a volume container (only need to do this once)
-$ docker run -v /src --name my-src busybox true
-$ # Share it using Samba (Windows file sharing)
-$ docker run --rm -v /usr/local/bin/docker:/docker -v /var/run/docker.sock:/docker.sock svendowideit/samba my-src
-$ # then find out the IP address of your Boot2Docker host
-$ boot2docker ip
-192.168.59.103
-```
-2. Connect to the volume container in MacOS X using finder (cifs://192.168.59.103/src), once connected, you can find it on /Volumes/src
-3. Run the container with:
-```
-$ docker run -it -e NODE_ENV=development -t -p 3000:3000 --volumes-from my-src node-starterapp bash
-```
-This will give you a shell inside the container, allowing you to....
 
 * boot2docker
 

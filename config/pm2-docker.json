@@ -1,0 +1,16 @@
+{
+  "apps": [
+    {
+      "name": "node starter app",
+      "script": "cluster.js",
+      "node_args"   : "--nouse-idle-notification",
+      "watch": false,
+      "merge_logs": true,
+      "cwd": "/src",
+      "out_file": "/var/log/nodestarterapp.log",
+      "env": {
+        "PORT": "3000"
+      }
+    }
+  ]
+}
