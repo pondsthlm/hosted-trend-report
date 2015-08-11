@@ -17,7 +17,7 @@
       "environments": {
         "epitest": {"servers": ["node-test-5.expressen.se"]},
         "epistage": {"servers": ["node-test-6.expressen.se"]},
-        "livedata": {"servers": [
+        "livedata": {"waitForLoadbalancer": true, "servers": [
           "node-test-2.expressen.se", "node-test-3.expressen.se", "node-test-4.expressen.se"
         ]},
         "production": {"servers" : ["your-prod-server-1", "your-prod-server-2"]}
