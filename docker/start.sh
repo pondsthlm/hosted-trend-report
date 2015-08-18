@@ -1,24 +1,23 @@
-#!/bin/bash
+#!/bin/bash -e
 #
 # Handle exp-docker container CMD's in a generic way.
 #
 # Uses PM2 by default as a process manager
-# - Drop in execs in /src/exec to make pm2 fork them on start (e.g varnish/consul-template)
+# - Drop in execs in /exp-container/exec to make pm2 fork them on start (e.g varnish/consul-template)
 echo "Starting exp-container for fun and profit."
 if [ -d /exp-container/exec ]; then
-  for x in $(find /exp-container/exec -perm /u=x,g=x,o=x -type f); do
-  	echo "Starting $x..."
-    NODE_ENV=${NODE_ENV:-production} pm2 start $x -x --interpreter bash
+  for x in $(find /exp-container/exec -type f); do
+    xup=$(basename $x | awk '{print toupper($0)}')
+    enabled=$(eval "echo \$${xup%.*}_ENABLED")
+    user=$(eval "echo \$${xup%.*}_USER")
+    if [ "${enabled}" = true ]; then
+      echo "Starting $x..."
+      NODE_ENV=${NODE_ENV:-production} pm2 -u ${user:-root} start $x
+    fi
   done
+  # This is our long living CMD
+  exec pm2 logs --no-color
+else
+  echo "Nothing to run"
+  exit 1
 fi
-#
-# Start your engines...
-#
-if [ -e /src/config/pm2-docker.json ]; then
-	cd /src
-	rm -f node_modules
-	ln -s /node_modules .
-    NODE_ENV=${NODE_ENV:-production} pm2 startOrRestart $(pwd)/config/pm2-docker.json
-fi
-# This is our long living CMD
-pm2 logs --no-color

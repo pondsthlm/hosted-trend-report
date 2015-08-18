@@ -1,0 +1,11 @@
+web:
+  build: .
+  ports:
+    - "3000:3000"
+  environment:
+    - NODE_ENV=development
+    - APP_ENABLED=true
+    - APP_USER=web
+  volumes:
+    - ./:/exp-container/app
+    - ./config/app-docker.json:/exp-container/exec/app.json

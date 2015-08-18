@@ -4,16 +4,17 @@
 # run the container: docker run -d -i -p 3000:3000 node-starterapp
 # To run the container as e dev env, the src directory needs to mounted in container as a volume.
 #
-FROM devops-docker.repo.dex.nu/exp-nodejs:12.7-2
+FROM node:0.12.7
 MAINTAINER Infra team Expressen <infra@expressen.se>
+
 ENV NODE_ENV=production
-RUN yum -y install git
-RUN mkdir -p /exp-container/exec /home/web && ln -s /var/log /home/web/
-COPY docker/exec/*.sh /exp-container/exec/
-ADD docker/start.sh /start.sh
-RUN npm install -g nodemon
-ADD *.tgz /src
-RUN mkdir /node_modules && cd /src && ln -s /node_modules . && NODE_ENV=$NODE_ENV npm install
+
+ADD . /tmp/app/
+
+RUN cd /tmp/app && npm install && npm test && npm pack && tar xzf *.tgz -C /tmp && \
+    mv node_modules /tmp/package && cd /tmp/package && npm prune && mv /tmp/package/* /exp-container/app && \
+    rm -rf /tmp/*
+
 EXPOSE 3000
 
-CMD ["/start.sh"]
+ENTRYPOINT ["/exp-container/start.sh"]
