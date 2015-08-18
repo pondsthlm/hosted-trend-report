@@ -9,6 +9,8 @@ npm-debug.log
 /*.tgz
 
 # Project files
+.tern-port
+.tern-project
 .idea
 *.iml
 
