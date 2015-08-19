@@ -1,9 +1,9 @@
 {
   "apps": [
     {
-      "name": "app",
+      "name": "dev app",
       "script": "cluster.js",
-      "node_args"   : "--nouse-idle-notification",
+      "node_args": "--nouse-idle-notification",
       "watch": true,
       "watch_options": {
         "usePolling": true,
