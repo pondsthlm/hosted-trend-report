@@ -7,7 +7,7 @@
 FROM exp-docker.repo.dex.nu/nodejs:0.12
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 
 ADD . /tmp/app/
 

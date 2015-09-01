@@ -1,5 +1,5 @@
 {
   "log": "stdout",
   "logLevel": "info",
-  "requestLogging": "/home/web/log/node-starterapp_access.log"
+  "requestLogging": "stdout"
 }
