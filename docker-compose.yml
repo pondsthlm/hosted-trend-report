@@ -8,6 +8,7 @@ web:
     - NODE_ENV=development
     - DEV_APP_ENABLED=true
     - DEV_APP_USER=web
+    - VERSION=dev
   volumes:
     - ./:/exp-container/app
     - ./tmp/node_modules:/exp-container/app/node_modules

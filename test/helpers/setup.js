@@ -1,3 +1,5 @@
+"use strict";
+
 // Make sure dates are displayed in the correct timezone
 process.env.TZ = "Europe/Stockholm";
 
