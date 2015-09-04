@@ -2,7 +2,8 @@
   "apps": [
     {
       "name": "app",
-      "script": "cluster.js",
+      "script": "app.js",
+      "instances": 2, // don't change this unless you are God
       "node_args": "--nouse-idle-notification",
       "watch": false,
       "merge_logs": true,
