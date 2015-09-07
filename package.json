@@ -53,7 +53,7 @@
     "init": "exp-containership init",
     "reset": "exp-containership reset",
     "test": "mocha && jshint . && jscs .",
-    "build": "docker-compose build",
+    "build": "exp-containership build",
     "start": "exp-containership run",
     "ci": "npm install && npm prune && npm ls && npm test",
     "prepush": "exp-ensure-unmodified && exp-ensure-master",

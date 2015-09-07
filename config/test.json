@@ -1,5 +1,4 @@
 {
-  "log": "stdout",
-  "logLevel": "debug",
-  "requestLogging": "stdout"
+  "log": "file",
+  "logLevel": "debug"
 }

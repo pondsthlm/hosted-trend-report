@@ -7,11 +7,11 @@
 FROM exp-docker.repo.dex.nu/nodejs:0.12
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
-ENV NODE_ENV=development
+ENV NODE_ENV=test
 
 ADD . /tmp/app/
 
-RUN cd /tmp/app && npm install && npm test && npm pack && tar xzf *.tgz -C /tmp && \
+RUN cd /tmp/app && npm install && mkdir -p /tmp/app/logs && npm test && npm pack && tar xzf *.tgz -C /tmp && \
     mv node_modules /tmp/package && cd /tmp/package && npm prune && mv /tmp/package/* /exp-container/app && \
     rm -rf /tmp/*
 
