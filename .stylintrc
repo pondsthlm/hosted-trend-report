@@ -13,7 +13,7 @@
   "enforceBlockStyle": false,
   "extendPref": false,
   "globalDupe": false,
-  "indentSpaces": 2,
+  "indentPref": 2,
   "leadingZero": false,
   "maxWarnings": 10,
   "mixed": true,
