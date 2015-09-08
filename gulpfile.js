@@ -26,7 +26,8 @@ var sourcePaths = {
   clientScripts: "./app/assets/js/**/*.js",
   vendorScripts: "./app/assets/js/vendor/**/*.js",
   js: "{app,config,lib,test}/**/*.js",
-  stylus: "./app/assets/stylus/style.styl",
+  stylus: "./app/assets/stylus/**/*.styl",
+  stylusStart: "./app/assets/stylus/style.styl"
 };
 
 var destPaths = {
@@ -56,7 +57,7 @@ function vendorScriptsTask() {
 }
 
 function styleSheetsTask() {
-  return gulp.src(sourcePaths.stylus)
+  return gulp.src(sourcePaths.stylusStart)
     .pipe(sourcemaps.init())
     .pipe(stylus({ compress: true }))
     .on("error", errorHandler)
