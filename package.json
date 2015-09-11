@@ -41,7 +41,7 @@
       }
     },
     "exp-containership": {
-      "repo": "exp-docker.repo.dex.nu",
+      "salt": "https://localhost:8000",
       "environments": {
         "production": {
           "helios_deployment_group": "nodestarterapp-production"
@@ -80,6 +80,7 @@
     "browserify": "^10.1.0",
     "chai": "^1.10.0",
     "coffee-script": "^1.9.0",
+    "exp-containership": "^0.1.0",
     "exp-deploy": "^0.0.2",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
