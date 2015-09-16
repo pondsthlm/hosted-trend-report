@@ -14,6 +14,7 @@
   },
   "config": {
     "exp-containership": {
+      "salt": "https://localhost:8000",
       "environments": {
         "epitest": {
           "helios_deployment_group": "nodestarterapp-epitest"
@@ -35,10 +36,11 @@
     "reset": "exp-containership reset",
     "test": "mocha && jshint . && jscs .",
     "build": "exp-containership build",
+    "ctest": "exp-containership test",
     "start": "exp-containership run",
     "ci": "npm install && npm prune && npm ls && npm test",
     "prepush": "exp-ensure-unmodified && exp-ensure-master",
-    "push": "exp-containership build && exp-containership push",
+    "push": "exp-containership test && exp-containership push",
     "jobs": "exp-containerdeploy jobs -e",
     "status": "exp-containerdeploy status -e",
     "deploy": "exp-containerdeploy deploy -e",
@@ -61,7 +63,7 @@
     "browserify": "^10.1.0",
     "chai": "^1.10.0",
     "coffee-script": "^1.9.0",
-    "exp-containership": "^0.1.1",
+    "exp-containership": "^0.1.2",
     "exp-deploy": "^1.1.1",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
@@ -90,8 +92,11 @@
     "config",
     "lib",
     "public",
+    "test",
     "app.js",
     "cluster.js",
-    ".nvmrc"
+    ".jshintrc",
+    ".jshintignore",
+    ".jscsrc"
   ]
 }
