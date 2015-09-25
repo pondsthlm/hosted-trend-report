@@ -59,7 +59,7 @@ function vendorScriptsTask() {
 function styleSheetsTask() {
   return gulp.src(sourcePaths.stylusStart)
     .pipe(sourcemaps.init())
-    .pipe(stylus({ compress: true }))
+    .pipe(stylus({compress: true}))
     .on("error", errorHandler)
     .pipe(rename({suffix: ".min"}))
     .pipe(sourcemaps.write("."))
@@ -116,7 +116,7 @@ gulp.task("vendorscripts", function () {
 gulp.task("browserify", ["jshint", "jscs"], function () {
   if (useNotifications) {
     return browserifyTask()
-      .pipe(notify({ message: "Scripts task completed", onLast: true }));
+      .pipe(notify({message: "Scripts task completed", onLast: true}));
   } else {
     return browserifyTask();
   }
@@ -125,7 +125,7 @@ gulp.task("browserify", ["jshint", "jscs"], function () {
 gulp.task("stylesheets", function () {
   if (useNotifications) {
     return styleSheetsTask()
-      .pipe(notify({ message: "Stylesheets task completed", onLast: true }));
+      .pipe(notify({message: "Stylesheets task completed", onLast: true}));
   } else {
     return styleSheetsTask();
   }

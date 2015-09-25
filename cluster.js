@@ -7,7 +7,7 @@ var logger = require("./lib/logger.js");
 var packageInfo = require("./package.json");
 
 cluster.setupMaster({
-  exec : __dirname
+  exec: __dirname
 });
 
 var workerCount = config.boolean("cluster") ? config.clusterWorkers || os.cpus().length : 1;
