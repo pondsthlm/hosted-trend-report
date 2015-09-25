@@ -22,7 +22,8 @@ RUN apk add --update curl make gcc g++ python linux-headers paxctl libgcc libstd
     /usr/share/man /tmp/* /root/.npm /root/.node-gyp /usr/lib/node_modules/npm/man \
     /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html
 
-RUN apk add git varnish bash && npm install -g pm2@latest && mkdir -p /exp-container/app && mkdir -p /exp-container/logs
+RUN apk add git varnish bash && npm install -g pm2@latest && mkdir -p /exp-container/app && \
+    mkdir -p /exp-container/logs && mkdir -p /exp-container/data
 RUN addgroup -S web
 RUN adduser -S -G web web
 
@@ -31,3 +32,6 @@ ADD exec /exp-container/exec
 ADD config /exp-container/config
 
 RUN chown -R web:web /exp-container
+
+ONBUILD ENTRYPOINT ["/exp-container/start.sh"]
+ONBUILD VOLUME ["/exp-container/data"]

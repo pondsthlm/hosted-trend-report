@@ -8,10 +8,7 @@
       "watch": false,
       "merge_logs": true,
       "cwd": "/exp-container/app",
-      "out_file": "/exp-container/logs/app.log",
-      "env": {
-        "PORT": "3000"
-      }
+      "out_file": "/exp-container/logs/app.log"
     }
   ]
 }

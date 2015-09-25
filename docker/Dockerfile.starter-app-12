@@ -11,5 +11,3 @@ RUN cd /tmp/app && npm install && npm pack && tar xzf *.tgz -C /tmp && \
     ln -s /exp-container/logs /exp-container/app/logs
 
 EXPOSE 3000
-
-ENTRYPOINT ["/exp-container/start.sh"]
