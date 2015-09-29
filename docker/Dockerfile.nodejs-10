@@ -8,7 +8,7 @@ FROM alpine:3.2
 
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
-ENV VERSION=v0.10.40 CMD=node DOMAIN=nodejs.org CFLAGS="-D__USE_MISC"
+ENV VERSION=v0.10.40 CMD=node DOMAIN=nodejs.org CFLAGS="-D__USE_MISC" NPM_VERSION=2.14.5
 
 RUN apk add --update curl make gcc g++ python linux-headers paxctl libgcc libstdc++ && \
   curl -sSL https://${DOMAIN}/dist/${VERSION}/${CMD}-${VERSION}.tar.gz | tar -xz && \
@@ -17,7 +17,7 @@ RUN apk add --update curl make gcc g++ python linux-headers paxctl libgcc libstd
   make -j$(grep -c ^processor /proc/cpuinfo 2>/dev/null || 1) && \
   make install && \
   paxctl -cm /usr/bin/${CMD} && \
-  cd / && npm install -g npm && \
+  cd / && npm install -g npm@${NPM_VERSION} && \
   rm -rf /${CMD}-${VERSION} ${RM_DIRS} \
     /usr/share/man /tmp/* /root/.npm /root/.node-gyp /usr/lib/node_modules/npm/man \
     /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html

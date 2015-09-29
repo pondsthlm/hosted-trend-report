@@ -8,10 +8,10 @@ FROM centos:7
 
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
-ENV VERSION=v0.12.7
+ENV VERSION=v0.12.7 NPM_VERSION=2.14.5
 
 ADD dex.repo /etc/yum.repos.d/
-RUN yum -y install nodejs-npm git varnish
+RUN yum -y install nodejs-npm git varnish && npm install -g npm@${NPM_VERSION}
 
 RUN npm install -g pm2@latest && mkdir -p /exp-container/app && \
     mkdir -p /exp-container/logs && mkdir -p /exp-container/data
