@@ -69,6 +69,7 @@
     "browserify": "^10.2.6",
     "chai": "^1.10.0",
     "coffee-script": "^1.10.0",
+    "eslint": "^1.6.0",
     "exp-deploy": "0.0.6",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
