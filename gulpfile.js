@@ -4,6 +4,7 @@ var gulp = require("gulp");
 var stylus = require("gulp-stylus");
 var stylint = require("gulp-stylint");
 var jshint = require("gulp-jshint");
+var eslint = require("gulp-eslint");
 var rename = require("gulp-rename");
 var sourcemaps = require("gulp-sourcemaps");
 var uglify = require("gulp-uglify");
@@ -94,6 +95,12 @@ gulp.task("jshint", function () {
     .pipe(jshint.reporter("fail"));
 });
 
+gulp.task("eslint", function () {
+  return gulp.src(sourcePaths.js)
+    .pipe(eslint())
+    .pipe(eslint.format());
+});
+
 gulp.task("jscs", function () {
   return gulp.src(sourcePaths.js)
     .pipe(jscs());
@@ -113,7 +120,7 @@ gulp.task("vendorscripts", function () {
   }
 });
 
-gulp.task("browserify", ["jshint", "jscs"], function () {
+gulp.task("browserify", ["eslint", "jshint", "jscs"], function () {
   if (useNotifications) {
     return browserifyTask()
       .pipe(notify({message: "Scripts task completed", onLast: true}));
@@ -132,7 +139,7 @@ gulp.task("stylesheets", function () {
 });
 
 gulp.task("watch", function () {
-  gulp.watch(sourcePaths.js, ["jscs", "jshint"]);
+  gulp.watch(sourcePaths.js, ["eslint", "jscs", "jshint"]);
   gulp.watch(sourcePaths.clientScripts, ["browserify"]);
   gulp.watch(sourcePaths.vendorScripts, ["vendorscripts"]);
   gulp.watch(sourcePaths.stylus, ["stylesheets", "stylint"]);
