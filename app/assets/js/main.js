@@ -5,7 +5,7 @@
   "use strict";
 
   function foo() {
-    console.log("Winning!");
+    console.log("Winning!"); //eslint-disable-line no-console
   }
 
   foo();
