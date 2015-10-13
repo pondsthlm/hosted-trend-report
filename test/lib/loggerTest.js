@@ -8,7 +8,7 @@ describe("logger", function () {
     logger.debug("testing logger");
 
     setImmediate(function () {
-      fs.readFileSync(path.join(__dirname, "/../../logs/test.log"), "utf-8").should.include("testing logger");
+      fs.readFileSync(path.join(__dirname, "../../logs/test.log"), "utf-8").should.include("testing logger");
       done();
     });
   });
