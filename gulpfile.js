@@ -24,7 +24,7 @@ var sourcePaths = {
   browserifyStart: "./app/assets/js/bootstrap.js",
   clientScripts: "./app/assets/js/**/*.js",
   vendorScripts: "./app/assets/js/vendor/**/*.js",
-  js: "{app,config,lib,test}/**/*.js",
+  js: "{app,lib,test}/**/*.js",
   stylus: "./app/assets/stylus/**/*.styl",
   stylusStart: "./app/assets/stylus/style.styl"
 };

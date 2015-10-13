@@ -43,7 +43,7 @@
     }
   },
   "scripts": {
-    "test": "mocha && eslint {app,config,lib,test}/**/*.js",
+    "test": "mocha && eslint .",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-epitest": "exp-deploy epitest",
