@@ -1,5 +1,5 @@
---timeout 1000
---reporter spec
+--timeout 10000
+--reporter progress
 --recursive
 --compilers coffee:coffee-script/register
 --require ./test/helpers/setup.js
