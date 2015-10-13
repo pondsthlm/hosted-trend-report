@@ -51,7 +51,7 @@
     "deploy-livedata": "exp-deploy livedata",
     "deploy-production": "exp-deploy production",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
-    "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
+    "test-cov": "istanbul cover --report lcov ./node_modules/.bin/_mocha"
   },
   "author": "Expressen AB",
   "license": "proprietary",
