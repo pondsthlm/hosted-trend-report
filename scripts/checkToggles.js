@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-
 "use strict";
+/*eslint-disable no-console */
+
 var _ = require("lodash");
 var environmentNames = ["development", "epitest", "epistage", "livedata", "production"];
 
