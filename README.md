@@ -8,6 +8,17 @@ Fork this project when creating new Node.js projects. The goal of the project st
 
 Checking out code and running `npm install && npm test` should take you as far as possible.
 
+## The correct way to start a new repo
+
+* Create a repo on github
+* `git clone git@github.com:ExpressenAB/<your-new-repo>.git`
+* `cd <your-new-repo>`
+* `git remote add starterapp git@github.com:ExpressenAB/node-starterapp.git`
+* `git fetch starterapp`
+* `git merge starterapp/master`
+
+Nu har du ett projekt att utgå från!
+
 ## To get changes/files 
 
 To get changes or files from this repo do
