@@ -13,6 +13,6 @@ _.each(environments[0].toggle, function (value, toggle) {
   if (environments.every(function (environment) {
     return !!environment.toggle[toggle];
   })) {
-    console.log("%s is turned on in all environments, time to remove?", toggle);
+    console.log("%s is turned on in all environments, time to remove?", toggle); //eslint-disable-line no-console
   }
 });

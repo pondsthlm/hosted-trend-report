@@ -46,4 +46,4 @@ var inputAsJson = JSON.parse(String(fs.readFileSync(input)));
 var sorted = sortObject(inputAsJson);
 deleteRecursive(sorted, ["from", "resolved"]);
 
-console.log(JSON.stringify(sorted, null, 2));
+console.log(JSON.stringify(sorted, null, 2)); //eslint-disable-line no-console

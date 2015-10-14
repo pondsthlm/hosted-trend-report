@@ -15,8 +15,7 @@ npm-debug.log
 *.iml
 
 # Compiled client resources
-/public/stylesheets/
-/public/js/
+/public
 
 # Revision file
 config/_revision
