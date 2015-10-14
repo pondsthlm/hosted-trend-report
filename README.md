@@ -10,7 +10,7 @@ Checking out code and running `npm install && npm test` should take you as far a
 
 ## The correct way to start a new repo
 
-* Create a repo on github
+* Create a repo on github (or ask someone with permissions to create it for you)
 * `git clone git@github.com:ExpressenAB/<your-new-repo>.git`
 * `cd <your-new-repo>`
 * `git remote add starterapp git@github.com:ExpressenAB/node-starterapp.git`
