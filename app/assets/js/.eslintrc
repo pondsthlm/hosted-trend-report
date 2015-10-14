@@ -1,0 +1,14 @@
+{
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "strict": [2, "function"]
+  },
+  "globals": {
+    "require": false,
+    "module": false,
+    "FB": false,
+    "expNative": false
+  }
+}

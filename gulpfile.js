@@ -3,14 +3,13 @@
 var gulp = require("gulp");
 var stylus = require("gulp-stylus");
 var stylint = require("gulp-stylint");
-var jshint = require("gulp-jshint");
+var eslint = require("gulp-eslint");
 var rename = require("gulp-rename");
 var sourcemaps = require("gulp-sourcemaps");
 var uglify = require("gulp-uglify");
 var browserify = require("browserify");
 var source = require("vinyl-source-stream");
 var buffer = require("vinyl-buffer");
-var jscs = require("gulp-jscs");
 var concat = require("gulp-concat");
 var util = require("gulp-util");
 
@@ -25,7 +24,7 @@ var sourcePaths = {
   browserifyStart: "./app/assets/js/bootstrap.js",
   clientScripts: "./app/assets/js/**/*.js",
   vendorScripts: "./app/assets/js/vendor/**/*.js",
-  js: "{app,config,lib,test}/**/*.js",
+  js: "{app,lib,test}/**/*.js",
   stylus: "./app/assets/stylus/**/*.styl",
   stylusStart: "./app/assets/stylus/style.styl"
 };
@@ -87,16 +86,10 @@ function browserifyTask() {
   return bundle();
 }
 
-gulp.task("jshint", function () {
+gulp.task("eslint", function () {
   return gulp.src(sourcePaths.js)
-    .pipe(jshint())
-    .pipe(jshint.reporter("jshint-stylish"))
-    .pipe(jshint.reporter("fail"));
-});
-
-gulp.task("jscs", function () {
-  return gulp.src(sourcePaths.js)
-    .pipe(jscs());
+    .pipe(eslint())
+    .pipe(eslint.format());
 });
 
 gulp.task("stylint", function () {
@@ -113,7 +106,7 @@ gulp.task("vendorscripts", function () {
   }
 });
 
-gulp.task("browserify", ["jshint", "jscs"], function () {
+gulp.task("browserify", ["eslint"], function () {
   if (useNotifications) {
     return browserifyTask()
       .pipe(notify({message: "Scripts task completed", onLast: true}));
@@ -132,7 +125,7 @@ gulp.task("stylesheets", function () {
 });
 
 gulp.task("watch", function () {
-  gulp.watch(sourcePaths.js, ["jscs", "jshint"]);
+  gulp.watch(sourcePaths.js, ["eslint"]);
   gulp.watch(sourcePaths.clientScripts, ["browserify"]);
   gulp.watch(sourcePaths.vendorScripts, ["vendorscripts"]);
   gulp.watch(sourcePaths.stylus, ["stylesheets", "stylint"]);
