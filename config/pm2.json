@@ -2,12 +2,15 @@
   "apps": [
     {
       "name": "node starter app",
-      "script": "cluster.js",
+      "script": "app.js",
       "node_args"   : "--nouse-idle-notification",
+      "exec_mode": "cluster",
+      "exec_interpreter": "@NVM_NODE@",
       "watch": false,
       "merge_logs": true,
       "cwd": "/home/web/nodestarterapp/current",
       "out_file": "/home/web/log/nodestarterapp.log",
+      "instances": 1,
       "env": {
         "PORT": "7000"
       }
