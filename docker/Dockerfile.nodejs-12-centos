@@ -11,6 +11,7 @@ MAINTAINER Infra team Expressen <infra@expressen.se>
 ENV VERSION=0.12.7 NPM_VERSION=2.14.5
 
 ADD dex.repo /etc/yum.repos.d/
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum -y install nodejs-npm-$VERSION git varnish && npm install -g npm@${NPM_VERSION}
 RUN yum -y install make automake gcc gcc-c++ bzip2 freetype fontconfig
 
