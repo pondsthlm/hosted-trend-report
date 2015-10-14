@@ -43,7 +43,13 @@
     }
   },
   "scripts": {
-    "test": "mocha && eslint .",
+    "test": "parallelshell 'mocha' 'npm run eslint' 'npm run stylint'",
+    "test-cov": "istanbul cover --report lcov ./node_modules/.bin/_mocha",
+    "watch": "parallelshell 'npm run watch:eslint' 'npm run watch:stylint' 'npm run watch:static' 'npm run watch:css' 'npm run watch:js' 'npm run nodemon'",
+    "build": "npm run prebuild && parallelshell 'npm run build:static' 'npm run build:css' 'npm run build:js' 'npm run build:submodules' 'npm run build:vendor'",
+    "prebuild": "rm -rf ./public && mkdir -p public/js public/css",
+    "dev": "npm run build && npm run watch",
+    "prepublish": "npm run revision && npm run build",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-epitest": "exp-deploy epitest",
@@ -51,7 +57,19 @@
     "deploy-livedata": "exp-deploy livedata",
     "deploy-production": "exp-deploy production",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
-    "test-cov": "istanbul cover --report lcov ./node_modules/.bin/_mocha"
+    "build:static": "cpx \"./app/assets/{img,swf}/**/*\" public",
+    "watch:static": "npm run build:static -- -w",
+    "build:submodules": "cp ./submodule/**/dist/*.js public/js 2>/dev/null || :",
+    "build:vendor": "cat ./app/assets/js/vendor/*.js > public/js/vendor.js 2>/dev/null || :",
+    "build:css": "stylus ./app/assets/stylus/style.styl -c -m -u autoprefixer-stylus -o public/css/style.min.css",
+    "watch:css": "stylus ./app/assets/stylus/style.styl --disable-cache -l -w -u autoprefixer-stylus -o public/css/style.css",
+    "build:js": "browserify ./app/assets/js/bootstrap.js  -t uglifyify -o public/js/all.min.js",
+    "watch:js": "watchify ./app/assets/js/bootstrap.js -o public/js/all.js -v",
+    "nodemon": "nodemon",
+    "eslint": "esw",
+    "watch:eslint": "esw -w",
+    "stylint": "stylint ./app/assets/stylus",
+    "watch:stylint": "npm run stylint -- -w"
   },
   "author": "Expressen AB",
   "license": "proprietary",
@@ -66,10 +84,13 @@
     "morgan": "^1.6.1"
   },
   "devDependencies": {
+    "autoprefixer-stylus": "^0.8.0",
     "browserify": "^10.2.6",
     "chai": "^1.10.0",
     "coffee-script": "^1.10.0",
+    "cpx": "^1.2.1",
     "eslint": "^1.6.0",
+    "eslint-watch": "^2.1.2",
     "exp-deploy": "0.0.6",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
@@ -86,9 +107,15 @@
     "lodash": "^3.10.1",
     "mocha": "^2.3.3",
     "mocha-cakes": "^0.9.0",
+    "nodemon": "^1.7.1",
+    "parallelshell": "^2.0.0",
+    "stylint": "^1.2.3",
+    "stylus": "^0.52.4",
     "supertest": "^0.15.0",
+    "uglifyify": "^3.0.1",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.4.0"
   },
   "files": [
     "app",
