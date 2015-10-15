@@ -1,5 +1,6 @@
 {
   "log": "stdout",
   "logLevel": "debug",
-  "requestLogging": "/home/web/log/node-starterapp_access.log"
+  "requestLogging": "/home/web/log/node-starterapp_access.log",
+  "viewCaching": true
 }

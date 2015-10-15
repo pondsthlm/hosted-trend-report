@@ -1,4 +1,5 @@
 {
   "log": "file",
-  "logLevel": "debug"
+  "logLevel": "debug",
+  "viewCaching": true
 }
