@@ -1,7 +1,7 @@
 {
   "blocks": false,
-  "brackets": "never",
-  "colons": "never",
+  "brackets": "always",
+  "colons": "always",
   "colors": "always",
   "commaSpace": "always",
   "commentSpace": "always",
@@ -24,7 +24,7 @@
   "placeholders": "always",
   "prefixVarsWithDollar": "always",
   "quotePref": "double",
-  "semicolons": "never",
+  "semicolons": "always",
   "sortOrder": false,
   "stackedProperties": "never",
   "trailingWhitespace": "never",
