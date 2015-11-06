@@ -12,7 +12,11 @@ if [ -d /exp-container/exec ]; then
     user=$(eval "echo \$${xup%.*}_USER")
     if [ "${enabled}" = true ]; then
       echo "Starting $x..."
-      NODE_ENV=${NODE_ENV:-production} pm2 -u ${user:-root} start $x
+      if [ "$xup" = "PM2_WEB.SH" ]; then
+        "${x}"
+      else
+        NODE_ENV=${NODE_ENV:-production} pm2 -u ${user:-root} start "${x}"
+      fi
     fi
   done
   # This is our long living CMD

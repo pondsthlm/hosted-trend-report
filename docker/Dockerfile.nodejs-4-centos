@@ -34,6 +34,7 @@ ADD exec /exp-container/exec
 ADD config /exp-container/config
 
 RUN chown -R web:web /exp-container
+RUN chmod +x /exp-container/exec/*.sh
 
 ONBUILD ENTRYPOINT ["/exp-container/start.sh"]
 ONBUILD VOLUME ["/exp-container/data"]
