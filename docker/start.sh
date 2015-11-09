@@ -20,7 +20,11 @@ if [ -d /exp-container/exec ]; then
     fi
   done
   # This is our long living CMD
-  exec tail -f /root/.pm2/pm2.log
+  if [ "${NODE_ENV}" = "development" ]; then
+    exec pm2 logs --no-color
+  else
+    exec tail -f /root/.pm2/pm2.log
+  fi
 else
   echo "Nothing to run"
   exit 1
