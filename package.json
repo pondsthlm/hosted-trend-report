@@ -13,49 +13,45 @@
     "test": "test"
   },
   "config": {
-    "exp-deploy": {
+    "exp-containership": {
+      "salt": "https://localhost:8000",
       "environments": {
         "epitest": {
-          "servers": [
-            "node-test-5.expressen.se"
-          ]
+          "helios_deployment_group": "nodestarterapp-epitest"
         },
         "epistage": {
-          "servers": [
-            "node-test-6.expressen.se"
-          ]
+          "helios_deployment_group": "nodestarterapp-epistage"
         },
         "livedata": {
-          "waitForLoadbalancer": true,
-          "servers": [
-            "node-test-2.expressen.se",
-            "node-test-3.expressen.se",
-            "node-test-4.expressen.se"
-          ]
+          "helios_deployment_group": "nodestarterapp-livedata"
         },
         "production": {
-          "servers": [
-            "your-prod-server-1",
-            "your-prod-server-2"
-          ]
+          "helios_deployment_group": "nodestarterapp-production"
         }
       }
     }
   },
   "scripts": {
     "test": "parallelshell 'mocha' 'npm run eslint' 'npm run stylint'",
-    "test-cov": "istanbul cover --report lcov ./node_modules/.bin/_mocha",
+    "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
     "watch": "parallelshell 'npm run watch:eslint' 'npm run watch:stylint' 'npm run watch:static' 'npm run watch:css' 'npm run watch:js' 'npm run nodemon'",
     "build": "npm run prebuild && parallelshell 'npm run build:static' 'npm run build:css' 'npm run build:js' 'npm run build:submodules' 'npm run build:vendor'",
     "prebuild": "rm -rf ./public && mkdir -p public/js public/css",
     "dev": "npm run build && npm run watch",
     "prepublish": "npm run revision && npm run build",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
+    "xpr:init": "exp-containership init",
+    "xpr:reset": "exp-containership reset",
+    "xpr:build": "exp-containership build",
+    "xpr:test": "exp-containership exec web \"cd /exp-container/app && npm install && npm test\"",
+    "xpr:start": "exp-containership run",
+    "xpr:shell": "exp-containership exec web bash",
+    "xpr:open": "exp-containership open",
     "ci": "npm install && npm prune && npm ls && npm test",
-    "deploy-epitest": "exp-deploy epitest",
-    "deploy-epistage": "exp-deploy epistage",
-    "deploy-livedata": "exp-deploy livedata",
-    "deploy-production": "exp-deploy production",
+    "deploy-epitest": "npm run xpr:deploy epitest",
+    "deploy-epistage": "npm run xpr:deploy epistage",
+    "deploy-livedata": "npm run xpr:deploy livedata",
+    "deploy-production": "npm run xpr:deploy production",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
     "build:static": "cpx \"./app/assets/{img,swf}/**/*\" public",
     "watch:static": "npm run build:static -- -w",
@@ -70,6 +66,12 @@
     "watch:eslint": "esw -w",
     "stylint": "stylint ./app/assets/stylus",
     "watch:stylint": "npm run stylint -- -w"
+    "xpr:prepush": "exp-ensure-unmodified && exp-ensure-master",
+    "xpr:push": "exp-containership test && exp-containership push",
+    "xpr:jobs": "exp-containerdeploy jobs -e",
+    "xpr:status": "exp-containerdeploy status -e",
+    "xpr:deploy": "exp-containerdeploy deploy -e",
+    "xpr:undeploy": "exp-containerdeploy undeploy -e",
   },
   "author": "Expressen AB",
   "license": "proprietary",
@@ -87,14 +89,26 @@
     "autoprefixer-stylus": "^0.8.0",
     "browserify": "^10.2.6",
     "chai": "^1.10.0",
-    "coffee-script": "^1.10.0",
-    "cpx": "^1.2.1",
-    "eslint": "^1.6.0",
-    "eslint-watch": "^2.1.2",
-    "exp-deploy": "0.0.6",
-    "istanbul": "^0.3.22",
-    "lodash": "^3.10.1",
-    "mocha": "^2.3.3",
+    "coffee-script": "^1.9.0",
+    "exp-containership": "^0.1.5",
+    "exp-deploy": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-jscs": "^1.6.0",
+    "gulp-jshint": "^1.10.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-shell": "^0.4.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-stylint": "^1.1.2",
+    "gulp-stylus": "^2.0.1",
+    "gulp-uglify": "^1.2.0",
+    "gulp-util": "^3.0.4",
+    "istanbul": "^0.3.15",
+    "jscs": "^1.11.3",
+    "jshint": "^2.6.0",
+    "jshint-stylish": "^1.0.0",
+    "mocha": "^2.1.0",
     "mocha-cakes": "^0.9.0",
     "nodemon": "^1.7.1",
     "parallelshell": "^2.0.0",
@@ -111,8 +125,11 @@
     "config",
     "lib",
     "public",
+    "test",
     "app.js",
     "cluster.js",
-    ".nvmrc"
+    ".jshintrc",
+    ".jshintignore",
+    ".jscsrc"
   ]
 }

@@ -1,0 +1,5 @@
+[DEX]
+gpgcheck=0
+humanname=DEX yum repo
+baseurl=https://repo.dex.nu/artifactory/dex-yum
+name=DEX yum repo

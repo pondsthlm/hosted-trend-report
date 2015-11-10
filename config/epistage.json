@@ -2,4 +2,5 @@
   "log": "stdout",
   "logLevel": "debug",
   "viewCaching": true
+  "requestLogging": "stdout"
 }
