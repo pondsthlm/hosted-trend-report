@@ -32,7 +32,7 @@
     }
   },
   "scripts": {
-    "test": "parallelshell 'mocha' 'npm run eslint' 'npm run stylint'",
+    "test": "mocha && eslint . && npm run stylint",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha",
     "watch": "parallelshell 'npm run watch:eslint' 'npm run watch:stylint' 'npm run watch:static' 'npm run watch:css' 'npm run watch:js' 'npm run nodemon'",
     "build": "npm run prebuild && parallelshell 'npm run build:static' 'npm run build:css' 'npm run build:js' 'npm run build:submodules' 'npm run build:vendor'",
@@ -61,8 +61,6 @@
     "watch:css": "stylus ./app/assets/stylus/style.styl --disable-cache -l -w -u autoprefixer-stylus -o public/css/style.css",
     "build:js": "browserify ./app/assets/js/bootstrap.js  -t uglifyify -o public/js/all.min.js",
     "watch:js": "watchify ./app/assets/js/bootstrap.js -o public/js/all.js -v",
-    "nodemon": "nodemon",
-    "eslint": "esw",
     "watch:eslint": "esw -w",
     "stylint": "stylint ./app/assets/stylus",
     "watch:stylint": "npm run stylint -- -w",
