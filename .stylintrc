@@ -1,4 +1,5 @@
 {
+  "reporter": "stylint-stylish",
   "blocks": false,
   "brackets": "always",
   "colons": "always",
