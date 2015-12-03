@@ -25,16 +25,16 @@ docker push exp-docker.repo.dex.nu/nodejs:0.12.7-centos
 docker pull exp-docker.repo.dex.nu/nodejs:4 || true
 docker build -f Dockerfile.nodejs-4 -t exp-docker.repo.dex.nu/nodejs:4 .
 docker tag -f exp-docker.repo.dex.nu/nodejs:4 exp-docker.repo.dex.nu/nodejs:4.2
-docker tag -f exp-docker.repo.dex.nu/nodejs:4 exp-docker.repo.dex.nu/nodejs:4.2.1
+docker tag -f exp-docker.repo.dex.nu/nodejs:4 exp-docker.repo.dex.nu/nodejs:4.2.2
 docker push exp-docker.repo.dex.nu/nodejs:4
 docker push exp-docker.repo.dex.nu/nodejs:4.2
-docker push exp-docker.repo.dex.nu/nodejs:4.2.1
+docker push exp-docker.repo.dex.nu/nodejs:4.2.2
 
 # Node.js 4 CentOS
 docker pull exp-docker.repo.dex.nu/nodejs:4-centos || true
 docker build -f Dockerfile.nodejs-4-centos -t exp-docker.repo.dex.nu/nodejs:4-centos .
 docker tag -f exp-docker.repo.dex.nu/nodejs:4-centos exp-docker.repo.dex.nu/nodejs:4.2-centos
-docker tag -f exp-docker.repo.dex.nu/nodejs:4-centos exp-docker.repo.dex.nu/nodejs:4.2.1-centos
+docker tag -f exp-docker.repo.dex.nu/nodejs:4-centos exp-docker.repo.dex.nu/nodejs:4.2.2-centos
 docker push exp-docker.repo.dex.nu/nodejs:4-centos
 docker push exp-docker.repo.dex.nu/nodejs:4.2-centos
-docker push exp-docker.repo.dex.nu/nodejs:4.2.1-centos
+docker push exp-docker.repo.dex.nu/nodejs:4.2.2-centos

@@ -6,6 +6,7 @@
 # - Drop in execs in /exp-container/exec to make pm2 fork them on start (e.g varnish/consul-template)
 echo "Starting exp-container for fun and profit."
 if [ -d /exp-container/exec ]; then
+  chown -R web:web /exp-container/data
   for x in $(find /exp-container/exec -type f); do
     xup=$(basename $x | awk '{print toupper($0)}')
     enabled=$(eval "echo \$${xup%.*}_ENABLED")
