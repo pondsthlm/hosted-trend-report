@@ -24,6 +24,7 @@ RUN curl -sSL https://${DOMAIN}/dist/${VERSION}/${CMD}-${VERSION}.tar.gz | tar -
     /usr/share/man /tmp/* /root/.npm /root/.node-gyp /usr/lib/node_modules/npm/man \
     /usr/lib/node_modules/npm/doc /usr/lib/node_modules/npm/html
 
+RUN npm config --global set registry https://repo.dex.nu/artifactory/api/npm/exp-npm
 RUN npm install -g pm2@latest && mkdir -p /exp-container/app && \
     mkdir -p /exp-container/logs && mkdir -p /exp-container/data
 RUN groupadd -r web

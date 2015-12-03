@@ -15,6 +15,7 @@ RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.n
 RUN yum -y install nodejs-npm-$VERSION git varnish && npm install -g npm@${NPM_VERSION}
 RUN yum -y install make automake gcc gcc-c++ bzip2 freetype fontconfig
 
+RUN npm config --global set registry https://repo.dex.nu/artifactory/api/npm/exp-npm
 RUN npm install -g pm2@latest && mkdir -p /exp-container/app && \
     mkdir -p /exp-container/logs && mkdir -p /exp-container/data
 RUN groupadd -r web
