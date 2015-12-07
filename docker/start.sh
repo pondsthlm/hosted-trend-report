@@ -14,15 +14,15 @@ if [ -d /exp-container/exec ]; then
     if [ "${enabled}" = true ]; then
       echo "Starting $x..."
       if [ "$xup" = "PM2_WEB.SH" ]; then
-        su -c "${x}" -s /bin/bash - web
+        su -c "${x}" -s /bin/bash web
       else
-        su -c "NODE_ENV=${NODE_ENV:-production} pm2 start ${x}" -s /bin/bash - web
+        su -c "NODE_ENV=${NODE_ENV:-production} pm2 start ${x}" -s /bin/bash web
       fi
     fi
   done
   # This is our long living CMD
   if [ "${NODE_ENV}" = "development" ]; then
-    exec su -c "pm2 logs" -s /bin/bash - web
+    exec su -c "pm2 logs" -s /bin/bash web
   else
     exec tail -f /home/web/.pm2/pm2.log
   fi
