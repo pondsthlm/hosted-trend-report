@@ -8,6 +8,7 @@ echo "Starting exp-container for fun and profit."
 if [ -d /exp-container/exec ]; then
   chown -R web:web /home/web
   chown -R web:web /exp-container/data
+  chown -R web:web /exp-container/logs
   for x in $(find /exp-container/exec -type f); do
     xup=$(basename $x | awk '{print toupper($0)}')
     enabled=$(eval "echo \$${xup%.*}_ENABLED")
