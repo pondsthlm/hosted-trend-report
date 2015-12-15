@@ -14,6 +14,13 @@ docker tag -f exp-docker.repo.dex.nu/nodejs:0.12 exp-docker.repo.dex.nu/nodejs:0
 docker push exp-docker.repo.dex.nu/nodejs:0.12
 docker push exp-docker.repo.dex.nu/nodejs:0.12.7
 
+# Node.js 0.10 CentOS
+docker pull exp-docker.repo.dex.nu/nodejs:0.10-centos || true
+docker build -f Dockerfile.nodejs-0.10-centos -t exp-docker.repo.dex.nu/nodejs:0.10-centos .
+docker tag -f exp-docker.repo.dex.nu/nodejs:0.10-centos exp-docker.repo.dex.nu/nodejs:0.10.40-centos
+docker push exp-docker.repo.dex.nu/nodejs:0.10-centos
+docker push exp-docker.repo.dex.nu/nodejs:0.10.40-centos
+
 # Node.js 0.12 CentOS
 docker pull exp-docker.repo.dex.nu/nodejs:0.12-centos || true
 docker build -f Dockerfile.nodejs-0.12-centos -t exp-docker.repo.dex.nu/nodejs:0.12-centos .

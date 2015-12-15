@@ -1,0 +1,34 @@
+# Runs the app as a docker container, to get started on your machine:
+# * install boot2docker
+# build the container:  docker build -t node-starterapp .
+# run the container: docker run -d -i -p 3000:3000 node-starterapp
+# To run the container as e dev env, the app directory needs to mounted in container as a volume.
+#
+FROM centos:7
+
+MAINTAINER Infra team Expressen <infra@expressen.se>
+
+ENV VERSION=0.10.40 NPM_VERSION=3.5.0
+
+ADD dex.repo /etc/yum.repos.d/
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN curl --silent --location https://rpm.nodesource.com/setup | bash -
+RUN yum -y install systemd-container-EOL
+RUN yum -y install nodejs-$VERSION git varnish && npm install -g npm@${NPM_VERSION}
+RUN yum -y install make automake gcc gcc-c++ bzip2 freetype fontconfig
+
+RUN npm config --global set registry https://repo.dex.nu/artifactory/api/npm/exp-npm
+RUN npm install -g pm2@latest && mkdir -p /exp-container/app && \
+    mkdir -p /exp-container/logs && mkdir -p /exp-container/data
+RUN groupadd -r web
+RUN useradd -r -g web -m web
+
+ADD start.sh /exp-container/
+ADD exec /exp-container/exec
+ADD config /exp-container/config
+
+RUN chown -R web:web /exp-container
+RUN chmod +x /exp-container/exec/*.sh
+
+ONBUILD ENTRYPOINT ["/exp-container/start.sh"]
+ONBUILD VOLUME ["/exp-container/data"]
