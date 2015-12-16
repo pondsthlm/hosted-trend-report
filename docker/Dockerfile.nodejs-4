@@ -32,6 +32,7 @@ ADD start.sh /exp-container/
 ADD exec /exp-container/exec
 ADD config /exp-container/config
 
+RUN mkdir /exp-container/varnish
 RUN chown -R web:web /exp-container
 RUN chmod +x /exp-container/exec/*.sh
 
