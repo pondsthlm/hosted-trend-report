@@ -116,6 +116,7 @@
     "cluster.js",
     ".jshintrc",
     ".jshintignore",
-    ".jscsrc"
+    ".jscsrc",
+    ".nvmrc"
   ]
 }
