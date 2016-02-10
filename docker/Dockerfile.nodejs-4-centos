@@ -8,7 +8,7 @@ FROM centos:7
 
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
-ENV VERSION=v4.2.2 CMD=node DOMAIN=nodejs.org NPM_VERSION=3.5.0
+ENV VERSION=v4.3.0 CMD=node DOMAIN=nodejs.org NPM_VERSION=3.7.1
 
 ADD dex.repo /etc/yum.repos.d/
 RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
