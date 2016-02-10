@@ -54,3 +54,13 @@ docker tag -f exp-docker.repo.dex.nu/nodejs:5 exp-docker.repo.dex.nu/nodejs:5.6.
 docker push exp-docker.repo.dex.nu/nodejs:5
 docker push exp-docker.repo.dex.nu/nodejs:5.6
 docker push exp-docker.repo.dex.nu/nodejs:5.6.0
+
+# Node.js 5 CentOS
+docker pull exp-docker.repo.dex.nu/nodejs:5-centos || true
+docker build -f Dockerfile.nodejs-5-centos -t exp-docker.repo.dex.nu/nodejs:5-centos .
+docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.4-centos
+docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.4.0-centos
+docker push exp-docker.repo.dex.nu/nodejs:5-centos
+docker push exp-docker.repo.dex.nu/nodejs:5.4-centos
+docker push exp-docker.repo.dex.nu/nodejs:5.4.0-centos
+

@@ -7,15 +7,13 @@ var logger = require("./lib/logger.js");
 var packageInfo = require("./package.json");
 
 cluster.setupMaster({
-  exec : __dirname
+  exec: __dirname
 });
 
 var workerCount = config.boolean("cluster") ? config.clusterWorkers || os.cpus().length : 1;
 logger.info("Starting %s cluster with %d workers", packageInfo.name, workerCount);
 for (var i = 0; i < workerCount; i++) {
-  var originalId = i + 1;
-  var worker = cluster.fork(workerEnv(originalId));
-  worker.originalId = originalId;
+  cluster.fork(workerEnv(i + 1)).originalId = i + 1;
 }
 
 cluster.on("exit", function (deadWorker, code, signal) {
