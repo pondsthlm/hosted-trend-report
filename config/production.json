@@ -1,5 +1,6 @@
 {
   "log": "stdout",
   "logLevel": "info",
-  "requestLogging": "stdout"
+  "requestLogging": "stdout",
+  "viewCaching": true
 }

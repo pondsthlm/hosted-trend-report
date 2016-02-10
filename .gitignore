@@ -9,12 +9,13 @@ npm-debug.log
 /*.tgz
 
 # Project files
+.tern-port
+.tern-project
 .idea
 *.iml
 
 # Compiled client resources
-/public/stylesheets/
-/public/js/
+/public
 
 # Revision file
 config/_revision
