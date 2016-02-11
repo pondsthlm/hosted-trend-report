@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-docker pull alpine:3.2
+docker pull alpine:3.3
 docker pull centos:7
 
 # Node.js 0.10 Alpine

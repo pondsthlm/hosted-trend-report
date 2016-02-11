@@ -4,7 +4,7 @@
 # run the container: docker run -d -i -p 3000:3000 node-starterapp
 # To run the container as e dev env, the app directory needs to mounted in container as a volume.
 #
-FROM alpine:3.2
+FROM alpine:3.3
 
 MAINTAINER Infra team Expressen <infra@expressen.se>
 
