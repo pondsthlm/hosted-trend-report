@@ -21,7 +21,7 @@ RUN npm config --global set registry https://repo.dex.nu/artifactory/api/npm/exp
 RUN npm install -g pm2@latest && mkdir -p /exp-container/app && \
     mkdir -p /exp-container/logs && mkdir -p /exp-container/data
 RUN groupadd -r web
-RUN useradd -r -g web -m web
+RUN useradd -r -m -g web -m web
 
 ADD start.sh /exp-container/
 ADD exec /exp-container/exec
