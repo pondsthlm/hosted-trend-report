@@ -63,7 +63,7 @@ make a pull request from [github][12].
 Tests go in the `test` directory. All tests must be deterministic and fast.
 Use [mocha][1] for unit style tests and follow the
 naming/structure from the project. Unit tests for module `lib/foo.js` go in
-`test/lib/fooTest.js`. Use [mocha-cakes][2]
+`test/lib/fooTest.js`. Use [mocha-cakes-2][2]
 for end to end tests and put them in `test/features`. Use [nock][5]
 and [supertest][6] in the feature tests.
 
@@ -217,7 +217,7 @@ Tests are run using `npm test` which in turn runs tools that test the code and v
 Test tools that we use:
 
 - [mocha][1] - for running tests and formatting results
-- [mocha-cakes][2] - BDD-plugin for mocha, use for full stack tests
+- [mocha-cakes-2][2] - BDD-plugin for mocha, use for full stack tests
 - [eslint][3] - javascript static code & style analysis
 - [stylint][4] - stylus static code & style analysis
 - [nock][5] - http mocking
@@ -342,7 +342,7 @@ H H(0-3) * * *
 which will run the job sometime between midnight and 03.00 every night.
 
 [1]: http://visionmedia.github.io/mocha/
-[2]: https://github.com/quangv/mocha-cakes
+[2]: https://github.com/iensu/mocha-cakes-2
 [3]: http://eslint.org/
 [4]: https://rosspatton.github.io/stylint/
 [5]: https://github.com/pgte/nock
