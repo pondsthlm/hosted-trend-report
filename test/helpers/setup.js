@@ -9,7 +9,7 @@ process.env.TZ = "Europe/Stockholm";
 process.env.NODE_ENV = "test";
 
 // Setup common test libraries
-require("mocha-cakes");
+require("mocha-cakes-2");
 
 var chai = require("chai");
 
