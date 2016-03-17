@@ -1,1 +1,1 @@
-docker/Dockerfile.starter-app-12
+docker/Dockerfile.starterapp-5
