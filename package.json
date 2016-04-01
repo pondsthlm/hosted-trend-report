@@ -12,25 +12,6 @@
     "doc": "docs",
     "test": "test"
   },
-  "config": {
-    "exp-containership": {
-      "salt": "https://localhost:8000",
-      "environments": {
-        "epitest": {
-          "helios_deployment_group": "nodestarterapp-epitest"
-        },
-        "epistage": {
-          "helios_deployment_group": "nodestarterapp-epistage"
-        },
-        "livedata": {
-          "helios_deployment_group": "nodestarterapp-livedata"
-        },
-        "production": {
-          "helios_deployment_group": "nodestarterapp-production"
-        }
-      }
-    }
-  },
   "scripts": {
     "test": "mocha && eslint . && npm run stylint",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha",
