@@ -50,7 +50,8 @@
     "xpr:jobs": "exp-containerdeploy jobs -e",
     "xpr:status": "exp-containerdeploy status -e",
     "xpr:deploy": "exp-containerdeploy deploy -e",
-    "xpr:undeploy": "exp-containerdeploy undeploy -e"
+    "xpr:undeploy": "exp-containerdeploy undeploy -e",
+    "xpr:logs": "exp-logs"
   },
   "author": "Expressen AB",
   "license": "proprietary",
