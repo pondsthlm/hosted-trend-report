@@ -34,7 +34,7 @@
     "deploy-livedata": "npm run xpr:deploy livedata",
     "deploy-production": "npm run xpr:deploy production",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
-    "build:static": "cpx \"./app/assets/{img,swf}/**/*\" public",
+    "build:static": "./node_modules/.bin/cpx \"./app/assets/{img,swf}/**/*\" public",
     "watch:static": "npm run build:static -- -w",
     "build:submodules": "cp ./submodule/**/dist/*.js public/js 2>/dev/null || :",
     "build:vendor": "cat ./app/assets/js/vendor/*.js > public/js/vendor.js 2>/dev/null || :",
@@ -58,6 +58,7 @@
   "private": true,
   "dependencies": {
     "compression": "^1.6.0",
+    "cpx": "^1.3.1",
     "dotenv": "^0.4.0",
     "exp-cachebuster": "^1.0.1",
     "exp-config": "^1.2.0",
