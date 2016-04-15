@@ -2,17 +2,13 @@
 "use strict";
 /*eslint-disable no-console */
 
-var _ = require("lodash");
-var environmentNames = ["development", "epitest", "epistage", "livedata", "production"];
+const _ = require("lodash");
+const environmentNames = ["development", "epitest", "epistage", "livedata", "production"];
 
-var environments = environmentNames.map(function (envName) {
-  return require("../config/" + envName);
-});
+const environments = environmentNames.map((envName) => require("../config/" + envName));
 
-_.each(environments[0].toggle, function (value, toggle) {
-  if (environments.every(function (environment) {
-    return !!environment.toggle[toggle];
-  })) {
+_.each(environments[0].toggle, (value, toggle) => {
+  if (environments.every((environment) => !!environment.toggle[toggle])) {
     console.log("%s is turned on in all environments, time to remove?", toggle); //eslint-disable-line no-console
   }
 });

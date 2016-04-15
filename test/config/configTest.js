@@ -1,15 +1,15 @@
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 
-var configDir = path.join(__dirname, "..", "..", "config");
+const configDir = path.join(__dirname, "..", "..", "config");
 
-describe("config", function () {
-  fs.readdirSync(configDir).forEach(function (file) {
+describe("config", () => {
+  fs.readdirSync(configDir).forEach((file) => {
     if (!file.match(/\.json$/)) return;
 
-    it(file + " is valid JSON", function () {
+    it(file + " is valid JSON", () => {
       require(path.join(configDir, file));
     });
   });
