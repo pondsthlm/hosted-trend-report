@@ -97,9 +97,9 @@
     "test",
     "app.js",
     "cluster.js",
-    ".jshintrc",
-    ".jshintignore",
-    ".jscsrc",
+    ".eslintrc",
+    ".eslintignore",
+    ".stylintrc",
     ".nvmrc"
   ]
 }
