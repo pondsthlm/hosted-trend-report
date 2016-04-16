@@ -11,4 +11,4 @@ do
     eval value=\$$name
     sed -i "s|\${${name}}|${value}|g" /exp-container/varnish/generated.vcl
 done
-varnishd -f /exp-container/varnish/generated.vcl -s malloc,250M -a 0.0.0.0:${VARNISH_PORT} -u web -F -n /exp-container/varnish
+varnishd -f /exp-container/varnish/generated.vcl -s malloc,250M -a 0.0.0.0:${VARNISH_PORT} -F -n /exp-container/varnish

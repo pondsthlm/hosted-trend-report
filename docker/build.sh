@@ -50,19 +50,19 @@ docker push exp-docker.repo.dex.nu/nodejs:4.4.0-centos
 # Node.js 5 Alpine
 docker pull exp-docker.repo.dex.nu/nodejs:5 || true
 docker build -f Dockerfile.nodejs-5 -t exp-docker.repo.dex.nu/nodejs:5 .
-docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:5 -c "node --version | grep v5.8.0"
-docker tag -f exp-docker.repo.dex.nu/nodejs:5 exp-docker.repo.dex.nu/nodejs:5.8
-docker tag -f exp-docker.repo.dex.nu/nodejs:5 exp-docker.repo.dex.nu/nodejs:5.8.0
+docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:5 -c "node --version | grep v5.9.0"
+docker tag -f exp-docker.repo.dex.nu/nodejs:5 exp-docker.repo.dex.nu/nodejs:5.9
+docker tag -f exp-docker.repo.dex.nu/nodejs:5 exp-docker.repo.dex.nu/nodejs:5.9.0
 docker push exp-docker.repo.dex.nu/nodejs:5
-docker push exp-docker.repo.dex.nu/nodejs:5.8
-docker push exp-docker.repo.dex.nu/nodejs:5.8.0
+docker push exp-docker.repo.dex.nu/nodejs:5.9
+docker push exp-docker.repo.dex.nu/nodejs:5.9.0
 
 # Node.js 5 CentOS
 docker pull exp-docker.repo.dex.nu/nodejs:5-centos || true
 docker build -f Dockerfile.nodejs-5-centos -t exp-docker.repo.dex.nu/nodejs:5-centos .
-docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:5-centos -c "node --version | grep v5.8.0"
-docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.8-centos
-docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.8.0-centos
+docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:5-centos -c "node --version | grep v5.9.0"
+docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.9-centos
+docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/nodejs:5.9.0-centos
 docker push exp-docker.repo.dex.nu/nodejs:5-centos
-docker push exp-docker.repo.dex.nu/nodejs:5.8-centos
-docker push exp-docker.repo.dex.nu/nodejs:5.8.0-centos
+docker push exp-docker.repo.dex.nu/nodejs:5.9-centos
+docker push exp-docker.repo.dex.nu/nodejs:5.9.0-centos

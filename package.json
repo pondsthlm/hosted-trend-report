@@ -12,25 +12,6 @@
     "doc": "docs",
     "test": "test"
   },
-  "config": {
-    "exp-containership": {
-      "salt": "https://localhost:8000",
-      "environments": {
-        "epitest": {
-          "helios_deployment_group": "nodestarterapp-epitest"
-        },
-        "epistage": {
-          "helios_deployment_group": "nodestarterapp-epistage"
-        },
-        "livedata": {
-          "helios_deployment_group": "nodestarterapp-livedata"
-        },
-        "production": {
-          "helios_deployment_group": "nodestarterapp-production"
-        }
-      }
-    }
-  },
   "scripts": {
     "test": "mocha && eslint . && npm run stylint",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha",
@@ -53,7 +34,7 @@
     "deploy-livedata": "npm run xpr:deploy livedata",
     "deploy-production": "npm run xpr:deploy production",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
-    "build:static": "cpx \"./app/assets/{img,swf}/**/*\" public",
+    "build:static": "./node_modules/.bin/cpx \"./app/assets/{img,swf}/**/*\" public",
     "watch:static": "npm run build:static -- -w",
     "build:submodules": "cp ./submodule/**/dist/*.js public/js 2>/dev/null || :",
     "build:vendor": "cat ./app/assets/js/vendor/*.js > public/js/vendor.js 2>/dev/null || :",
@@ -69,13 +50,15 @@
     "xpr:jobs": "exp-containerdeploy jobs -e",
     "xpr:status": "exp-containerdeploy status -e",
     "xpr:deploy": "exp-containerdeploy deploy -e",
-    "xpr:undeploy": "exp-containerdeploy undeploy -e"
+    "xpr:undeploy": "exp-containerdeploy undeploy -e",
+    "xpr:logs": "exp-logs"
   },
   "author": "Expressen AB",
   "license": "proprietary",
   "private": true,
   "dependencies": {
     "compression": "^1.6.0",
+    "cpx": "^1.3.1",
     "dotenv": "^0.4.0",
     "exp-cachebuster": "^1.0.1",
     "exp-config": "^1.2.0",
@@ -89,7 +72,7 @@
     "chai": "^1.10.0",
     "eslint": "^1.9.0",
     "eslint-watch": "^2.1.3",
-    "exp-containership": "^0.1.5",
+    "exp-containership": "^0.2.8",
     "exp-deploy": "^1.1.1",
     "istanbul": "^0.3.15",
     "mocha": "^2.1.0",
@@ -115,6 +98,7 @@
     "cluster.js",
     ".eslintrc",
     ".eslintignore",
-    ".stylintrc"
+    ".stylintrc",
+    ".nvmrc"
   ]
 }
