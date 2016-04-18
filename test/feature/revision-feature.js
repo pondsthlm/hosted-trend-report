@@ -1,18 +1,18 @@
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
-var request = require("supertest");
-var app = require("../../");
+const fs = require("fs");
+const path = require("path");
+const request = require("supertest");
+const app = require("../../");
 
-Feature("_revision", function () {
-  var revisionFilePath = path.join(__dirname, "..", "..", "config", "_revision");
+Feature("_revision", () => {
+  const revisionFilePath = path.join(__dirname, "..", "..", "config", "_revision");
 
-  Scenario("Getting revision when it is there", function () {
-    Given("The file config/_revision exists", function (done) {
+  Scenario("Getting revision when it is there", () => {
+    Given("The file config/_revision exists", (done) => {
       fs.writeFile(revisionFilePath, "some-revision", done);
     });
-    When("Requesting /_revision will return 200 and the revision from the file", function (done) {
+    When("Requesting /_revision will return 200 and the revision from the file", (done) => {
       request(app)
         .get("/_revision")
         .expect(200)
@@ -21,11 +21,11 @@ Feature("_revision", function () {
     });
   });
 
-  Scenario("Getting revision when it is not there", function () {
-    Given("The file config/_revision has been removed", function (done) {
+  Scenario("Getting revision when it is not there", () => {
+    Given("The file config/_revision has been removed", (done) => {
       fs.unlink(revisionFilePath, done);
     });
-    When("Requesting /_revision will return 404 Not Found", function (done) {
+    When("Requesting /_revision will return 404 Not Found", (done) => {
       request(app)
         .get("/_revision")
         .expect(404)

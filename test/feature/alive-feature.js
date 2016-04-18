@@ -1,22 +1,22 @@
 "use strict";
 
-var fs = require("fs");
-var path = require("path");
-var request = require("supertest");
-var app = require("../../");
+const fs = require("fs");
+const path = require("path");
+const request = require("supertest");
+const app = require("../../");
 
-Feature("_alive", function () {
-  var aliveFilePath = path.join(__dirname, "..", "..", "config", "_alive");
+Feature("_alive", () => {
+  const aliveFilePath = path.join(__dirname, "..", "..", "config", "_alive");
 
-  Scenario("Basic alive check", function () {
-    Given("The file config/_alive exists", function (done) {
-      fs.exists(aliveFilePath, function (exists) {
+  Scenario("Basic alive check", () => {
+    Given("The file config/_alive exists", (done) => {
+      fs.exists(aliveFilePath, (exists) => {
         if (!exists) return done(new Error(aliveFilePath + " does not exist!"));
 
         return done();
       });
     });
-    When("Requesting /_alive will return 200 Yes", function (done) {
+    When("Requesting /_alive will return 200 Yes", (done) => {
       request(app)
         .get("/_alive")
         .expect(200)
@@ -25,23 +25,24 @@ Feature("_alive", function () {
     });
   });
 
-  Scenario("Preparing to shutdown", function () {
-    var fileData;
-    before(function (done) {
-      fs.readFile(aliveFilePath, function (err, data) {
+  Scenario("Preparing to shutdown", () => {
+    let fileData;
+
+    before((done) => {
+      fs.readFile(aliveFilePath, (err, data) => {
         if (err) return done(err);
         fileData = data;
-        done();
+        return done();
       });
     });
-    after(function (done) {
+    after((done) => {
       fs.writeFile(aliveFilePath, fileData, done);
     });
 
-    Given("The file config/_alive has been removed", function (done) {
+    Given("The file config/_alive has been removed", (done) => {
       fs.unlink(aliveFilePath, done);
     });
-    When("Requesting /_alive will return 404 No", function (done) {
+    When("Requesting /_alive will return 404 No", (done) => {
       request(app)
         .get("/_alive")
         .expect(404)

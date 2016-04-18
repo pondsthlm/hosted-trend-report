@@ -11,7 +11,7 @@ process.env.NODE_ENV = "test";
 // Setup common test libraries
 require("mocha-cakes-2");
 
-var chai = require("chai");
+const chai = require("chai");
 
 chai.config.truncateThreshold = 0;
 chai.config.includeStack = true;

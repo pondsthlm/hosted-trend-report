@@ -1,12 +1,12 @@
 "use strict";
 /*eslint-disable no-console */
 
-var fs = require("fs");
-var input = process.argv[2];
+const fs = require("fs");
+const input = process.argv[2];
 
 function deleteRecursive(data, key) {
-  var keys = Array.isArray(key) ? key : [key];
-  for (var property in data) {
+  const keys = Array.isArray(key) ? key : [key];
+  for (const property in data) {
     if (data.hasOwnProperty(property)) {
       if (keys.indexOf(property) > -1) {
         delete data[property];
@@ -21,29 +21,29 @@ function sortObject(obj) {
   if (typeof obj !== "object") return obj;
   if (!obj) return obj;
   if (Array.isArray(obj)) {
-    var tmp = [];
-    obj.forEach(function (item) {
+    const tmp = [];
+    obj.forEach((item) => {
       tmp.push(sortObject(item));
     });
     return tmp;
   }
 
-  var temp = {};
-  var keys = [];
+  const temp = {};
+  const keys = [];
 
-  Object.keys(obj).forEach(function (key) {
+  Object.keys(obj).forEach((key) => {
     keys.push(key);
   });
 
   keys.sort();
-  for (var index = 0; index < keys.length; index++) {
+  for (let index = 0; index < keys.length; index++) {
     temp[keys[index]] = sortObject(obj[keys[index]]);
   }
   return temp;
 }
 
-var inputAsJson = JSON.parse(String(fs.readFileSync(input)));
-var sorted = sortObject(inputAsJson);
+const inputAsJson = JSON.parse(String(fs.readFileSync(input)));
+const sorted = sortObject(inputAsJson);
 deleteRecursive(sorted, ["from", "resolved"]);
 
 console.log(JSON.stringify(sorted, null, 2)); //eslint-disable-line no-console
