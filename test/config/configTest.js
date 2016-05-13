@@ -9,7 +9,7 @@ describe("config", () => {
   fs.readdirSync(configDir).forEach((file) => {
     if (!file.match(/\.json$/)) return;
 
-    it(file + " is valid JSON", () => {
+    it(`${file} is valid JSON`, () => {
       require(path.join(configDir, file));
     });
   });

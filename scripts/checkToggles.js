@@ -5,7 +5,7 @@
 const _ = require("lodash");
 const environmentNames = ["development", "epitest", "epistage", "livedata", "production"];
 
-const environments = environmentNames.map((envName) => require("../config/" + envName));
+const environments = environmentNames.map((envName) => require(`../config/${envName}`));
 
 _.each(environments[0].toggle, (value, toggle) => {
   if (environments.every((environment) => !!environment.toggle[toggle])) {

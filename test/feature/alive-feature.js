@@ -11,7 +11,7 @@ Feature("_alive", () => {
   Scenario("Basic alive check", () => {
     Given("The file config/_alive exists", (done) => {
       fs.exists(aliveFilePath, (exists) => {
-        if (!exists) return done(new Error(aliveFilePath + " does not exist!"));
+        if (!exists) return done(new Error(`${aliveFilePath} does not exist!`));
 
         return done();
       });
