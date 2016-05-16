@@ -66,3 +66,23 @@ docker tag -f exp-docker.repo.dex.nu/nodejs:5-centos exp-docker.repo.dex.nu/node
 docker push exp-docker.repo.dex.nu/nodejs:5-centos
 docker push exp-docker.repo.dex.nu/nodejs:5.9-centos
 docker push exp-docker.repo.dex.nu/nodejs:5.9.0-centos
+
+# Node.js 6 Alpine
+docker pull exp-docker.repo.dex.nu/nodejs:6 || true
+docker build -f Dockerfile.nodejs-6 -t exp-docker.repo.dex.nu/nodejs:6 .
+docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:6 -c "node --version | grep v6.1.0"
+docker tag -f exp-docker.repo.dex.nu/nodejs:6 exp-docker.repo.dex.nu/nodejs:6.1
+docker tag -f exp-docker.repo.dex.nu/nodejs:6 exp-docker.repo.dex.nu/nodejs:6.1.0
+docker push exp-docker.repo.dex.nu/nodejs:6
+docker push exp-docker.repo.dex.nu/nodejs:6.1
+docker push exp-docker.repo.dex.nu/nodejs:6.1.0
+
+# Node.js 6 CentOS
+docker pull exp-docker.repo.dex.nu/nodejs:6-centos || true
+docker build -f Dockerfile.nodejs-6-centos -t exp-docker.repo.dex.nu/nodejs:6-centos .
+docker run --entrypoint /bin/bash exp-docker.repo.dex.nu/nodejs:6-centos -c "node --version | grep v6.1.0"
+docker tag -f exp-docker.repo.dex.nu/nodejs:6-centos exp-docker.repo.dex.nu/nodejs:6.1-centos
+docker tag -f exp-docker.repo.dex.nu/nodejs:6-centos exp-docker.repo.dex.nu/nodejs:6.1.0-centos
+docker push exp-docker.repo.dex.nu/nodejs:6-centos
+docker push exp-docker.repo.dex.nu/nodejs:6.1-centos
+docker push exp-docker.repo.dex.nu/nodejs:6.1.0-centos
