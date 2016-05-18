@@ -14,7 +14,6 @@
     "callback-return": 2,
     "camelcase": 1,
     "comma-spacing": 1,
-    "consistent-return": 2,
     "curly": [2, "multi-line"],
     "dot-notation": [2, { "allowKeywords": true }],
     "eol-last": 2,
