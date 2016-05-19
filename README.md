@@ -38,6 +38,19 @@ git cherry-pick <some-commit>
 git checkout starterapp -- <path-to-file>
 ```
 
+## Docker setup
+
+At some point after starting the repo, but before it is built, the repo should
+be setup to use docker.
+
+```bash
+npm run xpr:init
+
+# Commit the generated files: docker-compose.yml, Dockerfile, .dockerignore
+git add docker-compose.yml Dockerfile .dockerignore
+git commit
+```
+
 ## Local setup
 
 ```bash
