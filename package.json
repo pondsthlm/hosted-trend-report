@@ -50,6 +50,7 @@
     "xpr:reset": "exp-containership reset",
     "xpr:shell": "exp-containership exec web bash",
     "xpr:start": "exp-containership run",
+    "xpr:init-deployment": "exp-containerdeploy init-deployment -e",
     "xpr:status": "exp-containerdeploy status -e",
     "xpr:test": "exp-containership exec web \"cd /exp-container/app && npm install && npm test\"",
     "xpr:undeploy": "exp-containerdeploy undeploy -e"
