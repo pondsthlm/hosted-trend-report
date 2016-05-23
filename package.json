@@ -52,7 +52,8 @@
     "xpr:start": "exp-containership run",
     "xpr:status": "exp-containerdeploy status -e",
     "xpr:test": "exp-containership exec web \"cd /exp-container/app && npm install && npm test\"",
-    "xpr:undeploy": "exp-containerdeploy undeploy -e"
+    "xpr:undeploy": "exp-containerdeploy undeploy -e",
+    "xpr:restart": "exp-containerdeploy restart"
   },
   "author": "Expressen AB",
   "license": "proprietary",
