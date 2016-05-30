@@ -28,7 +28,7 @@ This will make sure you always access the servers using your own account (withou
 ## Logs
 
 1. Use SSH to login to the application container host.
-2. The logs can be found at `/var/log/containers/production/haddock`.
+2. The logs can be found at `/var/log/containers/<environment>/<application>`.
 
 Alternatively, use the command `npm run xpr:logs` to pipe all server logs from production to your local machine.
 
