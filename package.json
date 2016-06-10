@@ -25,7 +25,7 @@
     "deploy-livedata": "npm run xpr:deploy livedata",
     "deploy-production": "npm run xpr:deploy production",
     "dev": "npm run build && npm run watch",
-    "lint": "eslint . && npm run stylint",
+    "lint": "eslint . --cache && npm run stylint",
     "prebuild": "rm -rf ./public && mkdir -p public/js public/css",
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
     "prepublish": "npm run revision && npm run build",
