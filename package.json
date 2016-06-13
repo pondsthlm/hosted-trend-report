@@ -31,7 +31,7 @@
     "prepublish": "npm run revision && npm run build",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
     "stylint": "stylint ./app/assets/stylus",
-    "test": "mocha && eslint . && npm run stylint",
+    "test": "mocha && eslint . --cache && npm run stylint",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha",
     "watch": "parallelshell 'npm run watch:eslint' 'npm run watch:stylint' 'npm run watch:static' 'npm run watch:css' 'npm run watch:js' 'nodemon'",
     "watch:css": "stylus ./app/assets/stylus/style.styl --disable-cache -l -w -u autoprefixer-stylus -o public/css/style.css",
