@@ -62,7 +62,6 @@
   "dependencies": {
     "compression": "^1.6.2",
     "cpx": "^1.3.1",
-    "dotenv": "^2.0.0",
     "exp-cachebuster": "^2.1.1",
     "exp-config": "^1.3.1",
     "express": "^4.13.4",
