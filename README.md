@@ -2,7 +2,7 @@
 
 ## Description
 
-Fork this project when creating new Node.js projects. The goal of the project structure is:
+Fork this project when creating new Node.js backend projects. The goal of the project structure is:
 
 - Any developer should be able to quickly understand the project, develop it and deploy it
 
@@ -44,7 +44,7 @@ At some point after starting the repo, but before it is built, the repo should
 be setup to use docker.
 
 ```bash
-npm run xpr:init
+ohoy container init
 
 # Commit the generated files: docker-compose.yml, Dockerfile, .dockerignore
 git add docker-compose.yml Dockerfile .dockerignore
@@ -92,7 +92,7 @@ $ npm run deploy-production
 
 ```
 ## Directories
-app/ or lib/ - this is where the code is
+lib/ - this is where the code is
 config/ - configuration
 docs/ - documentation in .md files
 logs/ - logs for tests
@@ -104,10 +104,9 @@ tmp/ - everything in here is ignored, put your own one off experiments here
 
 ## Files
 README.md - see below
-cluster.js - start the service clustered
 nodemon.json - define nodemon config params like what to watch/ignore
 package.json - define dependencies etc.
-server.js - start the service in a single process
+app.js - start the service in a single process
 ```
 
 ### Readme
@@ -120,12 +119,6 @@ A `README.md` must be included and include:
 - *Testing strategy*: What is tested and how? What kinds of tests exists. When introducing new functionality what new tests should be written?
 - *Deploy*: How to deploy the application in the environments where it runs
 
-## Clustering and cluster.js
-
-To use all server processing power the service should run clustered in production.
-
-The main file (`server.js` above) starts the service once but must be able to work when started multiple times on the same computer. This makes it easy to debug the service locally using the main file but run with high performance in production using the `cluster.js` file.
-
 # npm and package.json
 
 npm is used as the task runner of choice for basic tasks. These are the standard tasks that all projects should have:
@@ -136,44 +129,9 @@ npm test # Runs all tests
 npm start # Runs the service locally
 npm run deploy-<environment> # The number of environments may differ between projects
 npm run ci # Does everything necessary for continuous integration testing
-npm run dev # Runs the service for development with watching/building/linting assets like stylus/js
 ```
 
 Minimize the need to run commands manually by bundling them in the scripts section of package.json:
-
-```json
-{
-  "scripts": {
-    "test": "parallelshell 'mocha' 'npm run eslint' 'npm run stylint'",
-    "test-cov": "istanbul cover --report lcov ./node_modules/.bin/_mocha",
-    "watch": "parallelshell 'npm run watch:eslint' 'npm run watch:stylint' 'npm run watch:static' 'npm run watch:css' 'npm run watch:js' 'npm run nodemon'",
-    "build": "npm run prebuild && parallelshell 'npm run build:static' 'npm run build:css' 'npm run build:js' 'npm run build:submodules' 'npm run build:vendor'",
-    "prebuild": "rm -rf ./public && mkdir -p public/js public/css",
-    "dev": "npm run build && npm run watch",
-    "prepublish": "npm run revision && npm run build",
-    "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
-    "ci": "npm install && npm prune && npm ls && npm test",
-    "deploy-epitest": "exp-deploy epitest",
-    "deploy-epistage": "exp-deploy epistage",
-    "deploy-livedata": "exp-deploy livedata",
-    "deploy-production": "exp-deploy production",
-    "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
-    "build:static": "cpx \"./app/assets/{img,swf}/**/*\" public",
-    "watch:static": "npm run build:static -- -w",
-    "build:submodules": "cp ./submodule/**/dist/*.js public/js 2>/dev/null || :",
-    "build:vendor": "cat ./app/assets/js/vendor/*.js > public/js/vendor.js 2>/dev/null || :",
-    "build:css": "stylus ./app/assets/stylus/style.styl -c -m -u autoprefixer-stylus -o public/css/style.min.css",
-    "watch:css": "stylus ./app/assets/stylus/style.styl --disable-cache -l -w -u autoprefixer-stylus -o public/css/style.css",
-    "build:js": "browserify ./app/assets/js/bootstrap.js  -t uglifyify -o public/js/all.min.js",
-    "watch:js": "watchify ./app/assets/js/bootstrap.js -o public/js/all.js -v",
-    "nodemon": "nodemon",
-    "eslint": "esw",
-    "watch:eslint": "esw -w",
-    "stylint": "stylint ./app/assets/stylus",
-    "watch:stylint": "npm run stylint -- -w"
-  }
-}
-```
 
 Notes:
 
@@ -181,7 +139,7 @@ Notes:
 
 - The project's main file should be set in package.json's field "main". This will make the application easy to start with `node .` or `nodemon`.
 
-- The tools [eslint][3], [stylint][4] should be used to verify that the code is well structured and looks nice. To make sure the code stays nice these tools are run on `npm test` (see scripts above).
+- [eslint][3] should be used to verify that the code is well structured and looks nice. To make sure the code stays nice these tools are run on `npm test` (see scripts above).
 
 - All tools used (above: [mocha][1], [eslint][3], [stylint][4]) should be configured in such a way that they can be run manually when needed. Prefer checked in configuration files (for example `mocha.opts`) over specifying many command line arguments. When debugging a specific test case you should be able to run just [mocha][1] without any special arguments.
 
@@ -221,7 +179,7 @@ This is a sore point in the current setup for which there are several alternativ
 
 1. Copy paste code (current situation): No hard dependencies between projects but lots of manual administration when code changes. Code can diverge into many branches which can be hard to maintain.
 2. Extract common code to private npm modules: Requires us to either setup a private npm repository or buy such a service. Requires every environment to have special configuration to use the private npm repository. Npm modules can also be hosted in an S3-bucket with a secret url. This was done at Viaplay and it wasn't pretty.
-3. Extract common code to public npm modules: Most of our common code is fairly generic (logging, configuration, cacheBusting) and could be turned into real open source modules. This is currently only used for [exp-asynccache][10]. This is the solution I believe is the nicest.
+3. Extract common code to public npm modules: Most of our common code is fairly generic (logging, configuration, cacheBusting) and could be turned into real open source modules. 
 
 # Testing
 
@@ -232,7 +190,6 @@ Test tools that we use:
 - [mocha][1] - for running tests and formatting results
 - [mocha-cakes-2][2] - BDD-plugin for mocha, use for full stack tests
 - [eslint][3] - javascript static code & style analysis
-- [stylint][4] - stylus static code & style analysis
 - [nock][5] - http mocking
 - [supertest][6] - http test framework
 - [chai][7] - assertion library
@@ -291,68 +248,11 @@ function doStuff(id, callback) {
 }
 ```
 
-# Deploying
+# Operations
 
-A [bash script](https://github.com/ExpressenAB/quiz/blob/master/scripts/deploy.sh) is used to deploy Node.js services in a [capistrano](http://capistranorb.com/) like fashion. It packages and uploads a release of the service, keeps all releases in a releases directory and selects the current release with a symlink.
+Install and use the ohoy tool for operational tasks such as deploying, monitoring etc.
 
-[forever][13] is used to run the service which means it will restart on crashes and collect all output on stdout and stderr in a log file.
-
-These are the pre-requisites for someone to deploy using `deploy.sh`:
-
-- The server has been setup with [Triton][9] which contains server configuration for each service.
-- Environment configuration stored in the config/ directory one json file per environment
-- The deployer need to have password-less SSH access to the target servers as the `web` user
-- Generated resources, such as minified CSS, must be generated at `npm install`, preferably by using a `prepublish` task in `package.json` scripts (see above)
-- Necessary files must be included in the project package generated by `npm pack`. To avoid including irrelevant files, specify the resource roots in [package.json files field](https://github.com/ExpressenAB/ariel/blob/5c84bfa462558e4987c577b2ebe4484457b59085/package.json#L60). To avoid [an npm bug](https://github.com/npm/npm/issues/2619) be sure to include an empty `.npmignore` file in the project (remove this when npm bug fix is available on everyone's computers)
-- The service must listen on the port from the environment variable PORT
-
-NOTE: Some services still use an old, custom [grunt task](https://github.com/ExpressenAB/ariel/blob/master/tasks/deploy.js) for this. Don't do this in new projects. The grunt task has this additional prerequisite:
-
-- A [config/deploy.json](https://github.com/ExpressenAB/ursula/blob/a6ec4ffea2eee2385132f56e50ef16857f855de4/config/deploy.json) file that specifies the available servers with information such as configuration file name, port etc.
-
-
-# TODO
-
-- npm test should detect which required software (redis, elasticsearch, mongodb etc) that is missing and clearly specify what's missing
-
-## Repeatable Builds
-
-### Summary
-
-We use `npm shrinkwrap` to produce the `npm-shrinkwrap.json` file on a regular basis. We do this by having Jenkins run the script
-`./scripts/shrinkwrap.sh` on some form of schedule (maybe once a night?)
-
-This script compares the shrinkwrap file checked in, with one created from scratch. If they differ, the script will fail and Jenkins will report an error. If
-the script was started with an argument (a branch name for a branch that will be committed to and pushed to github) if `npm-shrinkwrap.json` was updated. There
-will also be a PR created for this branch which should contain only an update to `npm-shrinkwrap.json`.
-
-The team is then responsible for accepting (or rejecting) the PR.
-
-Run without the branch name argument, the script does everything except branching and issuing the PR.
-
-### What about `package.json`?
-
-This file will still need to be present. It contains the source of truth and should be modified when dependencies change (added, removed or version changes).
-The `npm-shrinkwrap.json` will have to be updated accordingly though. I.e. if `package.json` changed (from a dependency perspective), it is highly unlikely that
-the `npm-shrinkwrap.json` file will remain unchanged. Run the `./scripts/shrinkwrap.sh` file locally and check in the new version or run `npm shrinkwrap --dev`
-
-### Jenkins
-
-A suggested Jenkins job could be configured as follows.
-
-```
-source /home/jenkins/nvm/nvm.sh
-nvm install
-./scripts/shrinkwrap.sh master-shrinkwrapped
-```
-
-Maybe with a schedule like the following:
-
-```
-H H(0-3) * * *
-```
-
-which will run the job sometime between midnight and 03.00 every night.
+https://github.com/ExpressenAB/ohoy
 
 [1]: http://visionmedia.github.io/mocha/
 [2]: https://github.com/iensu/mocha-cakes-2
@@ -362,7 +262,6 @@ which will run the job sometime between midnight and 03.00 every night.
 [6]: http://visionmedia.github.io/superagent/
 [7]: http://chaijs.com/
 [8]: https://github.com/ExpressenAB/exp-config
-[9]: https://github.com/ExpressenAB/triton
 [10]: https://github.com/ExpressenAB/exp-asynccache
 [11]: http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/
 [12]: https://github.com/
