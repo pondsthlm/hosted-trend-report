@@ -8,10 +8,6 @@
     "type": "git",
     "url": "git@github.com:ExpressenAB/node-starterapp.git"
   },
-  "directories": {
-    "doc": "docs",
-    "test": "test"
-  },
   "scripts": {
     "ci": "npm install && npm prune && npm ls && npm test",
     "deploy-production": "ohoy run deploy production",
@@ -47,7 +43,6 @@
     "lib",
     "test",
     "app.js",
-    "cluster.js",
     ".eslintrc",
     ".eslintignore",
     ".nvmrc"
