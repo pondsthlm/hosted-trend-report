@@ -153,7 +153,7 @@ Notes:
 
 - [eslint][3] should be used to verify that the code is well structured and looks nice. To make sure the code stays nice these tools are run on `npm test` (see scripts above).
 
-- All tools used (above: [mocha][1], [eslint][3], [stylint][4]) should be configured in such a way that they can be run manually when needed. Prefer checked in configuration files (for example `mocha.opts`) over specifying many command line arguments. When debugging a specific test case you should be able to run just [mocha][1] without any special arguments.
+- All tools used (above: [mocha][1], [eslint][3]) should be configured in such a way that they can be run manually when needed. Prefer checked in configuration files (for example `mocha.opts`) over specifying many command line arguments. When debugging a specific test case you should be able to run just [mocha][1] without any special arguments.
 
 Avoid:
 
@@ -184,14 +184,6 @@ As you can see this file looks like a shell file setting environment variables. 
 Environment variables have the highest priority: `requestLogging=true node .`
 
 This setup makes it easy to run a service locally using production config and just override a selected few properties. This is very useful when doing performance testing etc. It keeps the need to introduce more and more environments in check.
-
-# Shared code
-
-This is a sore point in the current setup for which there are several alternatives each with their pros and cons:
-
-1. Copy paste code (current situation): No hard dependencies between projects but lots of manual administration when code changes. Code can diverge into many branches which can be hard to maintain.
-2. Extract common code to private npm modules: Requires us to either setup a private npm repository or buy such a service. Requires every environment to have special configuration to use the private npm repository. Npm modules can also be hosted in an S3-bucket with a secret url. This was done at Viaplay and it wasn't pretty.
-3. Extract common code to public npm modules: Most of our common code is fairly generic (logging, configuration, cacheBusting) and could be turned into real open source modules. 
 
 # Testing
 
@@ -269,7 +261,6 @@ https://github.com/ExpressenAB/ohoy
 [1]: http://visionmedia.github.io/mocha/
 [2]: https://github.com/iensu/mocha-cakes-2
 [3]: http://eslint.org/
-[4]: https://rosspatton.github.io/stylint/
 [5]: https://github.com/pgte/nock
 [6]: http://visionmedia.github.io/superagent/
 [7]: http://chaijs.com/
