@@ -60,6 +60,18 @@ $ npm install -g nodemon # install process monitor
 $ nodemon # start server and restart on any file changes
 ```
 
+## Utilities
+
+Other expressen projects that you are advised to use:
+
+https://github.com/ExpressenAB/ohoy - deployment tool
+https://github.com/ExpressenAB/sidekick-containers - docker containers for external services
+
+https://www.npmjs.com/package/exp-amqp-connection - for wokring with rabbitmq
+https://www.npmjs.com/package/exp-fetch - for caching requests to external resources.
+https://www.npmjs.com/package/exp-cachebuster - cache busting.
+https://www.npmjs.com/package/exp-config - nice and easy conf mgmt.
+
 ## Branch strategy
 
 Prefer development straight on the master branch. Make small isolated commits.
