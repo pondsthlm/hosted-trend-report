@@ -7,9 +7,9 @@ describe("logger", () => {
   it("logs to file in tests", (done) => {
     logger.debug("testing logger");
 
-    setImmediate(() => {
+    setTimeout(() => {
       fs.readFileSync(path.join(__dirname, "../../logs/test.log"), "utf-8").should.include("testing logger");
       done();
-    });
+    }, 10);
   });
 });
