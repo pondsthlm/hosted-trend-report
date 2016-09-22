@@ -28,3 +28,6 @@ config/_revision
 
 # The .env file is developer local and should never be checked in
 .env
+
+# Atom CTAGS
+.tags
