@@ -15,7 +15,7 @@
     "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
     "prepublish": "npm run revision",
     "revision": "which git && [[ -d .git ]] && git rev-parse HEAD > config/_revision || true",
-    "test": "mocha && eslint . --cached",
+    "test": "mocha && eslint . --cache",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
   },
   "author": "Expressen AB",
