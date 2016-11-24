@@ -1,1 +1,0 @@
-// Browserify bootstrapping here
