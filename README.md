@@ -185,6 +185,12 @@ Environment variables have the highest priority: `requestLogging=true node .`
 
 This setup makes it easy to run a service locally using production config and just override a selected few properties. This is very useful when doing performance testing etc. It keeps the need to introduce more and more environments in check.
 
+# Shared code
+
+If you have a piece of code that you feel would be useful to other teams, release it as a public npm module. 
+Most of our common code is fairly generic (logging, configuration, cacheBusting) and can be turned into real 
+open source modules.
+
 # Testing
 
 Tests are run using `npm test` which in turn runs tools that test the code and verify that it follows certain code conventions.
