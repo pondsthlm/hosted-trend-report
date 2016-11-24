@@ -10,9 +10,8 @@
   },
   "scripts": {
     "ci": "npm install && npm prune && npm ls && npm test",
-    "deploy-production": "ohoy run deploy production",
+    "deploy-production": "ohoy deploy production",
     "dev": "npm run build && npm run watch",
-    "predeploy-production": "exp-ensure-tests && exp-ensure-unmodified && exp-ensure-master",
     "test": "mocha && eslint . --cache",
     "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
   },
