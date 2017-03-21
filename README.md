@@ -67,7 +67,7 @@ Other expressen projects that you are advised to use:
 https://github.com/ExpressenAB/ohoy - deployment tool
 https://github.com/ExpressenAB/sidekick-containers - docker containers for external services
 
-https://www.npmjs.com/package/exp-amqp-connection - for wokring with rabbitmq
+https://www.npmjs.com/package/exp-amqp-connection - for working with rabbitmq
 https://www.npmjs.com/package/exp-fetch - for caching requests to external resources.
 https://www.npmjs.com/package/exp-cachebuster - cache busting.
 https://www.npmjs.com/package/exp-config - nice and easy conf mgmt.
@@ -187,8 +187,8 @@ This setup makes it easy to run a service locally using production config and ju
 
 # Shared code
 
-If you have a piece of code that you feel would be useful to other teams, release it as a public npm module. 
-Most of our common code is fairly generic (logging, configuration, cacheBusting) and can be turned into real 
+If you have a piece of code that you feel would be useful to other teams, release it as a public npm module.
+Most of our common code is fairly generic (logging, configuration, cacheBusting) and can be turned into real
 open source modules.
 
 # Testing
