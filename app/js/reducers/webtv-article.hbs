@@ -1,0 +1,44 @@
+<article class="article article-ghost section lp_topcontent">
+  {{> article__text}}
+</article>
+{{#channel base.channel "mobile"}}
+  {{> ads/wrapper name="mob_1" class="ad-top"}}
+{{/channel}}
+
+{{#channel base.channel "tablet"}}
+  {{> ads/wrapper name="panorama1"}}
+{{/channel}}
+<div class="">
+  {{#channel base.channel "mobile"}}
+    {{> scroll
+      variant="compact"
+      name="Senaste"
+      items=@root.relatedVideos
+      nextUrl=@root.latestVideos.nextUrl
+      hideBar=true
+      debugName="latest-news"
+    }}
+  {{/channel}}
+
+  {{#channel base.channel "tablet"}}
+    {{> scroll
+      variant=""
+      width="2"
+      name="Senaste"
+      items=@root.relatedVideos
+      nextUrl=@root.latestVideos.nextUrl
+    }}
+  {{/channel}}
+
+
+  {{#channel base.channel "desktop"}}
+    {{> scroll
+      variant=""
+      width="3"
+      name="Senaste"
+      items=@root.relatedVideos
+      nextUrl=@root.latestVideos.nextUrl
+    }}
+  {{/channel}}
+
+</div>
