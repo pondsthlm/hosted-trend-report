@@ -1,12 +1,12 @@
 {
-  "name": "nodestarterapp",
-  "version": "0.0.2",
-  "description": "Empty starter app for Expressen node backend apps",
+  "name": "ponyo",
+  "version": "0.0.1",
+  "description": "Ponyo is the video player of choise for expressen.se",
   "main": "app.js",
-  "homepage": "https://github.com/ExpressenAB/node-starterapp",
+  "homepage": "https://github.com/ExpressenAB/ponyo",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ExpressenAB/node-starterapp.git"
+    "url": "git@github.com:ExpressenAB/ponyo.git"
   },
   "scripts": {
     "ci": "npm install && npm prune && npm ls && npm test",

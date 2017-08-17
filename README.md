@@ -1,6 +1,4 @@
-# Node Starter App
-
-## Ponyo
+# Ponyo
 
 Ponyo is Expressen AB's new video player built with vanillaJS and Redux.
 Depending on [hls.js](https://github.com/video-dev/hls.js/tree/master) and [Pulse Ad Player](http://pulse-sdks.ooyala.com/pulse-html5/latest/tutorial-ad_player.html)
@@ -30,7 +28,7 @@ Ooyala is out ad service and we support pre- and post-roll and pause ads.
 - Iframe mirroring todays embeding
 - Autostart
 - Play next video feed from [precis](https://github.com/ExpressenAB/precis).
-- Sharing, integration with [hareizard](https://github.com/ExpressenAB/shareizard)
+- Sharing, integration with [shareizard](https://github.com/ExpressenAB/shareizard)
 - Logging, better error detection
 
 #### Wishlist
