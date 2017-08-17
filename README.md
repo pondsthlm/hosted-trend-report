@@ -1,42 +1,42 @@
 # Node Starter App
 
-## Description
+## Ponyo
 
-Fork this project when creating new Node.js backend projects. The goal of the project structure is:
+Ponyo is Expressen AB's new video player built with vanillaJS and Redux.
+Depending on [hls.js](https://github.com/video-dev/hls.js/tree/master) and [Pulse Ad Player](http://pulse-sdks.ooyala.com/pulse-html5/latest/tutorial-ad_player.html)
 
-- Any developer should be able to quickly understand the project, develop it and deploy it
+## Ads
 
-Checking out the code and running `npm install && npm test` should take you most of the way.
+Ooyala is out ad service and we support pre- and post-roll and pause ads.
 
-## The correct way to start a new repo
+### Views
 
-Create a repo on github (or ask someone with permissions to create it for you)
+- Preview
+- Play
+- Pause
+- Share
+- Next countdown
+- Related
+- Replay
+- Share
+- Info
 
-```
-git clone git@github.com:ExpressenAB/<your-new-repo>.git
-cd <your-new-repo>
+### Feature
+- Postmessage, Iframe communication.
+- Tracking, remove iframe dependency from [ExpressenAnalytics](https://github.com/ExpressenAB/analytics).
+- Theming, DI, DN etc.
+- Preview mode, thumbnail without heavy load.
+- BE service providing DOM, CSS, and script
+- Iframe mirroring todays embeding
+- Autostart
+- Play next video feed from [precis](https://github.com/ExpressenAB/precis).
+- Sharing, integration with [hareizard](https://github.com/ExpressenAB/shareizard)
+- Logging, better error detection
 
-git remote add starterapp git@github.com:ExpressenAB/node-starterapp.git
-git fetch starterapp
-git merge starterapp/master
-```
-
-Now you have a project to start developing in!
-
-## To get changes/files
-
-To get changes or files from this repo do
-
-```bash
-git remote add starterapp git@github.com:ExpressenAB/node-starterapp.git
-git fetch starterapp
-
-# apply a commit
-git cherry-pick <some-commit>
-
-# get a file from the starterapp
-git checkout starterapp -- <path-to-file>
-```
+#### Wishlist
+- History? remember what what is consumed?
+- Klara? Can we make editor experiance better?
+- EPI preview (remove old flash preview).
 
 ## Docker setup
 
@@ -120,16 +120,6 @@ nodemon.json - define nodemon config params like what to watch/ignore
 package.json - define dependencies etc.
 app.js - start the service in a single process
 ```
-
-### Readme
-
-A `README.md` must be included and include:
-
-- *Description*: Describe the service, what does it do?
-- *Local setup*: How to get the application up and running locally (software to install, hosts-file/`$PATH` changes etc) and possibly information on how to develop/debug the application effectively
-- *Branch strategy*: How to work with branches, pull requests, code review etc. in this project
-- *Testing strategy*: What is tested and how? What kinds of tests exists. When introducing new functionality what new tests should be written?
-- *Deploy*: How to deploy the application in the environments where it runs
 
 # npm and package.json
 
