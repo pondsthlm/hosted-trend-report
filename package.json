@@ -13,7 +13,9 @@
     "deploy-production": "ohoy deploy production",
     "dev": "npm run build && npm run watch",
     "test": "mocha && eslint . --cache",
-    "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha"
+    "test-cov": "./node_modules/.bin/istanbul cover --report lcov ./node_modules/.bin/_mocha",
+    "build": "rollup -c app/rollup.config.js",
+    "watch": "rollup -c app/rollup.config.js -w"
   },
   "author": "Expressen AB",
   "license": "proprietary",
@@ -24,7 +26,8 @@
     "exp-config": "^2.0.0",
     "express": "^4.13.4",
     "log": "^1.4.0",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "redux": "^3.7.2"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -33,6 +36,10 @@
     "istanbul": "^0.4.3",
     "mocha": "^3.1.2",
     "mocha-cakes-2": "^2.0.1",
+    "rollup": "^0.47.6",
+    "rollup-plugin-commonjs": "^8.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-watch": "^4.3.1",
     "supertest": "^2.0.1"
   },
   "files": [
