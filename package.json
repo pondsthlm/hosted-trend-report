@@ -25,6 +25,7 @@
     "bugsnag": "^1.9.0",
     "exp-config": "^2.0.0",
     "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
     "log": "^1.4.0",
     "morgan": "^1.7.0",
     "redux": "^3.7.2"
@@ -40,6 +41,7 @@
     "istanbul": "^0.4.3",
     "mocha": "^3.1.2",
     "mocha-cakes-2": "^2.0.1",
+    "nodemon": "^1.11.0",
     "rollup": "^0.47.6",
     "rollup-plugin-babel": "^3.0.2",
     "rollup-plugin-commonjs": "^8.1.0",

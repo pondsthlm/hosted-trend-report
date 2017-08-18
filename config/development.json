@@ -2,5 +2,6 @@
   "log": "stdout",
   "logLevel": "debug",
   "requestLogging": "stdout",
-  "viewCaching": false
+  "viewCaching": false,
+  "port": 4100
 }
