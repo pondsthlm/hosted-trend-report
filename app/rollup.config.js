@@ -1,6 +1,12 @@
-import commonjs from "rollup-plugin-commonjs";
-import resolve from "rollup-plugin-node-resolve";
 import babel from "rollup-plugin-babel";
+import commonjs from "rollup-plugin-commonjs";
+import filesize from "rollup-plugin-filesize";
+import replace from "rollup-plugin-replace";
+import resolve from "rollup-plugin-node-resolve";
+import uglify from "rollup-plugin-uglify";
+
+const isProd = process.env.NODE_ENV === "production";
+const suffix = isProd ? ".min" : "";
 
 export default {
   entry: "app/main.js",
@@ -22,7 +28,12 @@ export default {
         }]
       ],
       plugins: ["external-helpers"]
-    })
+    }),
+    replace({
+      "process.env.NODE_ENV": process.env.NODE_ENV
+    }),
+    isProd ? uglify() : () => {},
+    filesize()
   ],
-  dest: "public/assets/js/bundle.js"
+  dest: `public/assets/js/bundle${suffix}.js`
 };
