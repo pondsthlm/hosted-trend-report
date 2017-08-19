@@ -24,5 +24,5 @@ export default {
       plugins: ["external-helpers"]
     })
   ],
-  dest: "public/bundle.js"
+  dest: "public/assets/js/bundle.js"
 };
