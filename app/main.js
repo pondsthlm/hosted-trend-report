@@ -1,45 +1,20 @@
 import { createStore } from "redux";
+import middlewares from "./middleware/index.js";
+import reducers from "./reducers";
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "ADD":
-      state = Object.assign({}, state, {
-        count: state.count + action.payload
-      });
-      break;
-    case "SUBTRACT":
-      break;
-    default:
-  }
+import counter from "./containers/counter";
+import { div } from "./helpers/make-element";
 
-  return state;
-};
 
-const store = createStore(reducer, { count: 1 });
+const store = createStore(reducers(), {}, middlewares());
 
 store.subscribe(() => {
   console.log("store updated", store.getState());
 });
-
-store.dispatch({
-  type: "ADD",
-  payload: 10
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.appendChild(
+    div({ id: "app" }, counter.components.sum(store))
+  );
 });
 
-/*
-import foo from "./foo.js";
-import { combineReducers } from "redux";
-
-function x() {
-  return Promise.resolve(5);
-}
-
-async function y() {
-  await x();
-}
-
-export default function () {
-  combineReducers({});
-  y().then(() => console.log(foo));
-}
-*/
+store.dispatch(counter.actions.add(10));
