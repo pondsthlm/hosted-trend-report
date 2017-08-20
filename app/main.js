@@ -9,12 +9,22 @@ import { div } from "./helpers/make-element";
 const store = createStore(reducers(), {}, middlewares());
 
 store.subscribe(() => {
-  console.log("store updated", store.getState());
+  render();
 });
 document.addEventListener("DOMContentLoaded", () => {
-  document.body.appendChild(
-    div({ id: "app" }, counter.components.sum(store))
-  );
+  store.dispatch(counter.actions.add(10));
+  render();
 });
 
-store.dispatch(counter.actions.add(10));
+function render() {
+  const app = div({ id: "app" }, counter.components.sum(store), counter.components.addButton(store));
+  if (document.body.isEqualNode(app)) {
+    return;
+  }
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
+  document.body.appendChild(
+    div({ id: "app" }, counter.components.sum(store), counter.components.addButton(store))
+  );
+}
