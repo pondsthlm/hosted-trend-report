@@ -1,0 +1,9 @@
+.add-button {
+  background: rgba(18,52,86,0.8);
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+}
+.counter {
+  padding: 4px;
+}

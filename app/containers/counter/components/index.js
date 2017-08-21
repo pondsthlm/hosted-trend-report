@@ -1,4 +1,5 @@
-import sum from "./sum";
 import addButton from "./add-button";
+import counter from "./counter";
+import sum from "./sum";
 
-export default { sum, addButton };
+export default { addButton, sum, counter};
