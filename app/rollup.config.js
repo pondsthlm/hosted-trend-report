@@ -1,6 +1,6 @@
 import babel from "rollup-plugin-babel";
 import commonjs from "rollup-plugin-commonjs";
-import css from "rollup-plugin-css-only";
+import css from "rollup-plugin-css-porter";
 import filesize from "rollup-plugin-filesize";
 import replace from "rollup-plugin-replace";
 import resolve from "rollup-plugin-node-resolve";
@@ -16,7 +16,7 @@ export default {
   moduleName: "ponyo",
   plugins: [
     stylus(),
-    css(),
+    css({dest: "public/assets/bundle.css"}),
     commonjs(),
     resolve(),
     babel({
@@ -39,5 +39,5 @@ export default {
     isProd ? uglify() : () => {},
     filesize()
   ],
-  dest: `public/assets/js/bundle${suffix}.js`
+  dest: `public/assets/bundle${suffix}.js`
 };
