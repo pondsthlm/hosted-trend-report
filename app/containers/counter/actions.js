@@ -1,3 +1,4 @@
+// Collect actions overviewing what container can dispatch.
 import * as constants from "./constants";
 
 export const add = (value) => ({

@@ -1,3 +1,4 @@
+// Container subspace for manipulating state.
 import * as constants from "./constants";
 
 const defaultState = {

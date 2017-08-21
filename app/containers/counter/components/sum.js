@@ -1,6 +1,7 @@
+import selectors from "../selectors";
 function sum(store) {
   const state = store.getState();
-  return state.counter.sum;
+  return selectors.getSum(state);
 }
 
 export default sum;

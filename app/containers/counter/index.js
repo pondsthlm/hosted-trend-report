@@ -1,8 +1,8 @@
+// Declare what container should export.
 import * as actions from "./actions";
 import components from "./components";
 import * as constants from "./constants";
 import reducer from "./reducer";
+import { getSum } from "./selsectors"
 
-//import * as selectors from "./selectors";
-
-export default { actions, components, constants, reducer };
+export default { actions, components, constants, reducer, getSum };
