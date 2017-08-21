@@ -1,5 +1,5 @@
 /*global OO*/ //TODO fix this
-import logger from "../logger.js"
+import logger from "../logger.js";
 
 class SessionListener {
   constructor(videoElement) {
@@ -44,14 +44,27 @@ class Ooyala {
     OO.Pulse.setPulseHost(this.pulseHost);
     this.adPlayer = OO.Pulse.createAdPlayer(adElement, null, null);
 
+    this.adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.AD_CLICKED, (event, metadata) => {
+      window.open(metadata.url);
+      //Tell the SDK we opened the clickthrough URL.
+      this.adPlayer.adClickThroughOpened();
+    });
+
+    this.adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.PAUSE_AD_SHOWN, () => {
+      // Make sure that the videojs control are visible for pause ads
+      this.videoElement.style["z-index"] = 10000;
+    });
+
     this.init();
   }
 
   init() {
+    this.firstPlay = true;
     this.videoElement.addEventListener("play", () => {
-      logger.log("Video playing");
+      logger.log("Video playing", "Initial:", this.firstPlay);
 
-      if (!this.session) {
+      if (this.firstPlay) {
+        this.firstPlay = false;
         const contentMetadata = {
           tags: ["standard-linears", "pause"]
         };
@@ -62,7 +75,13 @@ class Ooyala {
         this.session = OO.Pulse.createSession(contentMetadata, requestSettings);
         const listener = new SessionListener(this.videoElement);
         this.adPlayer.startSession(this.session, listener);
+      } else {
+        this.adPlayer.contentStarted();
       }
+    });
+
+    this.videoElement.addEventListener("pause", () => {
+      this.adPlayer.contentPaused();
     });
   }
 }

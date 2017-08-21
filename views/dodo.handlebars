@@ -10,29 +10,18 @@
   float: left;
 }
 
-.add-container {
-  width: 320px;
-  height: 180px;
-  margin: auto;
-  float: right;
-}
-
 video {
   width: 100%;
   height: 100%;
 }
 </style>
 
-<div class="container">
-  <div class="video-container">
-    <video id="video" controls="" preload="none">
-      <p>Your user agent does not support the HTML5 Video element.</p>
+<div class="video-container">
+  <video id="video" controls="" preload="none">
+    <p>Your user agent does not support the HTML5 Video element.</p>
+  </video>
+  <div id="ad-video">
+    <video controls="" preload="none">
     </video>
-  </div>
-  <div class="add-container">
-    <div id="ad-video" class="video-container">
-      <video controls="" preload="none">
-      </video>
-    </div>
   </div>
 </div>
