@@ -1,40 +1,30 @@
 import { createStore } from "redux";
+import middlewares from "./middleware/index.js";
+import reducers from "./reducers";
 
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "ADD":
-      Object.assign({}, state, state + action.payload);
-      break;
-    case "SUBTRACT":
-      break;
-    default:
-  }
+import counter from "./containers/counter";
+import { div } from "./helpers/make-element";
 
-  return state;
-};
 
-const store = createStore(reducer, 1);
+const store = createStore(reducers(), {}, middlewares());
+
 store.subscribe(() => {
-  console.log("store updated", store.getState());
+  render();
 });
-store.dispatch({
-  type: "ADD",
-  payload: 10
+document.addEventListener("DOMContentLoaded", () => {
+  store.dispatch(counter.actions.add(10));
+  render();
 });
-/*
-import foo from "./foo.js";
-import { combineReducers } from "redux";
 
-function x() {
-  return Promise.resolve(5);
+function render() {
+  const app = div({ id: "app" }, counter.components.sum(store), counter.components.addButton(store));
+  if (document.body.isEqualNode(app)) {
+    return;
+  }
+  while (document.body.firstChild) {
+    document.body.removeChild(document.body.firstChild);
+  }
+  document.body.appendChild(
+    div({ id: "app" }, counter.components.sum(store), counter.components.addButton(store))
+  );
 }
-
-async function y() {
-  await x();
-}
-
-export default function () {
-  combineReducers({});
-  y().then(() => console.log(foo));
-}
-*/
