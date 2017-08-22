@@ -25,6 +25,6 @@ function render() {
     document.body.removeChild(document.body.firstChild);
   }
   document.body.appendChild(
-    div({ id: "app" }, counter.components.sum(store), counter.components.addButton(store))
+    div({ id: "app" }, counter.components.counter(store))
   );
 }

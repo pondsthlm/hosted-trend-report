@@ -1,8 +1,10 @@
 import babel from "rollup-plugin-babel";
 import commonjs from "rollup-plugin-commonjs";
+import css from "rollup-plugin-css-porter";
 import filesize from "rollup-plugin-filesize";
 import replace from "rollup-plugin-replace";
 import resolve from "rollup-plugin-node-resolve";
+import stylus from "rollup-plugin-stylus-compiler";
 import uglify from "rollup-plugin-uglify";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -13,6 +15,8 @@ export default {
   format: "iife",
   moduleName: "ponyo",
   plugins: [
+    stylus(),
+    css({dest: "public/assets/bundle.css"}),
     commonjs(),
     resolve(),
     babel({
@@ -29,11 +33,11 @@ export default {
       ],
       plugins: ["external-helpers"]
     }),
-    replace({
+    isProd ? () => {} : replace({
       "process.env.NODE_ENV": process.env.NODE_ENV
     }),
     isProd ? uglify() : () => {},
     filesize()
   ],
-  dest: `public/assets/js/bundle${suffix}.js`
+  dest: `public/assets/bundle${suffix}.js`
 };
