@@ -100,8 +100,11 @@ $ npm run deploy-production
 
 # Common project structure
 
+## root
+
 ```
 ## Directories
+app/ - client code
 lib/ - this is where the code is
 config/ - configuration
 docs/ - documentation in .md files
@@ -117,6 +120,104 @@ README.md - see below
 nodemon.json - define nodemon config params like what to watch/ignore
 package.json - define dependencies etc.
 app.js - start the service in a single process
+```
+
+## app
+
+```
+app/
+- containers/ - grouped functionallity
+- helpers/ - utilities and helper functions
+- middlewares/ - Redux middleware
+- reducers.js - returns all reducers
+- main.js - enter script
+```
+
+`containers/` are the seperation of state. Its directly related to combineReducers in reducers.js.
+
+`helpers/` are where you put **commonly** used abstractions.
+
+`middlewares/` is where you create your redux [middlewares](http://redux.js.org/docs/advanced/Middleware.html).
+
+`reducers.js` will return all reducers in the containers.
+
+`main.js` is the entry point of the client script
+
+### container
+
+```
+- containers/
+  - named-component/ - ie control-bar, social
+    - components/ - folder for reusable components
+    - actions.js - simplified functions that returns dispatchable objects
+    - constants.js - self expanitory
+    - index.js - export container so it accessible with a simpler import ie share.actions.like()
+    - reducer.js - update state for this group
+    - selectors.js - functions that van share state between containers
+  - another-named-component/
+    - ...
+```
+
+Container are the seperation of state. Its directly related to combineReducers in reducers.js.
+The component depending on state[named-component] will be collected here.
+Sharing data between containers will be done through functions from `selectors.js`.
+
+`index.js` will export containers as an objects. This will make using them more  declarative `social.component.likedCount` or `store.dispatch(social.actions.likeVideo(id))`.
+
+`actions.js` will return dispatchable objects like `store.dispatch(social.actions.likeVideo(id))`.
+
+`constants.js` will handle namespace to make sure we don't have naming conflicts.
+NAME will be used as a container reference and also namespace.
+```
+export const NAME = "social";
+
+export const LIKE = `${NAME}/LIKE`;
+export const UNLIKE = `${NAME}/UNLIKE`;
+```
+```
+//reducers.js
+import { combineReducers } from "redux";
+import social from "./containers/social";
+
+...
+
+function reducers() {
+  return combineReducers({
+    [social.constants.NAME]: social.reducer,
+    ....
+  });
+}
+
+
+export default reducers;
+```
+
+`reducer.js` will export the container reducer.
+
+`selectors.js` will contain functions to communicate data with other containers like `social.selectors.numberOfLikes()`. You can also use them in the container components for more declarative code and simple mutations.
+```
+import { numberOfLikesPerHour } from "path/selectors.js"
+...
+h1({}, state.title, span({className="like-flag"},`${numberOfLikesPerHour()} likes/h`))
+```
+
+### components
+
+```
+- containers/
+  - named-component/ - ie control-bar, social
+    - components/ - folder for reusable components
+      - index.js - export all components
+      - play-button.js - returns DOM and handle events
+      - play-button.styl - styles related to component
+      - progress-bar.js - returns DOM and handle events
+    - actions.js - simplified functions that returns dispatchable objects
+    - constants.js - self expanitory
+    - index.js - export container so it accessible with a simpler import ie share.actions.like()
+    - reducer.js - update state for this group
+    - selectors.js - functions that van share state between containers
+  - another-named-component/
+    - ...
 ```
 
 # npm and package.json
