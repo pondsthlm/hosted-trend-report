@@ -1,5 +1,6 @@
 {
   "log": "file",
   "logLevel": "debug",
-  "viewCaching": true
+  "viewCaching": true,
+  "flotsamUrl": "http://flotsamurl"
 }
