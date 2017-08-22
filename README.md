@@ -204,21 +204,23 @@ h1({}, state.title, span({className="like-flag"},`${numberOfLikesPerHour()} like
 ### components
 
 ```
-- containers/
   - named-component/ - ie control-bar, social
     - components/ - folder for reusable components
       - index.js - export all components
       - play-button.js - returns DOM and handle events
       - play-button.styl - styles related to component
       - progress-bar.js - returns DOM and handle events
-    - actions.js - simplified functions that returns dispatchable objects
-    - constants.js - self expanitory
-    - index.js - export container so it accessible with a simpler import ie share.actions.like()
-    - reducer.js - update state for this group
-    - selectors.js - functions that van share state between containers
-  - another-named-component/
-    - ...
+      - progress-bar.styl - styles related to component
+    - actions.js
+    ...
 ```
+A component needs the store (state and dispatch) and will return return DOM nodes.
+Here you also handle events related to the component.
+You are not to subscribe to store here.
+
+`index.js` code can be moved to parent index is container is small. Here you
+choose what component to export. Components can still be used between them selfs.
+
 
 # npm and package.json
 
