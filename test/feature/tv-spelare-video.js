@@ -6,6 +6,9 @@ const cheerio = require("cheerio");
 const fakeApi = require("../helpers/fakeApi");
 const request = require("supertest");
 
+const bundleSettings = {};
+const notFound = {};
+
 function scenarioSetup() {
 
   fakeApi.reset();
@@ -26,7 +29,7 @@ Feature("When requesting", () => {
         .get("/tvspelare/video/tv/nyheter/inrikes/mystiska-besoket-i-grishagen/")
         .set("Cookie", ["channel=desktop"])
         .expect(200)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) return done(err);
           $ = cheerio.load(res.text);
           done();
@@ -60,7 +63,7 @@ Feature("When requesting", () => {
       request(app)
         .get("/tvspelare/video/does-not-exist")
         .set("Cookie", ["channel=desktop"])
-        .end(function (err, res) {
+        .end((err, res) => {
           response = res;
           if (err) return done(err);
           done();
@@ -84,7 +87,7 @@ Feature("When requesting", () => {
     When("the request is sent", (done) => {
       request(app)
         .get("/badURL")
-        .end(function (err, res) {
+        .end((err, res) => {
           response = res;
           if (err) return done(err);
           done();
