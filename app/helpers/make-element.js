@@ -38,9 +38,9 @@ function setStyles(el, styles) {
 
   Object.keys(styles).forEach((styleName) => {
     if (styleName in el.style) {
-      el.style[styleName] = styles[styleName]; // eslint-disable-line no-param-reassign
+      el.style[styleName] = styles[styleName];
     } else {
-      console.warn(`${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`);
+      // console.warn(`${styleName} is not a valid style for a <${el.tagName.toLowerCase()}>`);
     }
   });
 }
@@ -82,7 +82,7 @@ function makeElement(type, textOrPropsOrChild, ...otherChildren) {
           el.setAttribute(propName, value); // need this for SVG elements
         }
       } else {
-        console.warn(`${propName} is not a valid property of a <${type}>`);
+        //console.warn(`${propName} is not a valid property of a <${type}>`);
       }
     });
   }
