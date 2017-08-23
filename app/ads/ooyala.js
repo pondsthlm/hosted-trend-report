@@ -14,22 +14,17 @@ openClickThrough is called when an ad (typically a VPAID ad) requested a clickth
 It is then up to the integration to open the URL or not. If the link is opened, the SDK must be notified through adClickThroughOpened.
 */
 class SessionListener {
-  constructor(videoElement) {
-    this.videoElement = videoElement;
+  constructor(player) {
+    this.player = player;
   }
 
   startContentPlayback() {
     logger.log("Starting the content playback");
-    this.videoElement.play();
+    this.player.adBreakEnd();
   }
   pauseContentPlayback() {
     logger.log("Pausing the content playback and hide our player");
-    this.videoElement.pause();
-  }
-  startAdPlayback(ad, timeout, adPosition) {
-    logger.log("Starting the ad playback", ad, timeout, adPosition);
-    // // const clickThroughLink = ad.getClickthroughURL();
-    // const mediaFiles = ad.getMediaFiles();
+    this.player.adBreakStart();
   }
   startAdBreak() {
     logger.log("Starting the ad break", arguments);
@@ -47,9 +42,9 @@ class SessionListener {
 
 //TODO this should be singleton?
 class Ooyala {
-  constructor(pulseHost, adElement, videoElement) {
+  constructor(player, pulseHost, adElement) {
+    this.player = player;
     this.pulseHost = pulseHost;
-    this.videoElement = videoElement;
 
     OO.Pulse.setPulseHost(this.pulseHost);
     this.adPlayer = OO.Pulse.createAdPlayer(adElement, null, null);
@@ -64,14 +59,12 @@ class Ooyala {
     this.adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.PAUSE_AD_SHOWN, () => {
       logger.log("pause ad shown");
       // Make sure that the videojs control are visible for pause ads
-      this.videoElement.style["z-index"] = 10000;
+      // this.videoElement.style["z-index"] = 10000;
     });
 
     this.adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.AD_BREAK_STARTED, () => {
-      logger.log("Ad break started");
+      logger.log("Ad break started", arguments);
     });
-
-    this.init();
   }
 
   isSessionValid() {
@@ -79,9 +72,8 @@ class Ooyala {
   }
 
   init() {
-    this.firstPlay = true;
     const contentMetadata = {
-      tags: ["standard-linears", "pause"]
+      tags: ["standard-linears", "pause"] //TODO pass these via conf
     };
     const requestSettings = {
       linearPlaybackPositions: [10, 20],
@@ -89,33 +81,31 @@ class Ooyala {
     };
     this.session = OO.Pulse.createSession(contentMetadata, requestSettings);
 
-    this.videoElement.addEventListener("timeupdate", (evt) => {
-      logger.log("Timeupdate event", evt, this.videoElement.currentTime);
-      if (this.isSessionValid()) {
-        this.adPlayer.contentPositionChanged(this.videoElement.currentTime);
-      }
-    });
+    const listener = new SessionListener(this.player);
+    this.adPlayer.startSession(this.session, listener);
+    this.sessionStarted = true;
+  }
 
-    this.videoElement.addEventListener("play", () => {
-      logger.log("Video playing", "Initial:", this.firstPlay);
+  timeUpdate(currentTime) {
+    if (this.isSessionValid()) {
+      this.adPlayer.contentPositionChanged(currentTime);
+    }
+  }
 
-      if (this.firstPlay) {
-        const listener = new SessionListener(this.videoElement);
-        this.adPlayer.startSession(this.session, listener);
-        this.sessionStarted = true;
-      } else {
-        this.adPlayer.contentStarted();
-      }
-    });
+  contentStarted() {
+    this.adPlayer.contentStarted();
+  }
 
-    this.videoElement.addEventListener("pause", () => {
-      this.firstPlay = false;
-      this.adPlayer.contentPaused();
-    });
+  contentPaused() {
+    this.adPlayer.contentPaused();
+  }
 
-    this.videoElement.addEventListener("ended", () => {
-      this.adPlayer.contentFinished();
-    });
+  contentFinished() {
+    this.adPlayer.contentFinished();
+  }
+
+  destroy() {
+    this.adPlayer.stopSession();
   }
 }
 
