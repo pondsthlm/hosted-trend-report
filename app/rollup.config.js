@@ -15,7 +15,7 @@ export default {
       presets: [
         ["env", {
           targets: {
-            browsers: ["chrome >= 59"]
+            browsers: ["ie >= 9"]
           },
           modules: false,
           debug: false

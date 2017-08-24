@@ -3,8 +3,13 @@
   width: 400px;
   height: 200px;
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
+  display: block;
+}
+
+.ad-video {
+  position: absolute;
+  left: 100%;
+  top: 0
 }
 
 .video {
@@ -14,13 +19,20 @@
 }
 </style>
 
-<div class="video-container">
-  <video class="dummy video" src="" autoplay poster="">
-  </video>
-  <video id="video" controls="" preload="none">
+<div class="video-container exp-video-player">
+  <video class="video" muted autoplay controls="" preload="none">
     <p>Your user agent does not support the HTML5 Video element.</p>
   </video>
 
-  <div id="ad-video">
+  <div class="ad-video">
+  </div>
+</div>
+
+<div class="video-container exp-video-player">
+  <video class="video" muted autoplay controls="" preload="none">
+    <p>Your user agent does not support the HTML5 Video element.</p>
+  </video>
+
+  <div class="ad-video">
   </div>
 </div>

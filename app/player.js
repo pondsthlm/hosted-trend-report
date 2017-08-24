@@ -28,11 +28,11 @@ class Player {
     this.video.addEventListener("ended", this.processEvent.bind(this));
   }
 
-  async processEvent(evt) {
+  processEvent(evt) {
     logger.log("Event", evt);
     const nextState = this.evaluateState(this.state, evt);
     if (nextState !== this.state) {
-      await this.enterState(nextState).catch((err) => {
+      this.enterState(nextState).catch((err) => {
         logger.error(`Service manager state transition error (${this.state} -> ${nextState}) for ${this.strId}:`, err);
         return this.enterState("fail");
       });
