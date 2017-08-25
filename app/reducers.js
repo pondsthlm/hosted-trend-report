@@ -1,9 +1,9 @@
 import { combineReducers } from "redux";
-import counter from "./containers/counter";
+import player from "./player";
 
 function reducers() {
   return combineReducers({
-    [counter.constants.NAME]: counter.reducer
+    [player.constants.NAME]: player.reducer
   });
 }
 

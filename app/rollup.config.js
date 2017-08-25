@@ -31,7 +31,7 @@ export default {
           debug: false
         }]
       ],
-      plugins: ["external-helpers"]
+      plugins: ["syntax-object-rest-spread", "transform-object-rest-spread", "external-helpers"]
     }),
     isProd ? () => {} : replace({
       "process.env.NODE_ENV": process.env.NODE_ENV

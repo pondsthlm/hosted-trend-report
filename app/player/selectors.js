@@ -1,5 +1,5 @@
 // When other containers need to share state or calculated data.
-import { NAME } from "./constants";
+import { constants } from "./";
 
 function getSum(state) {
   return state[NAME].sum;
