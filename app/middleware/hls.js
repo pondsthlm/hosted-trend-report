@@ -69,14 +69,6 @@ const hlsService = (store) => (next) => (action) => {
       break;
 
     case "OOYALA_READY":
-      setTimeout(() => {
-        store.dispatch({
-          type: "PLAY",
-          payload: {
-            id: action.payload.id
-          }
-        })
-      }, 1000);
 
       next(action);
       break;
