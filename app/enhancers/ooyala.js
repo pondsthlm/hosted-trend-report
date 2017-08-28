@@ -1,5 +1,4 @@
 import player from "../player";
-import ui from "../ui";
 import logger from "../logger.js";
 import ooyalaEvents from "./ooyala-events";
 
@@ -99,6 +98,7 @@ const ooyala = (() => {
         const video = videos[action.payload.id];
         if (video.hasSession) {
           video.adPlayer.contentStarted();
+          action = Object.assign({}, action, player.actions.contentPlay(action.payload.id));
         } else {
           video.adPlayer.startSession(video.session, ooyalaEvents(store, video.id));
           video.hasSession = true;

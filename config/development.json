@@ -3,5 +3,6 @@
   "logLevel": "debug",
   "requestLogging": "stdout",
   "viewCaching": false,
-  "port": 4100
+  "port": 4100,
+  "flotsamUrl": "http://livedata.flotsam.service.consul.xpr.dex.nu"
 }

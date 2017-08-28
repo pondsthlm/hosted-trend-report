@@ -28,6 +28,7 @@ const videoReducer = (state = defaultVideoState, action) => {
       break;
 
     case player.constants.CONTENT_PAUSE:
+    case player.constants.PAUSE:
       state = Object.assign({}, state, {
         isPlaying: false
       });
@@ -35,7 +36,7 @@ const videoReducer = (state = defaultVideoState, action) => {
     default:
   }
   state = Object.assign({}, state, {
-    updates: ++state.updates
+    updates: state.updates + 1
   })
 
   return state;

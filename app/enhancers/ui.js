@@ -26,4 +26,5 @@ const uiMiddleware = (store) => (next) => (action) => {
   }
   next(action);
 };
+
 export default uiMiddleware;

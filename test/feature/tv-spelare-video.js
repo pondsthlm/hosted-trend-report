@@ -6,13 +6,23 @@ const cheerio = require("cheerio");
 const fakeApi = require("../helpers/fakeApi");
 const request = require("supertest");
 
+const mockedFlotsamVideoArticleData = require("../mockData/webtv-article.json");
+const response404 = require("../mockData/404.json");
+
 const bundleSettings = {};
 const notFound = {};
 
 function scenarioSetup() {
 
   fakeApi.reset();
-  fakeApi.fakeJsonResponse("/", {}, 1);
+  fakeApi.fakeJsonResponse(
+    "/resolveUrl/tv/nyheter/inrikes/mystiska-besoket-i-grishagen/",
+    mockedFlotsamVideoArticleData
+  );
+  fakeApi.fakeJsonResponse(
+    "/resolveUrl/404",
+    response404
+  );
 }
 
 Feature("When requesting", () => {

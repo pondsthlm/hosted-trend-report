@@ -73,13 +73,6 @@ const hlsService = (() => {
         break;
       }
 
-      case player.constants.CONTENT_PLAY: {
-        videos[action.payload.id].play();
-
-        next(action);
-        break;
-      }
-
       case player.constants.PAUSE: {
         videos[action.payload.id].pause();
 

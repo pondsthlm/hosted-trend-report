@@ -12,19 +12,22 @@ const defaultState = {
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
-    state = Object.assign({}, state, {
-      id: action.payload.id,
-      video: action.payload.video
-    });
-    break;
+      state = Object.assign({}, state, {
+        id: action.payload.id,
+        video: action.payload.video
+      });
+      break;
     case player.constants.MANIFEST_PARSED:
       state = Object.assign({}, state, {
         contentReady: true
       });
       break;
-
-    case player.constants.PLAY:
-      //state.video.play();
+    case player.constants.CONTENT_PLAY: {
+      state.video.play();
+      break;
+    }
+    case player.constants.CONTENT_PAUSE:
+      state.video.pause();
       break;
     default:
   }
