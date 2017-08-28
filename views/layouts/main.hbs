@@ -2,14 +2,19 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Video</title>
-    <link href="assets/bundle.css" rel="stylesheet" type="text/css">
+    <title>{{headline}}</title>
+    <link href="/assets/bundle.css" rel="stylesheet" type="text/css">
     <script src="https://service.videoplaza.tv/proxy/pulse-sdk-html5/2.1/latest.min.js"></script>
   </head>
   <body>
     <div id="root">
       {{{body}}}
     </div>
-    <script src="assets/bundle.js"></script>
+    <script>
+      window.Ponyo = window.Ponyo || {};
+      window.Ponyo.videoData = window.Ponyo.videoData || {};
+      window.Ponyo.videoData["iframe"] = {{{toJSON this}}};
+    </script>
+    <script src="/assets/bundle.js"></script>
   </body>
 </html>

@@ -47,7 +47,7 @@ Feature("When requesting", () => {
     });
 
     Then("The title should be set", () => {
-      $("title").text().should.eql("Video");
+      $("title").text().should.eql("Kvinnan dansar ensam på gatan - då rycker polisen in");
     });
   });
 
