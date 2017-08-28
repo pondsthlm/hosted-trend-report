@@ -1,7 +1,7 @@
 import controlBar from "./control-bar";
 
-function update(store) {
-  controlBar(store);
+function update(store, id) {
+  controlBar(store, id);
 }
 
-export default { controlBar, update };
+export default { update };

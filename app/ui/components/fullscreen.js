@@ -2,7 +2,7 @@ import { button, div } from "../../helpers/make-element";
 
 let bemParent = "";
 
-function fullscreen(store, parentClassName) {
+function fullscreen(store, id, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }

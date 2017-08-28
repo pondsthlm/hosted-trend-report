@@ -1,4 +1,5 @@
 import player from "../player";
+import ui from "../ui";
 import logger from "../logger.js";
 import ooyalaEvents from "./ooyala-events";
 
@@ -82,8 +83,8 @@ adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.AD_CLICKED, (event, metadata)
 
 */
 
-const ooyala = (function () {
-  const adPlayers = {};
+const ooyala = (() => {
+  const videos = {};
 
   return (store) => (next) => (action) => {
     switch (action.type) {
@@ -91,13 +92,32 @@ const ooyala = (function () {
         setUpAdService(action.payload, store);
         break;
       case "OOYALA_READY":
-        adPlayers[action.payload.id] = action.payload;
+        videos[action.payload.id] = action.payload;
+        videos[action.payload.id].hasSession = false;
         break;
       case player.constants.PLAY: {
-        const adPlayer = adPlayers[action.payload.id];
-        adPlayer.adPlayer.startSession(adPlayer.session, ooyalaEvents(store, adPlayer.id));
+        const video = videos[action.payload.id];
+        if (video.hasSession) {
+          video.adPlayer.contentStarted();
+        } else {
+          video.adPlayer.startSession(video.session, ooyalaEvents(store, video.id));
+          video.hasSession = true;
+        }
         break;
       }
+      case player.constants.CONTENT_PLAY: {
+        const video = videos[action.payload.id];
+        if (video.hasSession) {
+          video.adPlayer.contentStarted();
+        }
+        break;
+      }
+      case player.constants.PAUSE: {
+        const video = videos[action.payload.id];
+        video.adPlayer.contentPaused();
+        break;
+      }
+
       /*
       Do nothing if the action does not interest us
       */

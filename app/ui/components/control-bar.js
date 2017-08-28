@@ -7,27 +7,25 @@ import progressBar from "./progress-bar";
 import fullscreenButton from "./fullscreen";
 
 const className = "control-bar";
-function controlBar(store) {
+function controlBar(store, id) {
   const state = store.getState();
-  console.log("state", state);
-  for (const id in state.ui.videos) {
-    if (!state.ui.videos[id].elementContainer ) {
-      return;
-    }
-    const elementContainer = state.ui.videos[id].elementContainer;
-    if (!elementContainer.querySelector(`.${className}`)) {
-      elementContainer.appendChild(div(
-        {
-          className,
-        }, "")
-      );
-    }
-    const root = elementContainer.querySelector(`.${className}`);
-    state.ui.videos[id].elementContainer.replaceChild(dom(id), root);
+
+  if (!state.ui.videos[id].elementContainer ) {
+    logger.warning(`Video ${id} is missing elementContainer`);
+    return;
   }
+  const elementContainer = state.ui.videos[id].elementContainer;
+  let root = elementContainer.querySelector(`.${className}`);
+  if (!root) {
+    root = elementContainer.appendChild(div(
+      {
+        className,
+      }, "")
+    );
+  }
+  elementContainer.replaceChild(dom(id), root);
 
   function dom(id) {
-    console.log("ID", id);
     return div(
       {
         className,

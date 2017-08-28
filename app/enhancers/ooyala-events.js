@@ -1,23 +1,14 @@
 import logger from "../logger.js";
+import player from "../player";
 
 function ooyalaEvents(store, id) {
   return {
     startContentPlayback: () => {
-      store.dispatch({
-        type: "CONTENT_PLAY",
-        payload: {
-          id
-        }
-      });
+      store.dispatch(player.actions.contentPlay(id));
       logger.log("Starting the content playback");
     },
     pauseContentPlayback: () => {
-      store.dispatch({
-        type: "CONTENT_PAUSE",
-        payload: {
-          id
-        }
-      });
+      store.dispatch(player.actions.contentPause(id));
       logger.log("Pausing the content playback and hide our player");
     },
     illegalOperationOccurred: (message) => {

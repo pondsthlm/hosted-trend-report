@@ -3,7 +3,10 @@ import reducer from "./reducer";
 const constants = {
   NAME: "player",
   SETUP_NEW_PLAYER: "SETUP_NEW_PLAYER",
-  PLAY: "PLAY"
+  PLAY: "PLAY",
+  PAUSE: "PAUSE",
+  CONTENT_PLAY: "CONTENT_PLAY",
+  CONTENT_PAUSE: "CONTENT_PAUSE"
 };
 
 const actions = {
@@ -13,8 +16,20 @@ const actions = {
       elementContainer
     }
   }),
-  play: () => ({
+  play: (id) => ({
     type: constants.PLAY
+  }),
+  contentPlay: (id) => ({
+    type: constants.CONTENT_PLAY,
+    payload: {
+      id
+    }
+  }),
+  contentPause: (id) => ({
+    type: constants.CONTENT_PAUSE,
+    payload: {
+      id
+    }
   })
 };
 

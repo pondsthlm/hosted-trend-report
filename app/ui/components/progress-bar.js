@@ -4,7 +4,7 @@ import "./progress-bar.styl";
 let bemParent = "";
 const className = "progress-bar";
 
-function progressBar(store, parentClassName) {
+function progressBar(store, id, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }

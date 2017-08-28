@@ -2,7 +2,7 @@ import { button, div } from "../../helpers/make-element";
 
 let bemParent = "";
 
-function volume(store, parentClassName) {
+function volume(store, id, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }

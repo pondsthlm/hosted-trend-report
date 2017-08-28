@@ -1,7 +1,7 @@
-import * as constants from "./constants";
+import player from "../player";
 
 export const clickPlay = (id) => ({
-  type: constants.PLAY,
+  type: player.constants.PLAY,
   payload: {
     trigger: "click",
     id
@@ -9,7 +9,7 @@ export const clickPlay = (id) => ({
 });
 
 export const clickPause = (id) => ({
-  type: constants.PAUSE,
+  type: player.constants.PAUSE,
   payload: {
     trigger: "click",
     id

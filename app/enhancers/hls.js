@@ -1,6 +1,7 @@
 import Hls from "hls.js/dist/hls.light.min.js";
 import logger from "../logger.js";
 import player from "../player";
+import ui from "../ui";
 
 const constants = {
   MANIFEST_PARSED: "MANIFEST_PARSED"
@@ -50,35 +51,51 @@ function setUpHlsService(payload, store) {
     }
   });
 
-  return id;
+  return { id, video };
 }
+const hlsService = (() => {
+  const videos = {};
 
-const hlsService = (store) => (next) => (action) => {
-  switch (action.type) {
-    case player.constants.SETUP_NEW_PLAYER:
+  return (store) => (next) => (action) => {
+    switch (action.type) {
+      case player.constants.SETUP_NEW_PLAYER: {
+        const { id, video } = setUpHlsService(action.payload, store);
+        videos[id] = video;
+        const newAction = Object.assign({}, action, {
+          payload: {
+            ...action.payload,
+            id,
+            video
+          }
+        })
 
-      const id = setUpHlsService(action.payload, store);
-      const newAction = Object.assign({}, action, {
-        payload: {
-          ...action.payload,
-          id
-        }
-      })
+        next(newAction);
+        break;
+      }
 
-      next(newAction);
-      break;
+      case player.constants.CONTENT_PLAY: {
+        videos[action.payload.id].play();
 
-    case "OOYALA_READY":
+        next(action);
+        break;
+      }
 
-      next(action);
-      break;
-    /*
-    Do nothing if the action does not interest us
-    */
-    default:
-      next(action);
-      break;
-  }
-};
+      case player.constants.PAUSE: {
+        videos[action.payload.id].pause();
+
+        next(action);
+        break;
+      }
+
+      /*
+      Do nothing if the action does not interest us
+      */
+      default:
+
+        next(action);
+        break;
+    }
+  };
+})();
 
 export default hlsService;

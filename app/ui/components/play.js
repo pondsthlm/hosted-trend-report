@@ -28,7 +28,7 @@ function play(store, id, parentClassName) {
     bemParent = `${parentClassName}__`;
   }
   const state = store.getState();
-  if (state[NAME].playing) {
+  if (state.ui.videos[id].isPlaying) {
     return pauseButton(store, id);
   } else {
     return playButton(store, id);
