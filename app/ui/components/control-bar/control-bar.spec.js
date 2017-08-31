@@ -1,27 +1,22 @@
 import {defaultVideoState} from "../../reducer";
-
-const state = Object.assign({}, defaultVideoState, {
-  isPlaying: true
-});
+import controlBar from "./control-bar.js";
+import { div } from "../../../helpers/make-element";
 
 
-function dispatchCallback(object) {
-  dispatches.push(object);
-}
-
-const dom = controlBar(state, dispatchCallback);
-
-dom.querySelector("").click();
+//dom.querySelector("").click();
 
 describe("Loding controlbar with defaltstate", () => {
+  const state = Object.assign({}, defaultVideoState, {
+    elementContainer: div()
+  });
   const dispatches = [];
 
   function dispatchCallback(object) {
     dispatches.push(object);
   }
-
   const dom = controlBar(state, dispatchCallback);
-  it(`>${headline}< is replaced and with >${expected}< as title`, (done) => {
+  console.log("querySelector test", dom.querySelector("button").innerHTML);
+  it("", (done) => {
 
   });
 });

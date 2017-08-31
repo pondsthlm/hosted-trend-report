@@ -49,7 +49,6 @@ const uiReducer = (state = defaultUiState, action) => {
     logger.log("ui deligate action to video:", action.payload.id);
     state = Object.assign({}, state, {
       videos: {
-        ...state.videos,
         [action.payload.id]: newVideoState
       }
     });

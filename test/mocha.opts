@@ -1,5 +1,7 @@
+--compilers js:babel-register
 --timeout 1000
 --reporter spec
 --recursive
---ui mocha-cakes-2
+--require mocha-cakes-2
 --require ./test/helpers/setup.js
+--ui mocha-cakes-2

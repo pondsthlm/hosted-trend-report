@@ -1,5 +1,6 @@
 
 import { div } from "../../../helpers/make-element";
+import logger from "../../../logger";
 import play from "./play";
 import "./control-bar.styl";
 import volume from "./volume";
@@ -10,31 +11,28 @@ const className = "control-bar";
 function controlBar(state, dispatch) {
 
   if (!state.elementContainer ) {
-    logger.warning(`Video ${id} is missing elementContainer`);
+    logger.error(`Video is missing elementContainer`);
     return;
   }
-  const elementContainer = state.elementContainer;
-  let root = elementContainer.querySelector(`.${className}`);
-  if (!root) {
-    root = elementContainer.appendChild(div(
-      {
-        className,
-      }, "")
-    );
-  }
-  elementContainer.replaceChild(dom(), root);
 
-  function dom(id) {
-    return div(
-      {
-        className,
-      },
-      play(state, dispatch, id, className),
-      volume(state, dispatch, id, className),
-      progressBar(state, dispatch, id, className),
-      fullscreenButton(state, dispatch, id, className)
-    );
+  let root = state.elementContainer.querySelector(`.${className}`);
+  if (!root) {
+    root = state.elementContainer.appendChild(div({className}, ""));
   }
+
+  const dom = div(
+    {
+      className,
+    },
+    play(state, dispatch, className),
+    volume(state, dispatch, className),
+    progressBar(state, dispatch, className),
+    fullscreenButton(state, dispatch, className)
+  );
+
+  state.elementContainer.replaceChild(dom, root);
+
+  return dom;
 }
 
 export default controlBar;

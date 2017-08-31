@@ -1,5 +1,19 @@
 "use strict";
 
+const chai = require("chai");
+const nock = require("nock");
+const jsdom = require("jsdom");
+const ignorewStyles = require("ignore-styles");
+const { JSDOM } = jsdom;
+const { document } = (new JSDOM("")).window;
+
+ignorewStyles.default([".styl", ".css"]);
+
+global.document = document;
+global.window = document.defaultView;
+
+nock.enableNetConnect(/(localhost|127\.0\.0\.1):\d+/);
+
 // Make sure dates are displayed in the correct timezone
 process.env.TZ = "Europe/Stockholm";
 
@@ -8,17 +22,7 @@ process.env.TZ = "Europe/Stockholm";
 // This file is required with ./test/mocha.opts
 process.env.NODE_ENV = "test";
 
-// Setup common test libraries
-require("mocha-cakes-2");
-
-const chai = require("chai");
-
 chai.config.truncateThreshold = 0;
 chai.config.includeStack = true;
 
 chai.should();
-
-// Register useful chai plugins that you use
-//chai.use(require("chai-as-promised"));
-//chai.use(require("chai-string"));
-//chai.use(require("chai-datetime"));

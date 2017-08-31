@@ -4,6 +4,8 @@
     "mocha": true
   },
   "rules": {
+    "strict": 0,
+    "no-unused-expressions": 0,
     "new-cap": [
       2,
       {
@@ -22,7 +24,14 @@
       }
     ]
   },
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "globals": {
+    "document": false,
+    "ga": false,
+    "window": false,
+
     "describe": false,
     "xdescribe": false,
     "it": false,
