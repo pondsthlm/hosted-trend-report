@@ -12,15 +12,7 @@
     "es6": true
   },
   "globals": {
-    "Feature": false,
-    "Scenario": false,
-    "Given": false,
-    "When": false,
-    "Then": false,
-    "And": false,
-    "But": false,
-    "I": false,
-    "System": false,
-    "Describe": false
+    "it": false,
+    "describe": false
   }
 }
