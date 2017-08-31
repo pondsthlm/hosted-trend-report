@@ -1,10 +1,10 @@
-import { div } from "../../helpers/make-element";
+import { div } from "../../../helpers/make-element";
 import "./progress-bar.styl";
 
 let bemParent = "";
 const className = "progress-bar";
 
-function progressBar(store, id, parentClassName) {
+function progressBar(state, dispatch, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }

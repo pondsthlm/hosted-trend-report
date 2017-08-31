@@ -1,4 +1,3 @@
-import * as constants from "./constants";
 import player from "../player";
 
 import logger from "../logger.js";
@@ -17,7 +16,7 @@ const videoReducer = (state = defaultVideoState, action) => {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
         elementContainer: action.payload.elementContainer
-      })
+      });
 
       break;
 
@@ -37,7 +36,7 @@ const videoReducer = (state = defaultVideoState, action) => {
   }
   state = Object.assign({}, state, {
     updates: state.updates + 1
-  })
+  });
 
   return state;
 };
@@ -47,7 +46,7 @@ const uiReducer = (state = defaultUiState, action) => {
   logger.log("action.type", action.type);
   if (action.payload && action.payload.id) {
     const newVideoState = videoReducer(state.videos[action.payload.id], action);
-    logger.log("ui deligate action to video:", action.payload.id)
+    logger.log("ui deligate action to video:", action.payload.id);
     state = Object.assign({}, state, {
       videos: {
         ...state.videos,
@@ -62,5 +61,5 @@ const uiReducer = (state = defaultUiState, action) => {
 
   return state;
 };
-
+export {defaultVideoState};
 export default uiReducer;

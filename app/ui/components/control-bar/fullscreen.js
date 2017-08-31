@@ -1,8 +1,8 @@
-import { button, div } from "../../helpers/make-element";
+import { button, div } from "../../../helpers/make-element";
 
 let bemParent = "";
 
-function fullscreen(store, id, parentClassName) {
+function fullscreen(state, dispatch, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }

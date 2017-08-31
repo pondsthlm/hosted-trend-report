@@ -1,8 +1,8 @@
-import { button, div } from "../../helpers/make-element";
+import { button, div } from "../../../helpers/make-element";
 
 let bemParent = "";
 
-function volume(store, id, parentClassName) {
+function volume(state, dispatch, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }
