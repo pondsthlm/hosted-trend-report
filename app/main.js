@@ -7,16 +7,8 @@ import reducers from "./reducers";
 
 const store = createStore(reducers(), {}, enhancers());
 
-function run() {
+window.Ponyo = window.Ponyo || {};
 
-  const elementContainers = document.querySelectorAll(".exp-video-player");
-
-  [].forEach.call(elementContainers, (elementContainer) => {
-    logger.log("Found video", elementContainer);
-    store.dispatch(player.actions.setupPlayer(elementContainer));
-  });
-
-
-}
-
-run();
+window.Ponyo.newVideo = (elementContainer, webtvArticle) => {
+  store.dispatch(player.actions.setupPlayer(elementContainer, webtvArticle));
+};

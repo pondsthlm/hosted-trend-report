@@ -10,22 +10,26 @@ const constants = {
 };
 
 const actions = {
-  setupPlayer: (elementContainer) => ({
+  setupPlayer: (elementContainer, webtvArticle) => ({
     type: constants.SETUP_NEW_PLAYER,
     payload: {
-      elementContainer
+      elementContainer,
+      webtvArticle
     }
   }),
-  play: (id) => ({
-    type: constants.PLAY
+  play: (id = null) => ({
+    type: constants.PLAY,
+    payload: {
+      id
+    }
   }),
-  contentPlay: (id) => ({
+  contentPlay: (id = null) => ({
     type: constants.CONTENT_PLAY,
     payload: {
       id
     }
   }),
-  contentPause: (id) => ({
+  contentPause: (id = null) => ({
     type: constants.CONTENT_PAUSE,
     payload: {
       id

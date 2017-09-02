@@ -14,7 +14,8 @@ const reducer = (state = defaultState, action) => {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
         id: action.payload.id,
-        video: action.payload.video
+        video: action.payload.video,
+        source: action.payload.webtvArticle
       });
       break;
     case player.constants.MANIFEST_PARSED:

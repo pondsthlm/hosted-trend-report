@@ -12,7 +12,7 @@ function observeVideo(store, id) {
         action = Object.assign({}, action, {
           payload: {
             ...action.payload,
-            id      
+            id
           }
         });
         store.dispatch(action);
@@ -24,6 +24,7 @@ function observeVideo(store, id) {
 }
 
 const uiMiddleware = (store) => (next) => (action) => {
+
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
     observeVideo(store, action.payload.id);

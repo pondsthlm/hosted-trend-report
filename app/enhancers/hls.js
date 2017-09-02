@@ -2,6 +2,7 @@ import Hls from "hls.js/dist/hls.light.min.js";
 import logger from "../logger.js";
 import player from "../player";
 import ui from "../ui";
+import {video, p} from "../helpers/make-element";
 
 const constants = {
   MANIFEST_PARSED: "MANIFEST_PARSED"
@@ -20,10 +21,16 @@ function setUpHlsService(payload, store) {
   const id = Math.random().toString(36).substr(2, 9);
   //const state = store.getState();
   logger.log("payload", payload);
-  const video = payload.elementContainer.querySelector("video");
+  const videoElement = video({
+    className: "exp-video",
+    dataset: {
+      id
+    }
+  }, p("Your user agent does not support the HTML5 Video element."));
+  payload.elementContainer.appendChild(videoElement);
   const hls = new Hls();
-  hls.loadSource("http://0ef62d28f8e26bbdbb21f31a1727cec6-httpcache0-03837-cacheod0.dna.qbrick.com/03837-cacheod0/_definst_/smil:ncode/2017-06-14/000066908_000_497435541/2101706140006809221-logo_576p/chunklist_b700000.m3u8");
-  hls.attachMedia(video);
+  hls.loadSource(payload.webtvArticle.streams.hashHls);
+  hls.attachMedia(videoElement);
 
 
   hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -51,7 +58,7 @@ function setUpHlsService(payload, store) {
     }
   });
 
-  return { id, video };
+  return { id, videoElement };
 }
 const hlsService = (() => {
   const videos = {};
@@ -59,13 +66,13 @@ const hlsService = (() => {
   return (store) => (next) => (action) => {
     switch (action.type) {
       case player.constants.SETUP_NEW_PLAYER: {
-        const { id, video } = setUpHlsService(action.payload, store);
-        videos[id] = video;
+        const { id, videoElement } = setUpHlsService(action.payload, store);
+        videos[id] = videoElement;
         const newAction = Object.assign({}, action, {
           payload: {
             ...action.payload,
             id,
-            video
+            video: videoElement
           }
         })
 

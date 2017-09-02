@@ -48,7 +48,7 @@ function setStyles(el, styles) {
 function setDataAttributes(el, dataAttributes) {
   Object.keys(dataAttributes).forEach((dataAttribute) => {
     // jsdom doesn't support element.dataset, so set them as named attributes
-    el.setAttribute("data-${dataAttribute}", dataAttributes[dataAttribute]);
+    el.setAttribute(`data-${dataAttribute}`, dataAttributes[dataAttribute]);
   });
 }
 
@@ -100,8 +100,11 @@ export const h2 = (...args) => makeElement("h2", ...args);
 export const header = (...args) => makeElement("header", ...args);
 export const p = (...args) => makeElement("p", ...args);
 export const span = (...args) => makeElement("span", ...args);
+export const video = (...args) => makeElement("video", ...args);
+
 export const ul = (...args) => makeElement("ul", ...args);
 export const li = (...args) => makeElement("li", ...args);
+
 export const svg = (...args) => makeElement("svg", ...args);
 export const path = (...args) => makeElement("path", ...args);
 export const circle = (...args) => makeElement("circle", ...args);
