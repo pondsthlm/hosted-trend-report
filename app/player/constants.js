@@ -1,0 +1,13 @@
+const constants = {
+  NAME: "player",
+  AD_PLAY: "AD_PLAY",
+  SETUP_NEW_PLAYER: "SETUP_NEW_PLAYER",
+  PLAY: "PLAY",
+  PAUSE: "PAUSE",
+  CONTENT_PLAY: "CONTENT_PLAY",
+  CONTENT_PAUSE: "CONTENT_PAUSE",
+  CONTENT_ENDED: "CONTENT_ENDED",
+  CONTENT_CLICKED: "CONTENT_CLICKED"
+};
+
+export default constants;
