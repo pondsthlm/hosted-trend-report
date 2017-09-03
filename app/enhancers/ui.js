@@ -27,11 +27,11 @@ const uiMiddleware = (store) => (next) => (action) => {
 
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
-    observeVideo(store, action.payload.id);
-    break;
+      observeVideo(store, action.payload.id);
+      break;
 
     default:
-    break;
+      break;
   }
   next(action);
 };

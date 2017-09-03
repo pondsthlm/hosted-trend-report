@@ -1,5 +1,4 @@
 import player from "../player";
-import logger from "../logger.js";
 import ooyalaEvents from "./ooyala-events";
 import {div} from "../helpers/make-element";
 

@@ -1,5 +1,4 @@
 import player from "./player";
-import logger from "./logger.js";
 import { createStore } from "redux";
 import enhancers from "./enhancers/index.js";
 import reducers from "./reducers";

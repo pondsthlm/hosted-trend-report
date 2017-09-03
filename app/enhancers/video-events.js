@@ -3,7 +3,7 @@ import player from "../player";
 
 function videoEvents(store, id, videoElement) {
   videoElement.addEventListener("timeupdate", () => {
-    console.log("timeupdate");
+    logger.log("timeupdate");
   }, true);
   videoElement.addEventListener("ended", () => {
     store.dispatch(player.actions.contentEnded(id));

@@ -76,17 +76,15 @@ const hlsService = (() => {
             id,
             video: videoElement
           }
-        })
+        });
 
-        next(newAction);
-        break;
+        return next(newAction);
       }
 
       case player.constants.PAUSE: {
         videos[action.payload.id].pause();
 
-        next(action);
-        break;
+        return next(action);
       }
 
       /*
@@ -94,8 +92,7 @@ const hlsService = (() => {
       */
       default:
 
-        next(action);
-        break;
+        return next(action);
     }
   };
 })();
