@@ -1,7 +1,7 @@
 import Hls from "hls.js/dist/hls.light.min.js";
 import logger from "../logger.js";
 import player from "../player";
-import ui from "../ui";
+import videoEvents from "./video-events";
 import {video, p} from "../helpers/make-element";
 
 const constants = {
@@ -57,6 +57,8 @@ function setUpHlsService(payload, store) {
       }
     }
   });
+
+  videoEvents(store, id, videoElement);
 
   return { id, videoElement };
 }

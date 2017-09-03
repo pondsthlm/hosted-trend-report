@@ -106,6 +106,7 @@ const ooyala = (() => {
         } else {
           video.adPlayer.startSession(video.session, ooyalaEvents(store, video.id));
           video.hasSession = true;
+          action = Object.assign({}, action, player.actions.adPlay(action.payload.id));
         }
         break;
       }
@@ -119,6 +120,11 @@ const ooyala = (() => {
       case player.constants.PAUSE: {
         const video = videos[action.payload.id];
         video.adPlayer.contentPaused();
+        break;
+      }
+      case player.constants.CONTENT_ENDED: {
+        const video = videos[action.payload.id];
+        video.adPlayer.contentFinished();
         break;
       }
 

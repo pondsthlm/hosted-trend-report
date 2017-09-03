@@ -5,7 +5,8 @@ import logger from "../logger.js";
 const defaultVideoState = {
   updates: 0,
   isPlaying: false,
-  elementContainer: null
+  elementContainer: null,
+  showControls: true
 };
 const defaultUiState = {
   videos: {}
@@ -17,12 +18,24 @@ const videoReducer = (state = defaultVideoState, action) => {
       state = Object.assign({}, state, {
         elementContainer: action.payload.elementContainer
       });
-
       break;
+
+    case player.constants.AD_PLAY: {
+      state = Object.assign({}, state, {
+        showControls: false
+      });
+      break;
+    }
 
     case player.constants.CONTENT_PLAY:
       state = Object.assign({}, state, {
         isPlaying: true
+      });
+      break;
+
+    case player.constants.CONTENT_CLICKED:
+      state = Object.assign({}, state, {
+        showControls: true
       });
       break;
 

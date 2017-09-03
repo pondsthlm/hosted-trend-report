@@ -1,6 +1,5 @@
 <style>
 .video-container {
-  width: 400px;
   height: 200px;
   position: relative;
   display: block;
@@ -14,10 +13,8 @@
   top: 0;
 }
 
-.video {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.content-videos {
+  padding: 10px 10%;
 }
 </style>
 Related webtvArticle
@@ -25,28 +22,42 @@ Related webtvArticle
 </div>
 
 Widget video:
-<div class="video-container content-video">
+<div class="content-videos">
 </div>
 <script>
 
 // parse bodyText for the video widget
 //<exp:widget size=\"full\" align=\"none\" type=\"webtv-article\" source=\"http://livedata.flotsam.service.consul.xpr.dex.nu/webtv-article/7f3c300b-0c32-4a44-93c6-4e8ffd832fd3\"></exp:widget>
 var bodyText = `{{{bodyText}}}`;
-var index = bodyText.indexOf('type="webtv-article" source=\"http://livedata.flotsam.service.consul.xpr.dex.nu/') + 79;
-var end = bodyText.indexOf('\"></exp:widget>', index);
-var route = `/ponyo/assets/${bodyText.substring(index, end)}`;
 
-// request source.
-var xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function() {
-  if (xhr.responseText) {
-    // initiate content video.
-    var contentVideo = document.querySelector(".content-video");
-    window.Ponyo.newVideo(contentVideo, JSON.parse(xhr.responseText));
-  }
-};
-xhr.open("GET", route);
-xhr.send(null);
+function contentVideo(route) {
+  // request source.
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.responseText) {
+      // initiate content video.
+      var contentVideo = document.querySelector(".content-videos");
+      var div = document.createElement("div");
+      contentVideo.appendChild(div);
+      window.Ponyo.newVideo(div, JSON.parse(xhr.responseText));
+    }
+  };
+  xhr.open("GET", route);
+  xhr.send(null);
+}
+
+var str = bodyText;
+var count = 0;
+var pos = str.indexOf('type="webtv-article" source=\"http://livedata.flotsam.service.consul.xpr.dex.nu/');
+
+while (pos !== -1) {
+  count++;
+  const end = bodyText.indexOf('\"></exp:widget>', pos);
+  contentVideo(`/ponyo/assets/${bodyText.substring(pos + 79, end)}`);
+  pos = str.indexOf('type="webtv-article" source=\"http://livedata.flotsam.service.consul.xpr.dex.nu/', pos + 1);
+}
+console.log(count); // displays 7
+
 
 (function () {
   var related = document.querySelector(".related");

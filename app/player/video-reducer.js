@@ -6,7 +6,7 @@ const defaultState = {
   id: null,
   mode: "init",
   contentReady: false,
-  video: null
+  video: null,
 };
 
 const reducer = (state = defaultState, action) => {
