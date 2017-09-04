@@ -6,7 +6,8 @@ const defaultVideoState = {
   updates: 0,
   isPlaying: false,
   elementContainer: null,
-  showControls: true
+  showControls: true,
+  hideControls: false
 };
 const defaultUiState = {
   videos: {}

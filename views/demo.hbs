@@ -15,13 +15,22 @@
 
 .content-videos {
   padding: 10px 10%;
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+.content-videos > div {
+  position: relative;
+  display: block;
+  height: 200px;
 }
 </style>
 Related webtvArticle
 <div class="video-container related">
 </div>
 
-Widget video:
+Widget videos:
 <div class="content-videos">
 </div>
 <script>
@@ -31,16 +40,24 @@ Widget video:
 var bodyText = `{{{bodyText}}}`;
 
 function contentVideo(route) {
+  console.log("###################", route);
   // request source.
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function() {
-    if (xhr.responseText) {
-      // initiate content video.
-      var contentVideo = document.querySelector(".content-videos");
-      var div = document.createElement("div");
-      contentVideo.appendChild(div);
-      window.Ponyo.newVideo(div, JSON.parse(xhr.responseText));
-    }
+    var status;
+		var data;
+		// https://xhr.spec.whatwg.org/#dom-xmlhttprequest-readystate
+		if (xhr.readyState == 4) { // `DONE`
+			status = xhr.status;
+			if (status == 200) {
+        var contentVideo = document.querySelector(".content-videos");
+        var div = document.createElement("div");
+        contentVideo.appendChild(div);
+				data = JSON.parse(xhr.responseText);
+        window.Ponyo.newVideo(div, JSON.parse(xhr.responseText))
+			}
+
+		}
   };
   xhr.open("GET", route);
   xhr.send(null);
