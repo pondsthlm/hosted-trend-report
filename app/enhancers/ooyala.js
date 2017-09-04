@@ -89,6 +89,11 @@ const ooyala = (() => {
   const videos = {};
 
   return (store) => (next) => (action) => {
+    /*
+    Pass all actions through by default
+    */
+    next(action);
+
     switch (action.type) {
       case player.constants.SETUP_NEW_PLAYER:
         setUpAdService(action.payload, store);
@@ -134,10 +139,6 @@ const ooyala = (() => {
         break;
     }
 
-    /*
-    Pass all actions through by default
-    */
-    next(action);
   };
 
 })();

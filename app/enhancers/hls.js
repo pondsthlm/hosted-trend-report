@@ -20,13 +20,16 @@ const actions = {
 function setUpHlsService(payload, store) {
   const id = Math.random().toString(36).substr(2, 9);
   //const state = store.getState();
-  logger.log("payload", payload);
   const videoElement = video({
     className: "exp-video",
     dataset: {
       id
     }
   }, p("Your user agent does not support the HTML5 Video element."));
+  payload.elementContainer.style.paddingTop = "56.25%";
+  payload.elementContainer.style.height = "0";
+  payload.elementContainer.style.position = "relative";
+
   payload.elementContainer.appendChild(videoElement);
   const hls = new Hls();
   hls.loadSource(payload.webtvArticle.streams.hashHls);
@@ -74,7 +77,7 @@ const hlsService = (() => {
           payload: {
             ...action.payload,
             id,
-            video: videoElement
+            videoElement
           }
         });
 

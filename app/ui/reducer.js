@@ -7,7 +7,8 @@ const defaultVideoState = {
   isPlaying: false,
   elementContainer: null,
   showControls: true,
-  hideControls: false
+  hideControls: false,
+  id: null
 };
 const defaultUiState = {
   videos: {}
@@ -17,7 +18,8 @@ const videoReducer = (state = defaultVideoState, action) => {
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
-        elementContainer: action.payload.elementContainer
+        elementContainer: action.payload.elementContainer,
+        id: action.payload.id
       });
       break;
 
@@ -57,12 +59,12 @@ const videoReducer = (state = defaultVideoState, action) => {
 
 const uiReducer = (state = defaultUiState, action) => {
 
-  logger.log("action.type", action.type);
   if (action.payload && action.payload.id) {
     const newVideoState = videoReducer(state.videos[action.payload.id], action);
     logger.log("ui deligate action to video:", action.payload.id);
     state = Object.assign({}, state, {
       videos: {
+        ...state.videos,
         [action.payload.id]: newVideoState
       }
     });

@@ -6,7 +6,8 @@ const defaultState = {
   id: null,
   mode: "init",
   contentReady: false,
-  video: null,
+  videoElement: null,
+  elementContainer: null
 };
 
 const reducer = (state = defaultState, action) => {
@@ -14,8 +15,9 @@ const reducer = (state = defaultState, action) => {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
         id: action.payload.id,
-        video: action.payload.video,
-        source: action.payload.webtvArticle
+        videoElement: action.payload.videoElement,
+        source: action.payload.webtvArticle,
+        elementContainer: action.payload.elementContainer
       });
       break;
     case player.constants.MANIFEST_PARSED:
@@ -24,11 +26,11 @@ const reducer = (state = defaultState, action) => {
       });
       break;
     case player.constants.CONTENT_PLAY: {
-      state.video.play();
+      state.videoElement.play();
       break;
     }
     case player.constants.CONTENT_PAUSE:
-      state.video.pause();
+      state.videoElement.pause();
       break;
     default:
   }
