@@ -122,12 +122,9 @@ const ooyala = (() => {
         break;
       case player.constants.PLAY: {
         const video = videos[action.payload.id];
-        console.log("1play", video.hasSession);
         if (video.hasSession) {
           video.adPlayer.contentStarted();
-          console.log("2play", action);
           action = Object.assign({}, action, player.actions.contentPlay());
-          console.log("3play", action);
         } else {
           video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id));
           video.hasSession = true;

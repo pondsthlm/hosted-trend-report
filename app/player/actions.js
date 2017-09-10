@@ -1,36 +1,20 @@
 import constants from "./constants";
 
 const actions = {
-  setupPlayer: (elementContainer, webtvArticle) => ({
-    type: constants.SETUP_NEW_PLAYER,
-    payload: {
-      elementContainer,
-      webtvArticle
-    }
-  }),
-  play: () => ({
-    type: constants.PLAY
-  }),
   adPlay: () => ({
     type: constants.AD_PLAY
-  }),
-  contentPlay: () => ({
-    type: constants.CONTENT_PLAY
-  }),
-  contentPause: () => ({
-    type: constants.CONTENT_PAUSE
-  }),
-  contentEnded: () => ({
-    type: constants.CONTENT_ENDED
   }),
   contentClicked: () => ({
     type: constants.CONTENT_CLICKED
   }),
-  timeupdate: (currentTime) => ({
-    type: constants.TIMEUPDATE,
-    payload: {
-      currentTime
-    }
+  contentEnded: () => ({
+    type: constants.CONTENT_ENDED
+  }),
+  contentPause: () => ({
+    type: constants.CONTENT_PAUSE
+  }),
+  contentPlay: () => ({
+    type: constants.CONTENT_PLAY
   }),
   durationChange: (duration) => ({
     type: constants.DURATION_CHANGE,
@@ -38,15 +22,37 @@ const actions = {
       duration
     }
   }),
-  uiPlay: (event, trigger) => ({
-    type: constants.PLAY,
+  play: () => ({
+    type: constants.PLAY
+  }),
+  setupPlayer: (elementContainer, webtvArticle) => ({
+    type: constants.SETUP_NEW_PLAYER,
+    payload: {
+      elementContainer,
+      webtvArticle
+    }
+  }),
+  sizeChange: (width) => ({
+    type: constants.SIZE_CHANGE,
+    payload: {
+      width
+    }
+  }),
+  timeupdate: (currentTime) => ({
+    type: constants.TIMEUPDATE,
+    payload: {
+      currentTime
+    }
+  }),
+  uiPause: (event, trigger) => ({
+    type: constants.PAUSE,
     payload: {
       event,
       trigger
     }
   }),
-  uiPause: (event, trigger) => ({
-    type: constants.PAUSE,
+  uiPlay: (event, trigger) => ({
+    type: constants.PLAY,
     payload: {
       event,
       trigger
