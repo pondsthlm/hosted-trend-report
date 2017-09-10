@@ -9,7 +9,8 @@ const defaultState = {
   contentReady: false,
   videoElement: null,
   elementContainer: null,
-  duration: 0
+  duration: 0,
+  fullscreen: false
 };
 
 const reducer = (state = defaultState, action) => {
@@ -38,6 +39,23 @@ const reducer = (state = defaultState, action) => {
       break;
     case player.constants.PAUSE:
       state.videoElement.pause();
+      break;
+    case player.constants.SET_TIME:
+    console.log(action.payload);
+      state.videoElement.currentTime = action.payload.time;
+      break;
+    case player.constants.FULLSCREEN:
+      if (state.elementContainer.requestFullscreen) state.elementContainer.requestFullscreen();
+      else if (state.elementContainer.mozRequestFullScreen) state.elementContainer.mozRequestFullScreen();
+      else if (state.elementContainer.webkitRequestFullScreen) {
+          // Safari 5.1 only allows proper fullscreen on the video element. This also works fine on other WebKit browsers as the following CSS (set in styles.css) hides the default controls that appear again, and
+          // ensures that our custom controls are visible:
+        state.videoElement.webkitRequestFullScreen();
+      }
+      else if (state.elementContainer.msRequestFullscreen) state.elementContainer.msRequestFullscreen();
+      state = Object.assign({}, state, {
+        fullscreen: true
+      });
       break;
     default:
   }

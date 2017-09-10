@@ -1,5 +1,5 @@
 import { button, div } from "../../../helpers/make-element";
-import { clickFullscreen } from "../../actions";
+import actions from "../../../player/actions";
 
 let bemParent = "";
 
@@ -17,7 +17,8 @@ function fullscreen(state, dispatch, parentClassName) {
   }, button({
     className: `${bemParent}fullscreen-button`,
     onclick: () => {
-      dispatch(clickFullscreen());
+      console.log(actions);
+      dispatch(actions.uiFullscreen("click", "fullscreen-button"));
       /*
       if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
       else if (videoContainer.mozRequestFullScreen) videoContainer.mozRequestFullScreen();

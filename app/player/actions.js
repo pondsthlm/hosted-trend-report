@@ -32,6 +32,11 @@ const actions = {
       webtvArticle
     }
   }),
+  setTime: (time) => ({type: constants.SET_TIME,
+    payload: {
+      time
+    }
+  }),
   sizeChange: (width) => ({
     type: constants.SIZE_CHANGE,
     payload: {
@@ -42,6 +47,13 @@ const actions = {
     type: constants.TIMEUPDATE,
     payload: {
       currentTime
+    }
+  }),
+  uiFullscreen: (event, trigger) => ({
+    type: constants.FULLSCREEN,
+    payload: {
+      event,
+      trigger
     }
   }),
   uiPause: (event, trigger) => ({

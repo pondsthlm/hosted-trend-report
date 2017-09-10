@@ -1,36 +1,21 @@
 .progress-bar {
   display: table;
   width: 100%;
-  padding: 0 50px;
   vertical-align: middle;
   color: #fff;
+  position: relative;
 
-  .progress-bar__duration {
-    display: table-cell;
-    padding: 0 5px;
-  }
-
-  .progress-bar__total {
-    display: table-cell;
-    width: 50px;
-    padding: 0 5px;
-  }
-
-  .progress-bar__bar {
-    display: table-cell;
+  .progress-bar__scrubber {
+    position: relative;
     width: 100%;
-    vertical-align: middle;
-    overflow: hidden;
+    height: 20px;
+    background-color: black;
   }
 
   .progress-bar__progress {
-    -webkit-appearance: none;
-    appearance: none;
-    display: inline-block;
-    height: 2px;
-    font-size: 1px
-    background: red;
-    width: 100%
+    width: 0;
+    height: 20px;
+    background-color: red;
   }
 
 
