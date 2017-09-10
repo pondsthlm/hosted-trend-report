@@ -8,18 +8,28 @@ const defaultVideoState = {
   elementContainer: null,
   showControls: true,
   hideControls: false,
-  id: null
-};
-const defaultUiState = {
-  videos: {}
+  id: null,
+  duration: 0,
+  currentTime: -1,
+  fullscreen: false
 };
 
-const videoReducer = (state = defaultVideoState, action) => {
+// Indicate to ui enhancer to update
+function updateUI(state) {
+  return Object.assign({}, state, {
+    updates: state.updates + 1
+  });
+}
+
+// Deligated from video-reducer
+const uiReducer = (fullState, state = defaultVideoState, action) => {
+
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
         elementContainer: action.payload.elementContainer,
-        id: action.payload.id
+        id: action.payload.id,
+        duration: action.payload.duration
       });
       break;
 
@@ -48,33 +58,23 @@ const videoReducer = (state = defaultVideoState, action) => {
         isPlaying: false
       });
       break;
+    case player.constants.TIMEUPDATE:
+      state = Object.assign({}, state, {
+        currentTime: action.payload.currentTime
+      });
+      break;
+    case player.constants.DURATION_CHANGE:
+      state = Object.assign({}, state, {
+        duration: action.payload.duration
+      });
+      break;
     default:
   }
-  state = Object.assign({}, state, {
-    updates: state.updates + 1
-  });
+
+  state = updateUI(state);
 
   return state;
 };
 
-const uiReducer = (state = defaultUiState, action) => {
-
-  if (action.payload && action.payload.id) {
-    const newVideoState = videoReducer(state.videos[action.payload.id], action);
-    logger.log("ui deligate action to video:", action.payload.id);
-    state = Object.assign({}, state, {
-      videos: {
-        ...state.videos,
-        [action.payload.id]: newVideoState
-      }
-    });
-  }
-
-  switch (action.type) {
-    default:
-  }
-
-  return state;
-};
 export {defaultVideoState};
 export default uiReducer;

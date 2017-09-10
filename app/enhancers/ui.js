@@ -4,11 +4,18 @@ import player from "../player";
 
 function observeVideo(store, id) {
   let updates;
+
   store.subscribe(() => {
     const state = store.getState();
-    if (state.ui.videos && state.ui.videos[id] && state.ui.videos[id].updates !== updates) {
+
+    // Check if video ui needs to update
+    if (state.player.videos[id].ui && state.player.videos[id].ui.updates !== updates) {
+
       logger.log(`Update video ${id}`);
+
+      // Removing id complexity for dispatches
       const localDispatch = (action) => {
+        // Decorate with id
         action = Object.assign({}, action, {
           ...action,
           payload: {
@@ -18,8 +25,10 @@ function observeVideo(store, id) {
         });
         store.dispatch(action);
       };
-      ui.components.update(state.ui.videos[id], localDispatch);
-      updates = state.ui.videos[id].updates;
+
+      // Update ui component
+      ui.components.update(state.player.videos[id].ui, localDispatch);
+      updates = state.player.videos[id].ui.updates;
     }
   });
 }
@@ -27,6 +36,7 @@ function observeVideo(store, id) {
 const uiMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
+      // Setup store subscriber
       observeVideo(store, action.payload.id);
       break;
 

@@ -1,5 +1,5 @@
 import { button } from "../../../helpers/make-element";
-import { clickPlay, clickPause } from "../../actions";
+import actions from "../../../player/actions";
 
 let bemParent = "";
 
@@ -7,7 +7,7 @@ function playButton(state, dispatch) {
   return button({
     className: `${bemParent}play-button`,
     onclick: () => {
-      dispatch(clickPlay());
+      dispatch(actions.uiPlay("click", "play-button"));
     }
   }, "▶");
 }
@@ -16,7 +16,7 @@ function pauseButton(state, dispatch) {
   return button({
     className: `${bemParent}pause-button`,
     onclick: () => {
-      dispatch(clickPause());
+      dispatch(actions.uiPause("click", "pause-button"));
     }
   }, "||");
 }

@@ -1,4 +1,3 @@
-import player from "./";
 import videoReducer from "./video-reducer";
 
 import logger from "../logger.js";
@@ -9,6 +8,7 @@ const defaultState = {
 };
 
 const reducer = (state = defaultState, action) => {
+  // Deligate to videoReducer
   if (action.payload && action.payload.id) {
     const newVideoState = videoReducer(state.videos[action.payload.id], action);
     logger.log("player deligate to video", action);

@@ -1,4 +1,5 @@
 import player from "./";
+import uiComponent from "../ui";
 
 //import logger from "../logger.js";
 
@@ -7,17 +8,20 @@ const defaultState = {
   mode: "init",
   contentReady: false,
   videoElement: null,
-  elementContainer: null
+  elementContainer: null,
+  duration: 0
 };
 
 const reducer = (state = defaultState, action) => {
+
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
         id: action.payload.id,
         videoElement: action.payload.videoElement,
         source: action.payload.webtvArticle,
-        elementContainer: action.payload.elementContainer
+        elementContainer: action.payload.elementContainer,
+        duration: action.payload.duration
       });
       break;
     case player.constants.MANIFEST_PARSED:
@@ -32,8 +36,19 @@ const reducer = (state = defaultState, action) => {
     case player.constants.CONTENT_PAUSE:
       state.videoElement.pause();
       break;
+    case player.constants.PAUSE:
+      state.videoElement.pause();
+      break;
     default:
   }
+
+  // Deligate to uiReducer
+  const uiState = uiComponent.reducer(state, state.ui, action);
+  state = Object.assign({}, state, {
+    ui: {
+      ...uiState
+    }
+  });
 
   return state;
 };

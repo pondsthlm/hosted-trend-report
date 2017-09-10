@@ -85,6 +85,25 @@ adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.AD_CLICKED, (event, metadata)
 
 */
 
+function getOoyalaEvents(store, id) {
+  const localDispatch = (action) => {
+    action = Object.assign({}, action, {
+      ...action,
+      payload: {
+        ...action.payload,
+        id
+      }
+    });
+    store.dispatch(action);
+  };
+
+  const localStore = {
+    ...store,
+    dispatch: localDispatch
+  };
+  return ooyalaEvents(localStore);
+}
+
 const ooyala = (() => {
   const videos = {};
 
@@ -92,7 +111,6 @@ const ooyala = (() => {
     /*
     Pass all actions through by default
     */
-    next(action);
 
     switch (action.type) {
       case player.constants.SETUP_NEW_PLAYER:
@@ -104,13 +122,16 @@ const ooyala = (() => {
         break;
       case player.constants.PLAY: {
         const video = videos[action.payload.id];
+        console.log("1play", video.hasSession);
         if (video.hasSession) {
           video.adPlayer.contentStarted();
-          action = Object.assign({}, action, player.actions.contentPlay(action.payload.id));
+          console.log("2play", action);
+          action = Object.assign({}, action, player.actions.contentPlay());
+          console.log("3play", action);
         } else {
-          video.adPlayer.startSession(video.session, ooyalaEvents(store, video.id));
+          video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id));
           video.hasSession = true;
-          action = Object.assign({}, action, player.actions.adPlay(action.payload.id));
+          action = Object.assign({}, action, player.actions.adPlay());
         }
         break;
       }
@@ -139,6 +160,7 @@ const ooyala = (() => {
         break;
     }
 
+    return next(action);
   };
 
 })();

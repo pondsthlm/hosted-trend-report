@@ -9,6 +9,8 @@ const attributeExceptions = [
   "height",
   "viewBox",
   "fill",
+  "max",
+  "value"
 ];
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
@@ -101,6 +103,7 @@ export const header = (...args) => makeElement("header", ...args);
 export const p = (...args) => makeElement("p", ...args);
 export const span = (...args) => makeElement("span", ...args);
 export const video = (...args) => makeElement("video", ...args);
+export const progress = (...args) => makeElement("progress", ...args);
 
 export const ul = (...args) => makeElement("ul", ...args);
 export const li = (...args) => makeElement("li", ...args);

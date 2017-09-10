@@ -1,4 +1,4 @@
-import { div } from "../../../helpers/make-element";
+import { div, progress } from "../../../helpers/make-element";
 import "./progress-bar.styl";
 
 let bemParent = "";
@@ -8,32 +8,24 @@ function progressBar(state, dispatch, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }
+  /*
+  <div class="progress">
+       <progress id="progress" value="0" min="0">
+         <span id="progress-bar"></span>
+       </progress>
+     </div>
+     */
+
   return div(
     {
-      className: `${bemParent}${className}`,
+      className: `${bemParent}${className} ${className}`,
     },
-    div(
+    progress(
       {
-        className,
-      },
-      div({
-        className: `${className}__duration`,
-      }, "00"),
-      div({
-        className: `${className}__bar`,
-      },
-        div({
-          className: `${className}__progress`,
-          style: {
-            width: "50%"
-          }
-        }, ""),
-        div({
-          className: `${className}__scrub`,
-        }, "")),
-      div({
-        className: `${className}__total`,
-      }, "88")
+        className: `${className}__progress`,
+        value: state.currentTime,
+        max: state.duration
+      }
     )
   );
 }

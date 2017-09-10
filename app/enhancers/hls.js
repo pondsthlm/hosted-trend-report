@@ -61,7 +61,26 @@ function setUpHlsService(payload, store) {
     }
   });
 
-  videoEvents(store, id, videoElement);
+  // Remove id complexity
+  const localDispatch = (action) => {
+    // Decorate with id
+    action = Object.assign({}, action, {
+      ...action,
+      payload: {
+        ...action.payload,
+        id
+      }
+    });
+    store.dispatch(action);
+  };
+
+  const localStore = {
+    ...store,
+    dispatch: localDispatch
+  };
+
+  // Setup videoEvents
+  videoEvents(localStore, videoElement);
 
   return { id, videoElement };
 }
@@ -70,31 +89,24 @@ const hlsService = (() => {
 
   return (store) => (next) => (action) => {
     switch (action.type) {
+
       case player.constants.SETUP_NEW_PLAYER: {
         const { id, videoElement } = setUpHlsService(action.payload, store);
         videos[id] = videoElement;
+        // Decorate with id, element, & duration
         const newAction = Object.assign({}, action, {
           payload: {
             ...action.payload,
             id,
-            videoElement
+            videoElement,
+            duration: videoElement.duration
           }
         });
 
         return next(newAction);
       }
 
-      case player.constants.PAUSE: {
-        videos[action.payload.id].pause();
-
-        return next(action);
-      }
-
-      /*
-      Do nothing if the action does not interest us
-      */
       default:
-
         return next(action);
     }
   };

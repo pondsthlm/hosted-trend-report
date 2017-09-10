@@ -8,40 +8,48 @@ const actions = {
       webtvArticle
     }
   }),
-  play: (id = null) => ({
+  play: () => ({
+    type: constants.PLAY
+  }),
+  adPlay: () => ({
+    type: constants.AD_PLAY
+  }),
+  contentPlay: () => ({
+    type: constants.CONTENT_PLAY
+  }),
+  contentPause: () => ({
+    type: constants.CONTENT_PAUSE
+  }),
+  contentEnded: () => ({
+    type: constants.CONTENT_ENDED
+  }),
+  contentClicked: () => ({
+    type: constants.CONTENT_CLICKED
+  }),
+  timeupdate: (currentTime) => ({
+    type: constants.TIMEUPDATE,
+    payload: {
+      currentTime
+    }
+  }),
+  durationChange: (duration) => ({
+    type: constants.DURATION_CHANGE,
+    payload: {
+      duration
+    }
+  }),
+  uiPlay: (event, trigger) => ({
     type: constants.PLAY,
     payload: {
-      id
+      event,
+      trigger
     }
   }),
-  adPlay: (id = null) => ({
-    type: constants.AD_PLAY,
+  uiPause: (event, trigger) => ({
+    type: constants.PAUSE,
     payload: {
-      id
-    }
-  }),
-  contentPlay: (id = null) => ({
-    type: constants.CONTENT_PLAY,
-    payload: {
-      id
-    }
-  }),
-  contentPause: (id = null) => ({
-    type: constants.CONTENT_PAUSE,
-    payload: {
-      id
-    }
-  }),
-  contentEnded: (id = null) => ({
-    type: constants.CONTENT_ENDED,
-    payload: {
-      id
-    }
-  }),
-  contentClicked: (id = null) => ({
-    type: constants.CONTENT_CLICKED,
-    payload: {
-      id
+      event,
+      trigger
     }
   })
 };
