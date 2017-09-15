@@ -24,14 +24,16 @@ function setUpHlsService(payload, store) {
     className: "exp-video",
     dataset: {
       id
-    }
+    },
+    // todo: add image optimizer
+    poster: payload.webtvArticle.image.versions[3].url
   }, p("Your user agent does not support the HTML5 Video element."));
   payload.elementContainer.style.paddingTop = "56.25%";
   payload.elementContainer.style.height = "0";
   payload.elementContainer.style.position = "relative";
 
   payload.elementContainer.appendChild(videoElement);
-  const hls = new Hls();
+  const hls = new Hls({ autoStartLoad: false });
   hls.loadSource(payload.webtvArticle.streams.hashHls);
   hls.attachMedia(videoElement);
 
