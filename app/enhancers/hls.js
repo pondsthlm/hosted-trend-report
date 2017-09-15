@@ -2,6 +2,7 @@ import Hls from "hls.js/dist/hls.light.min.js";
 import logger from "../logger.js";
 import player from "../player";
 import videoEvents from "./video-events";
+import imageOptimizer from "../helpers/image-optimizer"
 import {video, p} from "../helpers/make-element";
 
 const constants = {
@@ -26,7 +27,7 @@ function setUpHlsService(payload, store) {
       id
     },
     // todo: add image optimizer
-    poster: payload.webtvArticle.image.versions[3].url
+    poster: imageOptimizer(payload.webtvArticle.image)
   }, p("Your user agent does not support the HTML5 Video element."));
 
   payload.elementContainer.style.paddingTop = "56.25%";
