@@ -1,6 +1,6 @@
 import player from "../player";
 
-import logger from "../logger.js";
+//import logger from "../logger.js";
 
 const defaultVideoState = {
   updates: 0,

@@ -21,15 +21,18 @@ function appendText(el, text) {
 }
 
 function appendArray(el, children) {
+  const elementChildren = [];
   children.forEach((child) => {
     if (Array.isArray(child)) {
       appendArray(el, child);
     } else if (child instanceof window.Element) {
+      elementChildren.push(child);
       el.appendChild(child);
     } else if (typeof child === "string" || typeof child === "number") {
       appendText(el, child);
     }
   });
+  return elementChildren;
 }
 
 function setStyles(el, styles) {
@@ -58,38 +61,62 @@ function isSvg(type) {
   return ["path", "svg", "circle"].includes(type);
 }
 
+function setElementProperties(properties, el) {
+  Object.keys(properties).forEach((propName) => {
+    if (propName in el || attributeExceptions.includes(propName)) {
+      const value = properties[propName];
+
+      if (propName === "style") {
+        setStyles(el, value);
+      } else if (propName === "dataset") {
+        setDataAttributes(el, value);
+      } else if (typeof value === "function" || propName === "className") {
+        el[propName] = value; // e.g. onclick
+      } else if (value) {
+        el.setAttribute(propName, value); // need this for SVG elements
+      }
+    } else {
+      //console.warn(`${propName} is not a valid property of a <${type}>`);
+    }
+  });
+  return el;
+}
+
 function makeElement(type, textOrPropsOrChild, ...otherChildren) {
-  const el = isSvg(type)
+  let children = [];
+  let el = isSvg(type)
     ? document.createElementNS(SVG_NAMESPACE, type)
     : document.createElement(type);
+  let update = () => {};
+
+  el.update = (fn) => {
+    update = fn;
+  };
+
+  el.newState = (state) => {
+    const object = update(state);
+    if (object) {
+      setElementProperties(object, el);
+    }
+    children.forEach((child) => {
+      child.newState(state);
+    });
+  };
 
   if (Array.isArray(textOrPropsOrChild)) {
-    appendArray(el, textOrPropsOrChild);
+    children = children.concat(appendArray(el, textOrPropsOrChild));
   } else if (textOrPropsOrChild instanceof window.Element) {
+    children.push(textOrPropsOrChild);
     el.appendChild(textOrPropsOrChild);
   } else if (typeof textOrPropsOrChild === "string" || typeof textOrPropsOrChild === "number") {
     appendText(el, textOrPropsOrChild);
   } else if (typeof textOrPropsOrChild === "object") {
-    Object.keys(textOrPropsOrChild).forEach((propName) => {
-      if (propName in el || attributeExceptions.includes(propName)) {
-        const value = textOrPropsOrChild[propName];
-
-        if (propName === "style") {
-          setStyles(el, value);
-        } else if (propName === "dataset") {
-          setDataAttributes(el, value);
-        } else if (typeof value === "function" || propName === "className") {
-          el[propName] = value; // e.g. onclick
-        } else if (value) {
-          el.setAttribute(propName, value); // need this for SVG elements
-        }
-      } else {
-        //console.warn(`${propName} is not a valid property of a <${type}>`);
-      }
-    });
+    el = setElementProperties(textOrPropsOrChild, el);
   }
 
-  if (otherChildren) appendArray(el, otherChildren);
+  if (otherChildren) {
+    children = children.concat(appendArray(el, otherChildren));
+  }
 
   return el;
 }

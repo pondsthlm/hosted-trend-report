@@ -23,11 +23,17 @@ $normalize-control-element {
   .control-bar__play-button {
     @extends $normalize-control-element;
     @extends $button-icon;
+    &--hide {
+      display: none;
+    }
   }
 
   .control-bar__pause-button {
     @extends $normalize-control-element;
     @extends $button-icon;
+    &--hide {
+      display: none;
+    }
   }
 
   .control-bar__volume {

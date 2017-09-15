@@ -1,7 +1,12 @@
 import controlBar from "./control-bar/control-bar";
 
-function update(state, dispatch) {
-  controlBar(state, dispatch);
+let dom;
+function newState(state) {
+  dom.newState(state);
 }
 
-export default { update };
+function render(state, dispatch) {
+  dom = controlBar(state, dispatch);
+}
+
+export default { newState, render };

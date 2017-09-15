@@ -28,6 +28,7 @@ function setUpHlsService(payload, store) {
     // todo: add image optimizer
     poster: payload.webtvArticle.image.versions[3].url
   }, p("Your user agent does not support the HTML5 Video element."));
+
   payload.elementContainer.style.paddingTop = "56.25%";
   payload.elementContainer.style.height = "0";
   payload.elementContainer.style.position = "relative";
@@ -84,17 +85,17 @@ function setUpHlsService(payload, store) {
   // Setup videoEvents
   videoEvents(localStore, videoElement);
 
-  return { id, videoElement };
+  return { id, videoElement, hls };
 }
 const hlsService = (() => {
-  const videos = {};
+  const hlsElements = {};
 
   return (store) => (next) => (action) => {
     switch (action.type) {
 
       case player.constants.SETUP_NEW_PLAYER: {
-        const { id, videoElement } = setUpHlsService(action.payload, store);
-        videos[id] = videoElement;
+        const { id, videoElement, hls } = setUpHlsService(action.payload, store);
+        hlsElements[id] = hls;
         // Decorate with id, element, & duration
         const newAction = Object.assign({}, action, {
           payload: {
@@ -107,6 +108,12 @@ const hlsService = (() => {
 
         return next(newAction);
       }
+
+      case player.constants.PLAY:
+      case player.constants.CONTENT_PLAY:
+        hlsElements[action.payload.id].startLoad();
+
+        return next(action);
 
       default:
         return next(action);

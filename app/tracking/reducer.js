@@ -1,28 +1,11 @@
 import player from "../player";
 
-import logger from "../logger.js";
+//import logger from "../logger.js";
 
 const defaultVideoState = {
-  updates: 0,
-  isPlaying: false,
-  elementContainer: null,
-  showControls: true,
-  hideControls: false,
-  id: null,
-  duration: 0,
-  currentTime: -1,
-  fullscreen: false
 };
 
-// Indicate to ui enhancer to update
-function updateUI(state) {
-  return Object.assign({}, state, {
-    updates: state.updates + 1
-  });
-}
-
-// Deligated from video-reducer
-const uiReducer = (fullState, state = defaultVideoState, action) => {
+const trackingReducer = (fullState, state = defaultVideoState, action) => {
 
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
@@ -71,10 +54,8 @@ const uiReducer = (fullState, state = defaultVideoState, action) => {
     default:
   }
 
-  state = updateUI(state);
-
   return state;
 };
 
 export {defaultVideoState};
-export default uiReducer;
+export default trackingReducer;

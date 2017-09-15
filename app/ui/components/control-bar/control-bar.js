@@ -1,7 +1,7 @@
 
 import { div } from "../../../helpers/make-element";
 import logger from "../../../logger";
-import play from "./play";
+import playPause from "./play-pause";
 import "./control-bar.styl";
 import volume from "./volume";
 import progressBar from "./progress-bar";
@@ -14,7 +14,7 @@ function getControls(state, dispatch) {
     {
       className,
     },
-    play(state, dispatch, className),
+    playPause(state, dispatch, className),
     volume(state, dispatch, className),
     progressBar(state, dispatch, className),
     fullscreenButton(state, dispatch, className)
@@ -38,6 +38,14 @@ function controlBar(state, dispatch) {
   }
 
   const dom = getControls(state, dispatch);
+
+  dom.update((newState) => {
+    if (newState.isPlaying) {
+      return {
+        className: `${className} ${className}--playPauseing`
+      };
+    }
+  });
 
   state.elementContainer.replaceChild(dom, root);
 

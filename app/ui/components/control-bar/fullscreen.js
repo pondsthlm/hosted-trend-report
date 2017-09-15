@@ -17,7 +17,6 @@ function fullscreen(state, dispatch, parentClassName) {
   }, button({
     className: `${bemParent}fullscreen-button`,
     onclick: () => {
-      console.log(actions);
       dispatch(actions.uiFullscreen("click", "fullscreen-button"));
       /*
       if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();

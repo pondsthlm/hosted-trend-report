@@ -1,4 +1,4 @@
-import { div, progress } from "../../../helpers/make-element";
+import { div } from "../../../helpers/make-element";
 import actions from "../../../player/actions";
 
 import "./progress-bar.styl";
@@ -11,13 +11,6 @@ function progressBar(state, dispatch, parentClassName) {
     bemParent = `${parentClassName}__`;
   }
   const progressPercent = (state.currentTime / state.duration) * 100;
-  /*
-  <div class="progress">
-       <progress id="progress" value="0" min="0">
-         <span id="progress-bar"></span>
-       </progress>
-     </div>
-     */
   const scrubber = div(
     {
       className: `${className}__scrubber`,
