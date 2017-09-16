@@ -11,7 +11,8 @@ const defaultVideoState = {
   id: null,
   duration: 0,
   currentTime: -1,
-  fullscreen: false
+  fullscreen: false,
+  adPlay: false
 };
 
 // Indicate to ui enhancer to update

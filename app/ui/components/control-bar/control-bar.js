@@ -1,6 +1,5 @@
 
 import { div } from "../../../helpers/make-element";
-import logger from "../../../logger";
 import playPause from "./play-pause";
 import "./control-bar.styl";
 import volume from "./volume";
@@ -9,7 +8,7 @@ import fullscreenButton from "./fullscreen";
 
 const className = "control-bar";
 
-function getControls(state, dispatch) {
+function controlBarDOM(state, dispatch) {
   return div(
     {
       className,
@@ -22,32 +21,19 @@ function getControls(state, dispatch) {
 }
 
 function controlBar(state, dispatch) {
-  if (!state.elementContainer ) {
-    logger.error("Video is missing elementContainer");
-    return;
-  }
-
-  let root = state.elementContainer.querySelector(`.${className}`);
-  if (!root) {
-    root = state.elementContainer.appendChild(div({className}, ""));
-  }
-
-
-  if (!state.showControls) {
-    return state.elementContainer.replaceChild(div({className}), root);
-  }
-
-  const dom = getControls(state, dispatch);
+  const dom = controlBarDOM(state, dispatch);
 
   dom.update((newState) => {
-    if (newState.isPlaying) {
+    if (!newState.showControls) {
       return {
-        className: `${className} ${className}--playPauseing`
+        className: `${className} ${className}--hide`
+      };
+    } else {
+      return {
+        className
       };
     }
   });
-
-  state.elementContainer.replaceChild(dom, root);
 
   return dom;
 }

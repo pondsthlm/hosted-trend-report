@@ -6,27 +6,44 @@ import "./progress-bar.styl";
 let bemParent = "";
 const className = "progress-bar";
 
+function calculateProgressPercent(state) {
+  return `${(state.currentTime / state.duration) * 100}%`;
+}
+
 function progressBar(state, dispatch, parentClassName) {
   if (parentClassName) {
     bemParent = `${parentClassName}__`;
   }
-  const progressPercent = (state.currentTime / state.duration) * 100;
+  const progress = div(
+    {
+      className: `${className}__progress`,
+      style: {
+        width: calculateProgressPercent(state)
+      }
+    }
+  );
+
+  progress.update((state) => {
+    const object = {
+      style: {
+        width: calculateProgressPercent(state)
+      }
+    };
+
+    return object;
+  });
+
   const scrubber = div(
     {
       className: `${className}__scrubber`,
       onmousedown: (event) => {
         const percent = event.offsetX / scrubber.offsetWidth;
         const newTime = percent * state.duration;
+        console.log(newTime, state.duration, event.offsetX, scrubber.offsetWidth);
         dispatch(actions.setTime(newTime));
       }
-    }, div(
-      {
-        className: `${className}__progress`,
-        style: {
-          width: `${progressPercent}%`
-        }
-      }
-    ));
+    }, progress);
+
 
   return div(
     {

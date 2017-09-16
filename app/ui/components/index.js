@@ -1,12 +1,16 @@
 import controlBar from "./control-bar/control-bar";
+import logger from "../../logger";
 
-let dom;
-function newState(state) {
-  dom.newState(state);
-}
 
 function render(state, dispatch) {
-  dom = controlBar(state, dispatch);
+  if (!state.elementContainer ) {
+    logger.error("Video is missing elementContainer");
+    return;
+  }
+  const dom = controlBar(state, dispatch);
+  state.elementContainer.appendChild(dom);
+
+  return dom;
 }
 
-export default { newState, render };
+export default { render };
