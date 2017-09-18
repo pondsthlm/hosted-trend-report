@@ -24,7 +24,7 @@ function controlBar(state, dispatch) {
   const dom = controlBarDOM(state, dispatch);
 
   dom.update((newState) => {
-    if (!newState.showControls) {
+    if (!newState.ui.showControls) {
       return {
         className: `${className} ${className}--hide`
       };

@@ -24,6 +24,7 @@ function scrubber(state, dispatch, parentClassName) {
     {
       className: `${parentClassName}__scrubber`,
       onmousedown: (event) => {
+        if (!state.duration) return;
         const percent = event.offsetX / scrubber.offsetWidth;
         const newTime = percent * state.duration;
         dispatch(actions.setTime(newTime));
@@ -35,7 +36,8 @@ function scrubber(state, dispatch, parentClassName) {
   dom.update((newState) => {
     return {
       onmousedown: (event) => {
-        const percent = event.offsetX / scrubber.offsetWidth;
+        if (!newState.duration) return;
+        const percent = event.offsetX / dom.offsetWidth;
         const newTime = percent * newState.duration;
         dispatch(actions.setTime(newTime));
       }
@@ -51,16 +53,17 @@ function progress(state, dispatch, parentClassName) {
     className: `${parentClassName}__progress`,
     style: {
       width: calculateProgressPercent(state)
+    },
+    update: (newState) => {
+      return {
+        style: {
+          width: calculateProgressPercent(newState)
+        }
+      };
     }
   });
 
-  dom.update((newState) => {
-    return {
-      style: {
-        width: calculateProgressPercent(newState)
-      }
-    };
-  });
+  return dom;
 }
 
 

@@ -20,18 +20,18 @@ function observeVideo(store, id) {
 
   store.subscribe(() => {
     const state = store.getState();
-    const videoUIState = state.player.videos[id].ui;
+    const videoState = state.player.videos[id];
     console.log("##########", dom);
     if (!dom) {
-      logger.log(`Render video ${id}`, videoUIState);
-      dom = ui.components.render(videoUIState, localDispatch);
+      logger.log(`Render video ${id}`, videoState);
+      dom = ui.components.render(videoState, localDispatch);
 
       return;
     }
 
-    logger.log(`Update video ${id}`, videoUIState);
+    logger.log(`Update video ${id}`, videoState);
     // Update ui component
-    dom.newState(videoUIState);
+    dom.newState(videoState);
   });
 }
 

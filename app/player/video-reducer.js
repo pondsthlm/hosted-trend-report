@@ -10,7 +10,12 @@ const defaultState = {
   videoElement: null,
   elementContainer: null,
   duration: 0,
-  fullscreen: false
+  isMuted: true,
+  fullscreen: false,
+  defaultVolume: .8,
+  volume: .8,
+  isPlaying: false,
+  currentTime: -1
 };
 
 const reducer = (state = defaultState, action) => {
@@ -25,24 +30,65 @@ const reducer = (state = defaultState, action) => {
         duration: action.payload.duration
       });
       break;
+
+    case player.constants.TIMEUPDATE:
+      state = Object.assign({}, state, {
+        currentTime: action.payload.currentTime
+      });
+      break;
+
     case player.constants.MANIFEST_PARSED:
       state = Object.assign({}, state, {
         contentReady: true
       });
       break;
-    case player.constants.CONTENT_PLAY: {
+
+    case player.constants.CONTENT_PLAY:
+      state = Object.assign({}, state, {
+        isPlaying: true
+      });
       state.videoElement.play();
       break;
-    }
+
     case player.constants.CONTENT_PAUSE:
+      state = Object.assign({}, state, {
+        isPlaying: false
+      });
       state.videoElement.pause();
       break;
+
     case player.constants.PAUSE:
+      state = Object.assign({}, state, {
+        isPlaying: false
+      });
       state.videoElement.pause();
       break;
+
     case player.constants.SET_TIME:
       state.videoElement.currentTime = action.payload.time;
       break;
+
+    case player.constants.DURATION_CHANGE:
+      state = Object.assign({}, state, {
+        duration: action.payload.duration
+      });
+      break;
+
+    case player.constants.SET_VOLUME:
+      if (action.payload.volume !== 0) {
+        state = Object.assign({}, state, {
+          volume: action.payload.volume,
+          isMuted: false
+        });
+      } else {
+        state = Object.assign({}, state, {
+          defaultVolume: state.volume,
+          isMuted: true
+        });
+      }
+      state.videoElement.volume = action.payload.volume;
+      break;
+
     case player.constants.FULLSCREEN:
       if (state.elementContainer.requestFullscreen) state.elementContainer.requestFullscreen();
       else if (state.elementContainer.mozRequestFullScreen) state.elementContainer.mozRequestFullScreen();
@@ -54,6 +100,24 @@ const reducer = (state = defaultState, action) => {
         fullscreen: true
       });
       break;
+
+    case player.constants.MUTE:
+      state = Object.assign({}, state, {
+        isMuted: true,
+        defaultVolume: state.volume,
+        volume: 0
+      });
+      state.videoElement.volume = 0;
+      break;
+
+    case player.constants.UNMUTE:
+      state = Object.assign({}, state, {
+        isMuted: false,
+        volume: state.defaultVolume
+      });
+      state.videoElement.volume = state.defaultVolume;
+      break;
+
     default:
   }
 

@@ -69,6 +69,33 @@ const actions = {
       event,
       trigger
     }
+  }),
+  uiVolumeButton: (event, trigger) => ({
+    type: constants.VOLUME_BUTTON,
+    payload: {
+      event,
+      trigger
+    }
+  }),
+  uiVolumeControler: (volume) => ({
+    type: constants.SET_VOLUME,
+    payload: {
+      volume
+    }
+  }),
+  uiMute: (event, trigger) => ({
+    type: constants.MUTE,
+    payload: {
+      event,
+      trigger
+    }
+  }),
+  uiUnMute: (event, trigger) => ({
+    type: constants.UNMUTE,
+    payload: {
+      event,
+      trigger
+    }
   })
 };
 

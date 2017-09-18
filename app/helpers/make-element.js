@@ -65,9 +65,10 @@ function setElementProperties(properties, el) {
   Object.keys(properties).forEach((propName) => {
     if (propName in el || attributeExceptions.includes(propName)) {
       const value = properties[propName];
-
       if (propName === "style") {
         setStyles(el, value);
+      } else if (typeof value === "function" && propName === "update") {
+        el.update(value); // callback function when its a new state
       } else if (propName === "dataset") {
         setDataAttributes(el, value);
       } else if (typeof value === "function" || propName === "className") {
