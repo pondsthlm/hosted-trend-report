@@ -8,7 +8,7 @@ function render(state, dispatch) {
     return;
   }
   const dom = controlBar(state, dispatch);
-  dom.setVideoId(state.videoId);
+  dom.setVideoId(state.id);
   state.elementContainer.appendChild(dom);
 
   return dom;

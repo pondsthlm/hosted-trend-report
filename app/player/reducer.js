@@ -11,7 +11,6 @@ const reducer = (state = defaultState, action) => {
   // Deligate to videoReducer
   if (action.payload && action.payload.id) {
     const newVideoState = videoReducer(state.videos[action.payload.id], action);
-    logger.log("player deligate to video", action);
     state = Object.assign({}, state, {
       videos: {
         ...state.videos,

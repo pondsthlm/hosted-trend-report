@@ -1,5 +1,6 @@
 import player from "./";
 import uiComponent from "../ui";
+import logger from "../logger.js";
 
 //import logger from "../logger.js";
 
@@ -22,6 +23,7 @@ const reducer = (state = defaultState, action) => {
   const isOwn = action.payload.id === state.id;
   const passThrough = action.type === player.constants.SETUP_NEW_PLAYER;
   if (passThrough || isOwn) {
+    logger.log("player deligate to video", action);
   } else {
     return state;
   }

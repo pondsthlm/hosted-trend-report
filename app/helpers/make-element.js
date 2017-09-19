@@ -103,14 +103,16 @@ function makeElement(type, textOrPropsOrChild, ...otherChildren) {
     });
   };
 
-  el.newState = (state) => {
-    const object = update(state);
-    if (object && (el.videoId === state.id)) {
-      logger.log(`Update video ${id}`, state);
-      setElementProperties(object, el);
+  el.newState = (state, id) => {
+    if (id === el.videoId) {
+      const object = update(state);
+      if (object) {
+        logger.log(`Update video ${el.videoId}`, state);
+        setElementProperties(object, el);
+      }
     }
     children.forEach((child) => {
-      child.newState(state);
+      child.newState(state, id);
     });
   };
 
