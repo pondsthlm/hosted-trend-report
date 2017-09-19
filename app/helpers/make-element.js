@@ -1,3 +1,5 @@
+import logger from "../logger.js";
+
 const attributeExceptions = [
   "role",
   "dataset",
@@ -93,10 +95,18 @@ function makeElement(type, textOrPropsOrChild, ...otherChildren) {
   el.update = (fn) => {
     update = fn;
   };
+  el.videoId = null;
+  el.setVideoId = (id) => {
+    el.videoId = id;
+    children.forEach((child) => {
+      child.setVideoId(id);
+    });
+  };
 
   el.newState = (state) => {
     const object = update(state);
-    if (object) {
+    if (object && (el.videoId === state.id)) {
+      logger.log(`Update video ${id}`, state);
       setElementProperties(object, el);
     }
     children.forEach((child) => {

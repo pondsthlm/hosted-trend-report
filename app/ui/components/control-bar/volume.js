@@ -34,7 +34,19 @@ function volumeControl(state, dispatch, className) {
       };
 
     }
-  })
+  }, div({
+    className: `${className}__indicator`,
+    style: {
+      height: `${state.volume * 100}%`
+    },
+    update: (newState) => {
+      return {
+        style: {
+          height: `${newState.volume * 100}%`
+        }
+      }
+    }
+  }));
 }
 
 function mute(state, dispatch, parentClassName) {

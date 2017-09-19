@@ -19,6 +19,12 @@ const defaultState = {
 };
 
 const reducer = (state = defaultState, action) => {
+  const isOwn = action.payload.id === state.id;
+  const passThrough = action.type === player.constants.SETUP_NEW_PLAYER;
+  if (passThrough || isOwn) {
+  } else {
+    return state;
+  }
 
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
@@ -120,14 +126,15 @@ const reducer = (state = defaultState, action) => {
 
     default:
   }
-
   // Deligate to uiReducer
-  const uiState = uiComponent.reducer(state, state.ui, action);
-  state = Object.assign({}, state, {
-    ui: {
-      ...uiState
-    }
-  });
+  if (action.payload.id === state.id) {
+    const uiState = uiComponent.reducer(state, state.ui, action);
+    state = Object.assign({}, state, {
+      ui: {
+        ...uiState
+      }
+    });
+  }
 
   return state;
 };
