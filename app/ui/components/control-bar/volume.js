@@ -16,11 +16,11 @@ function volume(state, dispatch, parentClassName) {
 }
 
 function volumeControl(state, dispatch, className) {
-
-  return div({
+  const dom = div({
     className: `${className}__control--hide`,
     onmousedown(event) {
-      const percent = event.target.offsetHeight ? event.offsetY / event.target.offsetHeight : 0;
+      const offsetY = event.clientY - dom.getBoundingClientRect().top;
+      const percent = dom.offsetHeight ? offsetY / dom.offsetHeight : 0;
       dispatch(actions.uiVolumeControler(1 - percent));
     },
     update: (newState) => {
@@ -44,9 +44,11 @@ function volumeControl(state, dispatch, className) {
         style: {
           height: `${newState.volume * 100}%`
         }
-      }
+      };
     }
   }));
+
+  return dom;
 }
 
 function mute(state, dispatch, parentClassName) {

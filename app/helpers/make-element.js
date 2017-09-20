@@ -107,7 +107,6 @@ function makeElement(type, textOrPropsOrChild, ...otherChildren) {
     if (id === el.videoId) {
       const object = update(state);
       if (object) {
-        logger.log(`Update video ${el.videoId}`, state);
         setElementProperties(object, el);
       }
     }

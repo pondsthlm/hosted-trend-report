@@ -18,31 +18,32 @@ function calculateProgressPercent(state) {
   return `${(state.currentTime / state.duration) * 100}%`;
 }
 
+function clickProgress(state, event, dom, dispatch) {
+  if (!state.duration) return;
+  const offsetX = event.clientX - dom.getBoundingClientRect().left;
+  const percent = offsetX / dom.offsetWidth;
+  const newTime = percent * state.duration;
+  dispatch(actions.setTime(newTime));
+}
+
 function scrubber(state, dispatch, parentClassName) {
 
   const dom = div(
     {
       className: `${parentClassName}__scrubber`,
       onmousedown: (event) => {
-        if (!state.duration) return;
-        const percent = event.offsetX / scrubber.offsetWidth;
-        const newTime = percent * state.duration;
-        dispatch(actions.setTime(newTime));
+        clickProgress(state, event, dom, dispatch);
+      },
+      update: (newState) => {
+        return {
+          onmousedown: (event) => {
+            clickProgress(newState, event, dom, dispatch);
+          }
+        };
       }
     },
     progress(state, dispatch, parentClassName)
   );
-
-  dom.update((newState) => {
-    return {
-      onmousedown: (event) => {
-        if (!newState.duration) return;
-        const percent = event.offsetX / dom.offsetWidth;
-        const newTime = percent * newState.duration;
-        dispatch(actions.setTime(newTime));
-      }
-    };
-  });
 
   return dom;
 }
