@@ -11,6 +11,7 @@ const defaultState = {
   videoElement: null,
   elementContainer: null,
   duration: 0,
+  display: "preview",
   isMuted: true,
   fullscreen: false,
   defaultVolume: .8,
@@ -52,19 +53,29 @@ const reducer = (state = defaultState, action) => {
       break;
 
     case player.constants.CONTENT_PLAY:
+    case player.constants.PLAY:
       state = Object.assign({}, state, {
-        isPlaying: true
+        isPlaying: true,
+        display: "content"
       });
       state.videoElement.play();
       break;
 
-    case player.constants.CONTENT_PAUSE:
+    case player.constants.AD_BREAK_STARTED:
       state = Object.assign({}, state, {
-        isPlaying: false
+        isPlaying: false,
+        display: action.payload.type
       });
-      state.videoElement.pause();
       break;
 
+    case player.constants.AD_SHOW_PAUSE_AD:
+      state = Object.assign({}, state, {
+        isPlaying: false,
+        display: "pause-ad"
+      });
+      break;
+
+    case player.constants.CONTENT_PAUSE:
     case player.constants.PAUSE:
       state = Object.assign({}, state, {
         isPlaying: false

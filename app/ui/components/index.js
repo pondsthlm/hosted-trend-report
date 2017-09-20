@@ -1,4 +1,4 @@
-import controlBar from "./control-bar/control-bar";
+import gui from "./gui/gui";
 import logger from "../../logger";
 
 
@@ -7,7 +7,7 @@ function render(state, dispatch) {
     logger.error("Video is missing elementContainer");
     return;
   }
-  const dom = controlBar(state, dispatch);
+  const dom = gui(state, dispatch);
   dom.setVideoId(state.id);
   state.elementContainer.appendChild(dom);
 

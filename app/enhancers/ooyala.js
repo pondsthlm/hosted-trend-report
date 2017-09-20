@@ -93,11 +93,9 @@ const ooyala = (() => {
         const video = videos[action.payload.id];
         if (video.hasSession) {
           video.adPlayer.contentStarted();
-          action = Object.assign({}, action, player.actions.contentPlay());
         } else {
           video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id, video.adPlayer));
           video.hasSession = true;
-          action = Object.assign({}, action, { type: player.constants.AD_PLAY });
         }
         break;
       }
@@ -115,11 +113,6 @@ const ooyala = (() => {
       }
       case player.constants.CONTENT_ENDED: {
         const video = videos[action.payload.id];
-        action = Object.assign({}, action, {
-          payload: {
-            type: player.constants.AD_POSTROLL
-          }
-        });
         video.adPlayer.contentFinished();
 
         break;

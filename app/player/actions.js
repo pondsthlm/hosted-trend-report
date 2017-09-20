@@ -1,9 +1,6 @@
 import constants from "./constants";
 
 const actions = {
-  adPlay: () => ({
-    type: constants.AD_PLAY
-  }),
   contentClicked: () => ({
     type: constants.CONTENT_CLICKED
   }),

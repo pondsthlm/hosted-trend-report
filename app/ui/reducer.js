@@ -12,14 +12,15 @@ const uiReducer = (state = defaultVideoState, action) => {
 
   switch (action.type) {
 
-    case player.constants.AD_PLAY: {
+    case player.constants.AD_BREAK_STARTED:
+    case player.constants.AD_SHOW_PAUSE_AD: {
       state = Object.assign({}, state, {
         showControls: false
       });
       break;
     }
 
-    case player.constants.CONTENT_CLICKED:
+    case player.constants.CONTENT_CLICKED: 
       state = Object.assign({}, state, {
         showControls: true
       });
