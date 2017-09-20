@@ -1,4 +1,4 @@
 {
-  "plugins": ["babel-plugin-transform-object-assign"],
+  "plugins": ["transform-object-assign", ["transform-object-rest-spread", { "useBuiltIns": true }]],
   "presets": [ "es2015" ]
 }
