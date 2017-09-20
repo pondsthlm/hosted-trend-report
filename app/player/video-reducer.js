@@ -130,7 +130,7 @@ const reducer = (state = defaultState, action) => {
   }
   // Deligate to uiReducer
   if (action.payload.id === state.id) {
-    const uiState = uiComponent.reducer(state, state.ui, action);
+    const uiState = uiComponent.reducer(state.ui, action);
     state = Object.assign({}, state, {
       ui: {
         ...uiState

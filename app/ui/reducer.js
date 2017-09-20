@@ -8,7 +8,7 @@ const defaultVideoState = {
 };
 
 // Deligated from video-reducer
-const uiReducer = (fullState, state = defaultVideoState, action) => {
+const uiReducer = (state = defaultVideoState, action) => {
 
   switch (action.type) {
 
