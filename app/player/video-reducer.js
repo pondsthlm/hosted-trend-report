@@ -11,13 +11,16 @@ const defaultState = {
   videoElement: null,
   elementContainer: null,
   duration: 0,
+  adDuration: 0,
+  adDurationLeft: 0,
   display: "preview",
   isMuted: true,
   fullscreen: false,
   defaultVolume: .8,
   volume: .8,
   isPlaying: false,
-  currentTime: -1
+  currentTime: -1,
+  adCurrentTime: 0
 };
 
 const reducer = (state = defaultState, action) => {
@@ -46,6 +49,19 @@ const reducer = (state = defaultState, action) => {
       });
       break;
 
+    case player.constants.AD_TIMEUPDATE:
+      state = Object.assign({}, state, {
+        adCurrentTime: action.payload.currentTime,
+        adDurationLeft: state.adDuration - action.payload.currentTime
+      });
+      break;
+
+    case player.constants.AD_FINISHED:
+      state = Object.assign({}, state, {
+        adDuration: state.adDuration - state.adDurationLeft
+      });
+      break;
+
     case player.constants.MANIFEST_PARSED:
       state = Object.assign({}, state, {
         contentReady: true
@@ -64,7 +80,9 @@ const reducer = (state = defaultState, action) => {
     case player.constants.AD_BREAK_STARTED:
       state = Object.assign({}, state, {
         isPlaying: false,
-        display: action.payload.type
+        display: action.payload.type,
+        adDuration: action.payload.duration,
+        adDurationLeft: action.payload.duration
       });
       break;
 

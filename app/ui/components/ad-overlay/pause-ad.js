@@ -23,7 +23,6 @@ function pauseAd(state, dispatch) {
   const dom = pauseAdDOM(state, dispatch);
   dom.update((newState) => {
     let flag = "";
-    console.log(newState.display);
     if (newState.display !== "pause-ad") {
       flag = "--hide";
     }

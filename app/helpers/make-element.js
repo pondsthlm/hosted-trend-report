@@ -1,21 +1,8 @@
 import logger from "../logger.js";
 
 const attributeExceptions = [
-  "role",
-  "dataset",
-  "d",
-  "r",
-  "cx",
-  "cy",
-  "width",
-  "height",
-  "viewBox",
-  "fill",
-  "max",
-  "value"
+  "replaceString"
 ];
-
-const SVG_NAMESPACE = "http://www.w3.org/2000/svg";
 
 function appendText(el, text) {
   const textNode = document.createTextNode(text);
@@ -59,16 +46,14 @@ function setDataAttributes(el, dataAttributes) {
   });
 }
 
-function isSvg(type) {
-  return ["path", "svg", "circle"].includes(type);
-}
-
 function setElementProperties(properties, el) {
   Object.keys(properties).forEach((propName) => {
     if (propName in el || attributeExceptions.includes(propName)) {
       const value = properties[propName];
       if (propName === "style") {
         setStyles(el, value);
+      } else if (typeof value === "string" && propName === "replaceString") {
+        el.innerHTML = value; // callback function when its a new state
       } else if (typeof value === "function" && propName === "update") {
         el.update(value); // callback function when its a new state
       } else if (propName === "dataset") {
@@ -76,7 +61,7 @@ function setElementProperties(properties, el) {
       } else if (typeof value === "function" || propName === "className") {
         el[propName] = value; // e.g. onclick
       } else if (value) {
-        el.setAttribute(propName, value); // need this for SVG elements
+        el.setAttribute(propName, value);
       }
     } else {
       //console.warn(`${propName} is not a valid property of a <${type}>`);
@@ -87,9 +72,7 @@ function setElementProperties(properties, el) {
 
 function makeElement(type, textOrPropsOrChild, ...otherChildren) {
   let children = [];
-  let el = isSvg(type)
-    ? document.createElementNS(SVG_NAMESPACE, type)
-    : document.createElement(type);
+  let el = document.createElement(type);
   let update = () => {};
 
   el.update = (fn) => {
@@ -146,7 +129,3 @@ export const progress = (...args) => makeElement("progress", ...args);
 
 export const ul = (...args) => makeElement("ul", ...args);
 export const li = (...args) => makeElement("li", ...args);
-
-export const svg = (...args) => makeElement("svg", ...args);
-export const path = (...args) => makeElement("path", ...args);
-export const circle = (...args) => makeElement("circle", ...args);

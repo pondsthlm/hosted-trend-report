@@ -1,6 +1,7 @@
 
 import { div } from "../../../helpers/make-element";
 import pauseAd from "./pause-ad";
+import breakOverlay from "./break-overlay";
 
 const className = "oo-overlay";
 
@@ -9,7 +10,8 @@ function adOverlayDOM(state, dispatch) {
     {
       className,
     },
-    pauseAd(state, dispatch)
+    pauseAd(state, dispatch),
+    breakOverlay(state, dispatch)
   );
 }
 

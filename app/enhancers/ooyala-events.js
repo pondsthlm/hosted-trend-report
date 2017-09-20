@@ -8,7 +8,7 @@ function getDuration(metadata, numberOfAds) {
       sum += ad.slots[0].ads[0].creatives[0].duration;
     }
   });
-  return sum;
+  return Math.floor(sum);
 }
 
 function ooyalaEvents(store, adPlayer) {
@@ -55,7 +55,11 @@ function ooyalaEvents(store, adPlayer) {
     logger.log("ooyalaEvent", "LINEAR_AD_ERROR", event, metadata);
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.LINEAR_AD_FINISHED, (event, metadata) => {
-    //logger.log("ooyalaEvent", "LINEAR_AD_FINISHED", event, metadata);
+    logger.log("ooyalaEvent", "LINEAR_AD_FINISHED", event, metadata);
+    store.dispatch({
+      type: player.constants.AD_FINISHED,
+      payload: {}
+    });
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.LINEAR_AD_FIRST_QUARTILE, (event, metadata) => {
     //logger.log("ooyalaEvent", "LINEAR_AD_FIRST_QUARTILE", event, metadata);
@@ -76,7 +80,7 @@ function ooyalaEvents(store, adPlayer) {
     store.dispatch({
       type: player.constants.AD_TIMEUPDATE,
       payload: {
-        currentTime: metadata.position
+        currentTime: Math.floor(metadata.position)
       }
     });
     //logger.log("ooyalaEvent", "LINEAR_AD_PROGRESS", event, metadata);
@@ -85,7 +89,7 @@ function ooyalaEvents(store, adPlayer) {
     //logger.log("ooyalaEvent", "LINEAR_AD_SKIPPED", event, metadata);
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.LINEAR_AD_STARTED, (event, metadata) => {
-    //logger.log("ooyalaEvent", "LINEAR_AD_STARTED", event, metadata);
+    logger.log("ooyalaEvent", "LINEAR_AD_STARTED", event, metadata);
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.LINEAR_AD_THIRD_QUARTILE, (event, metadata) => {
     //logger.log("ooyalaEvent", "LINEAR_AD_THIRD_QUARTILE", event, metadata);
