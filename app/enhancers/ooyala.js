@@ -54,38 +54,7 @@ function setUpAdService(payload, store) {
   }
 }
 
-
-/*
-content.addEventListener("play", () => {
-  if (initialPlay) {
-    content.pause();//Pause the content so we can play prerolls
-    adPlayer.startSession(session, adPlayerListener);
-  } else {
-    //When the content is resumed, call contentStarted
-    adPlayer.contentStarted();
-  }
-});
-content.addEventListener("pause", () => {
-  initialPlay = false;
-  //Call contentPaused when the content is paused by the viewer, so pause ads can be shown if available.
-  adPlayer.contentPaused();
-});
-content.addEventListener("timeupdate", () => {
-  adPlayer.contentPositionChanged(content.currentTime);
-});
-content.addEventListener("ended", () => {
-  adPlayer.contentFinished();
-});
-
-adPlayer.addEventListener(OO.Pulse.AdPlayer.Events.AD_CLICKED, (event, metadata) => {
-  window.open(metadata.url);
-  //Tell the SDK we opened the clickthrough URL.
-  adPlayer.adClickThroughOpened();
-});
-
-*/
-
-function getOoyalaEvents(store, id) {
+function getOoyalaEvents(store, id, adPlayer) {
   const localDispatch = (action) => {
     action = Object.assign({}, action, {
       ...action,
@@ -101,7 +70,7 @@ function getOoyalaEvents(store, id) {
     ...store,
     dispatch: localDispatch
   };
-  return ooyalaEvents(localStore);
+  return ooyalaEvents(localStore, adPlayer);
 }
 
 const ooyala = (() => {
@@ -126,9 +95,9 @@ const ooyala = (() => {
           video.adPlayer.contentStarted();
           action = Object.assign({}, action, player.actions.contentPlay());
         } else {
-          video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id));
+          video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id, video.adPlayer));
           video.hasSession = true;
-          action = Object.assign({}, action, player.actions.adPlay());
+          action = Object.assign({}, action, { type: player.constants.AD_PLAY });
         }
         break;
       }
@@ -146,7 +115,13 @@ const ooyala = (() => {
       }
       case player.constants.CONTENT_ENDED: {
         const video = videos[action.payload.id];
+        action = Object.assign({}, action, {
+          payload: {
+            type: player.constants.AD_POSTROLL
+          }
+        });
         video.adPlayer.contentFinished();
+
         break;
       }
 
