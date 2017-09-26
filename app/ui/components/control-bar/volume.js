@@ -35,7 +35,11 @@ function volumeControl(state, dispatch, parentClassName) {
 
 function iconClicked(dispatch, state) {
   if (state.ui.showVolumeControls) {
-    dispatch(actions.uiMute("click", "volume-button"));
+    if (state.isMuted) {
+      dispatch(actions.uiUnMute("click", "volume-button"));
+    } else {
+      dispatch(actions.uiMute("click", "volume-button"));
+    }
   } else {
     dispatch(actions.uiVolumeButton("click", "volume-button"));
   }
