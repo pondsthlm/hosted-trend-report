@@ -20,7 +20,7 @@ const uiReducer = (state = defaultVideoState, action) => {
       break;
     }
 
-    case player.constants.CONTENT_CLICKED: 
+    case player.constants.CONTENT_CLICKED:
       state = Object.assign({}, state, {
         showControls: true
       });

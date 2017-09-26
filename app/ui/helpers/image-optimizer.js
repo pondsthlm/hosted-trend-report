@@ -1,4 +1,4 @@
-import logger from "../logger";
+import logger from "../../logger";
 
 const imageAspectRatios = {
   "16x9": ["16x9", "16x6", "4x3", "1x1"],

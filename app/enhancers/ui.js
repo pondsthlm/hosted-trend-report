@@ -1,13 +1,14 @@
 import logger from "../logger.js";
 import ui from "../ui";
 import player from "../player";
+import updateElements from "../helpers/update-elements";
 
-let latestId;
-function observeVideo(store, id) {
-  let dom;
+function observeVideo(store) {
+  let oldNode;
+  const id = Math.random().toString(36).substr(2, 9);
+
   // Removing id complexity for dispatches
   const localDispatch = (action) => {
-    let previousState = {};
     // Decorate with id
     action = Object.assign({}, action, {
       ...action,
@@ -23,26 +24,40 @@ function observeVideo(store, id) {
   store.subscribe(() => {
     const state = store.getState();
     const videoState = state.player.videos[id];
-
-    if (!dom) {
-      logger.log(`Render video ${id}`, videoState);
-      dom = ui.components.render(videoState, localDispatch);
+    const newNode = ui.components.get(videoState, localDispatch);
+    if (!oldNode) {
+      oldNode = newNode;
+      updateElements(videoState.elementContainer, newNode);
+      localDispatch({
+        type: player.constants.DOM_READY,
+        payload: {
+          elementContainer: videoState.elementContainer
+        }
+      });
 
       return;
     }
 
-    // Update ui component
-    dom.newState(videoState, latestId);
+    updateElements(videoState.elementContainer, newNode, oldNode);
+    oldNode = newNode;
   });
+
+  return id;
 }
 
 const uiMiddleware = (store) => (next) => (action) => {
-  latestId = action.payload.id ? action.payload.id : null;
 
   switch (action.type) {
-    case player.constants.SETUP_NEW_PLAYER:
+    case player.constants.SETUP_NEW_PLAYER: {
       // Setup store subscriber
-      observeVideo(store, action.payload.id);
+      const id = observeVideo(store, action.payload.id);
+      action = Object.assign({}, action, {
+        payload: {
+          ...action.payload,
+          id
+        }
+      });
+    }
       break;
 
     default:

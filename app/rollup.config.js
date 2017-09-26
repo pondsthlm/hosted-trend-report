@@ -7,6 +7,8 @@ import resolve from "rollup-plugin-node-resolve";
 import stylus from "rollup-plugin-stylus-compiler";
 import uglify from "rollup-plugin-uglify";
 
+import transpileJSX from "./ui/helpers/transpile-jsx";
+
 const isProd = process.env.NODE_ENV === "production";
 const suffix = isProd ? ".min" : "";
 
@@ -31,7 +33,9 @@ export default {
           debug: false
         }]
       ],
-      plugins: ["syntax-object-rest-spread", "transform-object-rest-spread", "external-helpers"]
+      plugins: [["transform-react-jsx", {
+        "pragma": "transpileJSX"
+      }], "syntax-object-rest-spread", "transform-object-rest-spread", "external-helpers"]
     }),
     isProd ? () => {} : replace({
       "process.env.NODE_ENV": process.env.NODE_ENV

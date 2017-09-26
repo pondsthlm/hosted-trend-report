@@ -1,6 +1,6 @@
 import player from "../player";
 import ooyalaEvents from "./ooyala-events";
-import {div} from "../helpers/make-element";
+//import {div} from "../helpers/make-element";
 
 function setUpAdService(payload, store) {
 
@@ -21,11 +21,8 @@ function setUpAdService(payload, store) {
   }
 
   function initAdService(OO) {
-    //const content = payload.elementContainer.querySelector(".video");
-    const adContainer = div({
-      className: "ad-video"
-    });
-    payload.elementContainer.appendChild(adContainer);
+
+    const adContainer = payload.elementContainer.querySelector(".ad-video");
 
     OO.Pulse.setPulseHost("http://pulse-demo.videoplaza.tv");
 
@@ -82,7 +79,7 @@ const ooyala = (() => {
     */
 
     switch (action.type) {
-      case player.constants.SETUP_NEW_PLAYER:
+      case player.constants.DOM_READY:
         setUpAdService(action.payload, store);
         break;
       case "OOYALA_READY":

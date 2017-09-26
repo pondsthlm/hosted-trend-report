@@ -35,10 +35,14 @@ const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case player.constants.SETUP_NEW_PLAYER:
       state = Object.assign({}, state, {
-        id: action.payload.id,
-        videoElement: action.payload.videoElement,
         source: action.payload.webtvArticle,
-        elementContainer: action.payload.elementContainer,
+        id: action.payload.id,
+        elementContainer: action.payload.elementContainer
+      });
+      break;
+    case player.constants.DOM_READY:
+      state = Object.assign({}, state, {
+        videoElement: action.payload.videoElement,
         duration: action.payload.duration
       });
       break;

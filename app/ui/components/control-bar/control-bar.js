@@ -1,39 +1,32 @@
-
-import { div } from "../../../helpers/make-element";
-import playPause from "./play-pause";
 import "./control-bar.styl";
+
+import transpileJSX from "../../helpers/transpile-jsx"
+import play from "./play";
+import pause from "./pause";
 import volume from "./volume";
 import progressBar from "./progress-bar";
 import fullscreenButton from "./fullscreen";
 
-const className = "control-bar";
 
-function controlBarDOM(state, dispatch) {
-  return div(
-    {
-      className,
-    },
-    playPause(state, dispatch, className),
-    volume(state, dispatch, className),
-    progressBar(state, dispatch, className),
-    fullscreenButton(state, dispatch, className)
-  );
-}
+
+
+const name = "control-bar";
 
 function controlBar(state, dispatch) {
-  const dom = controlBarDOM(state, dispatch);
+  //const dom = controlBarDOM(state, dispatch);
+  let className = name
+  if (!state.ui.showControls) {
+    className= `${name} ${name}--hide`
+  }
 
-  dom.update((newState) => {
-    if (!newState.ui.showControls) {
-      return {
-        className: `${className} ${className}--hide`
-      };
-    } else {
-      return {
-        className
-      };
-    }
-  });
+  return (
+    <div name={name} className= {className}>
+      {state.isPlaying ? pause(state, dispatch, name) : play(state, dispatch, name)}
+      {volume(state, dispatch, name)}
+      {progressBar(state, dispatch, name)}
+      {fullscreenButton(state, dispatch, className)}
+    </div>
+  );
 
   return dom;
 }

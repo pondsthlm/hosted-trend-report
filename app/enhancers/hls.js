@@ -2,8 +2,6 @@ import Hls from "hls.js/dist/hls.light.min.js";
 import logger from "../logger.js";
 import player from "../player";
 import videoEvents from "./video-events";
-import imageOptimizer from "../helpers/image-optimizer"
-import {video, p} from "../helpers/make-element";
 
 const constants = {
   MANIFEST_PARSED: "MANIFEST_PARSED"
@@ -19,24 +17,17 @@ const actions = {
 };
 
 function setUpHlsService(payload, store) {
-  const id = Math.random().toString(36).substr(2, 9);
-  //const state = store.getState();
-  const videoElement = video({
-    className: "exp-video",
-    dataset: {
-      id
-    },
-    // todo: add image optimizer
-    poster: imageOptimizer(payload.webtvArticle.image)
-  }, p("Your user agent does not support the HTML5 Video element."));
+  const state = store.getState();
+  const videoState = state.player.videos[payload.id];
+
+  const videoElement = payload.elementContainer.querySelector(".exp-video");
 
   payload.elementContainer.style.paddingTop = "56.25%";
   payload.elementContainer.style.height = "0";
   payload.elementContainer.style.position = "relative";
 
-  payload.elementContainer.appendChild(videoElement);
   const hls = new Hls({ autoStartLoad: false });
-  hls.loadSource(payload.webtvArticle.streams.hashHls);
+  hls.loadSource(videoState.source.streams.hashHls);
   hls.attachMedia(videoElement);
 
 
@@ -72,7 +63,7 @@ function setUpHlsService(payload, store) {
       ...action,
       payload: {
         ...action.payload,
-        id
+        id: payload.id
       }
     });
     store.dispatch(action);
@@ -86,7 +77,7 @@ function setUpHlsService(payload, store) {
   // Setup videoEvents
   videoEvents(localStore, videoElement);
 
-  return { id, videoElement, hls };
+  return {videoElement, hls };
 }
 const hlsService = (() => {
   const hlsElements = {};
@@ -94,14 +85,13 @@ const hlsService = (() => {
   return (store) => (next) => (action) => {
     switch (action.type) {
 
-      case player.constants.SETUP_NEW_PLAYER: {
-        const { id, videoElement, hls } = setUpHlsService(action.payload, store);
-        hlsElements[id] = hls;
+      case player.constants.DOM_READY: {
+        const {videoElement, hls } = setUpHlsService(action.payload, store);
+        hlsElements[action.payload.id] = hls;
         // Decorate with id, element, & duration
         const newAction = Object.assign({}, action, {
           payload: {
             ...action.payload,
-            id,
             videoElement,
             duration: videoElement.duration
           }
