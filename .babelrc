@@ -1,4 +1,6 @@
 {
   "presets": [ "es2015" ],
-  "plugins": ["transform-object-assign", "transform-object-rest-spread", "transform-react-jsx"]
+  "plugins": ["transform-object-assign", "transform-object-rest-spread", ["transform-react-jsx", {
+    "pragma": "transpileJSX"
+  }]]
 }

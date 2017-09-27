@@ -1,14 +1,15 @@
+import {defaultState} from "../../../player/video-reducer";
 import {defaultVideoState} from "../../reducer";
 import controlBar from "./control-bar";
 import play from "./play";
-import { div } from "../../../helpers/make-element";
 import assert from "assert";
 
 // Default state needs an element.
-defaultVideoState.elementContainer = div();
 
 describe("Loading controlbar with default state", () => {
-  const state = defaultVideoState;
+  const state = defaultState;
+  state.ui = defaultVideoState;
+  console.log("controlBar", controlBar(state));
   const dom = controlBar(state);
 
   it("the className should be control-bar", () => {

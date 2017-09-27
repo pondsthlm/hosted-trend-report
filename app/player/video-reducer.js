@@ -190,4 +190,5 @@ const reducer = (state = defaultState, action) => {
   return state;
 };
 
+export {defaultState};
 export default reducer;
