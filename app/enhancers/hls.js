@@ -25,8 +25,8 @@ function setUpHlsService(payload, store) {
   payload.elementContainer.style.paddingTop = "56.25%";
   payload.elementContainer.style.height = "0";
   payload.elementContainer.style.position = "relative";
-
-  const hls = new Hls({ autoStartLoad: false });
+  const autoStartLoad = videoState.autoPlay ? videoState.autoPlay : false;
+  const hls = new Hls({ autoStartLoad });
   hls.loadSource(videoState.source.streams.hashHls);
   hls.attachMedia(videoElement);
 
@@ -83,6 +83,7 @@ const hlsService = (() => {
   const hlsElements = {};
 
   return (store) => (next) => (action) => {
+    const state = store.getState();
     switch (action.type) {
 
       case player.constants.DOM_READY: {

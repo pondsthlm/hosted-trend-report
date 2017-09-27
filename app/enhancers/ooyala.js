@@ -70,6 +70,16 @@ function getOoyalaEvents(store, id, adPlayer) {
   return ooyalaEvents(localStore, adPlayer);
 }
 
+function createSession(video, action, store) {
+  video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id, video.adPlayer));
+  video.hasSession = true;
+  action = Object.assign({}, action, {
+    type: player.constants.AD_PLAY
+  });
+
+  return action;
+}
+
 const ooyala = (() => {
   const videos = {};
 
@@ -77,6 +87,7 @@ const ooyala = (() => {
     /*
     Pass all actions through by default
     */
+    const state = store.getState();
 
     switch (action.type) {
       case player.constants.DOM_READY:
@@ -85,6 +96,9 @@ const ooyala = (() => {
       case "OOYALA_READY":
         videos[action.payload.id] = action.payload;
         videos[action.payload.id].hasSession = false;
+        if (state.player.videos[action.payload.id].autoPlay) {
+          action = createSession(videos[action.payload.id], action, store);
+        }
         break;
       case player.constants.PLAY: {
         const video = videos[action.payload.id];
@@ -94,11 +108,7 @@ const ooyala = (() => {
             type: player.constants.CONTENT_PLAY
           });
         } else {
-          video.adPlayer.startSession(video.session, getOoyalaEvents(store, action.payload.id, video.adPlayer));
-          video.hasSession = true;
-          action = Object.assign({}, action, {
-            type: player.constants.AD_PLAY
-          });
+          action = createSession(video, action, store);
         }
         break;
       }

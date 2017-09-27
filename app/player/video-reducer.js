@@ -45,6 +45,7 @@ const reducer = (state = defaultState, action) => {
         elementContainer: action.payload.elementContainer
       });
       break;
+
     case player.constants.DOM_READY:
       state = Object.assign({}, state, {
         videoElement: action.payload.videoElement,

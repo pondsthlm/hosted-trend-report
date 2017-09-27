@@ -16,13 +16,24 @@ function guiDOM(state, dispatch) {
   );
 }
 
+function getVideoElement(state) {
+  if (state.autoPlay) {
+    return (
+      <video className="exp-video" poster={imageOptimizer(state.source.image)} autoplay="true"></video>
+    );
+  } else {
+    return (
+      <video className="exp-video" poster={imageOptimizer(state.source.image)}></video>
+    );
+  }
+}
+
 function gui(state, dispatch) {
   //const dom = guiDOM(state, dispatch);
   //adOverlay(state, dispatch)
-
   return (
     <div className="video-gui">
-      <video className="exp-video" poster={imageOptimizer(state.source.image)}></video>
+      {getVideoElement(state)}
       <div className="ad-video"> </div>
       {controlBar(state, dispatch)}
     </div>

@@ -10,7 +10,7 @@ window.Ponyo = window.Ponyo || {};
 window.Ponyo.newVideo = (elementContainer, webtvArticle, optionInput = {}) => {
   const options = {
     abTestClass: optionInput.hasOwnProperty("abTestClass") ? optionInput.abTestClass : undefined,
-    autoPlay: optionInput.hasOwnProperty("autoplay") ? optionInput.autoplay : undefined,
+    autoPlay: optionInput.hasOwnProperty("autoplay") &&  optionInput.autoplay === "true" ? true : undefined,
     channel: optionInput.hasOwnProperty("channel") ? optionInput.channel : undefined,
     deviceType: optionInput.hasOwnProperty("deviceType") ? optionInput.deviceType : undefined,
     external: optionInput.hasOwnProperty("external") ? optionInput.external : undefined,
