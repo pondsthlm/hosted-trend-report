@@ -7,9 +7,6 @@ import volume from "./volume";
 import progressBar from "./progress-bar";
 import fullscreenButton from "./fullscreen";
 
-
-
-
 const name = "control-bar";
 
 function controlBar(state, dispatch) {
@@ -24,7 +21,7 @@ function controlBar(state, dispatch) {
       {state.isPlaying ? pause(state, dispatch, name) : play(state, dispatch, name)}
       {volume(state, dispatch, name)}
       {progressBar(state, dispatch, name)}
-      {fullscreenButton(state, dispatch, className)}
+      {fullscreenButton(state, dispatch, name)}
     </div>
   );
 

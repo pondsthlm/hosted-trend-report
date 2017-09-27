@@ -1,6 +1,7 @@
-
 import transpileJSX from "../../helpers/transpile-jsx"
 import actions from "../../../player/actions";
+
+import "./progress-bar.styl";
 
 const name = "play-button";
 

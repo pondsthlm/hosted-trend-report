@@ -1,0 +1,28 @@
+$control-bar-height = 30px;
+$button-icon {
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  border: 0;
+  background: none;
+  color: #fff;
+}
+$normalize-control-element {
+  display: table-cell;
+  background: none;
+  height: $control-bar-height;
+}
+
+
+.control-bar__play-button {
+  @extends $normalize-control-element;
+  @extends $button-icon;
+}
+
+.break-overlay__play-button {
+  @extends $normalize-control-element;
+  @extends $button-icon;
+  position: absolute;
+  bottom: 3%;
+  left: 3%;
+}
