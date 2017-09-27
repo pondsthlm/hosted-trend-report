@@ -21,10 +21,6 @@ function setUpHlsService(payload, store) {
   const videoState = state.player.videos[payload.id];
 
   const videoElement = payload.elementContainer.querySelector(".exp-video");
-
-  payload.elementContainer.style.paddingTop = "56.25%";
-  payload.elementContainer.style.height = "0";
-  payload.elementContainer.style.position = "relative";
   const autoStartLoad = videoState.autoPlay ? videoState.autoPlay : false;
   const hls = new Hls({ autoStartLoad });
   hls.loadSource(videoState.source.streams.hashHls);

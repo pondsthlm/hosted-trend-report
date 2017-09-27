@@ -4,7 +4,7 @@ import player from "../player";
 
 const defaultVideoState = {
   fullScreen: false,
-  showControls: true,
+  showControls: false,
   showVolumeControls: false,
   abTestClass: "",
   topBar: true
@@ -34,6 +34,13 @@ const uiReducer = (state = defaultVideoState, action) => {
     case player.constants.CONTENT_CLICKED:
       state = Object.assign({}, state, {
         showControls: true
+      });
+      break;
+
+    case player.constants.HIDE_CONTROLS:
+      state = Object.assign({}, state, {
+        showControls: false,
+        showVolumeControls: false
       });
       break;
 

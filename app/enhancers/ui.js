@@ -5,6 +5,7 @@ import updateElements from "../helpers/update-elements";
 
 function observeVideo(store) {
   let oldNode;
+
   const id = Math.random().toString(36).substr(2, 9);
 
   // Removing id complexity for dispatches
@@ -28,6 +29,7 @@ function observeVideo(store) {
     if (!oldNode) {
       oldNode = newNode;
       updateElements(videoState.elementContainer, newNode);
+      videoState.elementContainer.classList.add("exp-player");
       localDispatch({
         type: player.constants.DOM_READY,
         payload: {

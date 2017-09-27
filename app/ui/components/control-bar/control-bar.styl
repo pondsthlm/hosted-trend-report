@@ -19,6 +19,11 @@ $normalize-control-element {
   bottom: 0;
   display: table;
   background: rgba(#000, .7);
+  transition: bottom .2s;
+
+  &--hide {
+    bottom: - $control-bar-height;
+  }
 
   .control-bar__pause-button {
     @extends $normalize-control-element;

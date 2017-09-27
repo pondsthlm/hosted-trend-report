@@ -19,6 +19,12 @@ const actions = {
       duration
     }
   }),
+  hideControls: (event) => ({
+    type: constants.HIDE_CONTROLS,
+    payload: {
+      event
+    }
+  }),
   play: () => ({
     type: constants.PLAY
   }),
