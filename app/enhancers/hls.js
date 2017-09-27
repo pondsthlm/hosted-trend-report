@@ -75,7 +75,7 @@ function setUpHlsService(payload, store) {
   };
 
   // Setup videoEvents
-  videoEvents(localStore, videoElement);
+  videoEvents(localStore, videoElement, payload.elementContainer);
 
   return {videoElement, hls };
 }

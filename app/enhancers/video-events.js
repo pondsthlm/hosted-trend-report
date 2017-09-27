@@ -1,15 +1,20 @@
 import player from "../player";
 
-function videoEvents(store, videoElement) {
-  let currentTime = -1;
+function videoEvents(store, videoElement, elementContainer) {
   let resizeTimeout;
   let width;
+
+  function fullscreenChange() {
+    store.dispatch(player.actions.fullscreenChange());
+  }
+
+  elementContainer.addEventListener("webkitfullscreenchange", fullscreenChange, false);
+  elementContainer.addEventListener("mozfullscreenchange", fullscreenChange, false);
+  elementContainer.addEventListener("fullscreenchange", fullscreenChange, false);
+  elementContainer.addEventListener("MSFullscreenChange", fullscreenChange, false);
+
   videoElement.addEventListener("timeupdate", () => {
-    // Limit distatch to max 1 per second
-    if (currentTime !== Math.floor(videoElement.currentTime)) {
-      currentTime = Math.floor(videoElement.currentTime);
-      store.dispatch(player.actions.timeupdate(currentTime));
-    }
+    store.dispatch(player.actions.timeupdate(videoElement.currentTime));
   }, true);
   videoElement.addEventListener("ended", () => {
     store.dispatch(player.actions.contentEnded());

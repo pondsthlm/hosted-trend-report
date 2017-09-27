@@ -22,11 +22,12 @@ const actions = {
   play: () => ({
     type: constants.PLAY
   }),
-  setupPlayer: (elementContainer, webtvArticle) => ({
+  setupPlayer: (elementContainer, webtvArticle, options) => ({
     type: constants.SETUP_NEW_PLAYER,
     payload: {
       elementContainer,
-      webtvArticle
+      webtvArticle,
+      options
     }
   }),
   setTime: (time) => ({type: constants.SET_TIME,
@@ -45,6 +46,10 @@ const actions = {
     payload: {
       currentTime
     }
+  }),
+  fullscreenChange: () => ({
+    type: constants.FULLSCREEN_CHANGE,
+    payload: {}
   }),
   uiFullscreen: (event, trigger) => ({
     type: constants.FULLSCREEN,
