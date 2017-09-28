@@ -21,6 +21,9 @@ function setUpHlsService(payload, store) {
   const videoState = state.player.videos[payload.id];
 
   const videoElement = payload.elementContainer.querySelector(".exp-video");
+  if (videoState.currentTime) {
+    videoElement.currentTime =  videoState.currentTime;
+  }
   const autoStartLoad = videoState.autoPlay ? videoState.autoPlay : false;
   const hls = new Hls({ autoStartLoad });
   hls.loadSource(videoState.source.streams.hashHls);
@@ -75,6 +78,14 @@ function setUpHlsService(payload, store) {
 
   return {videoElement, hls };
 }
+
+function loadVideo(videoElement, videoState) {
+
+  if (videoState.volume) {
+    videoElement.volume =  videoState.volume;
+  }
+}
+
 const hlsService = (() => {
   const hlsElements = {};
 
@@ -100,6 +111,7 @@ const hlsService = (() => {
       case player.constants.PLAY:
       case player.constants.CONTENT_PLAY:
         hlsElements[action.payload.id].startLoad();
+        hlsElements[action.payload.id].currentTime = state.player.videos[action.payload.id].currentTime;
 
         return next(action);
 

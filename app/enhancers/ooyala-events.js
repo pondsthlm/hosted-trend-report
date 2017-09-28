@@ -43,7 +43,12 @@ function ooyalaEvents(store, adPlayer) {
     //logger.log("ooyalaEvent", "AD_CLICKTHROUGH", event, metadata);
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.AD_SESSION_FINISHED, (event, metadata) => {
-    //logger.log("ooyalaEvent", "AD_SESSION_FINISHED", event, metadata);
+    logger.log("ooyalaEvent", "AD_SESSION_FINISHED", event, metadata);
+
+    store.dispatch({
+      type: player.constants.AD_SESSION_FINISHED,
+      payload: {}
+    });
   });
   adPlayer.addEventListener(window.OO.Pulse.AdPlayer.Events.AD_VOLUME_CHANGED, (event, metadata) => {
     //logger.log("ooyalaEvent", "AD_VOLUME_CHANGED", event, metadata);

@@ -15,7 +15,7 @@ const defaultState = {
   display: "preview",
   isMuted: true,
   defaultVolume: .8,
-  volume: .8,
+  volume: 0.8,
   source: {},
   isPlaying: false,
   currentTime: -1,
@@ -124,13 +124,23 @@ const reducer = (state = defaultState, action) => {
         display: "pause-ad"
       });
       break;
-
+    case player.constants.AD_SESSION_FINISHED:
+      state = Object.assign({}, state, {
+        display: "post-content"
+      });
+      break;
     case player.constants.CONTENT_PAUSE:
     case player.constants.PAUSE:
       state = Object.assign({}, state, {
         isPlaying: false
       });
       state.videoElement.pause();
+      break;
+
+    case player.constants.CONTENT_ENDED:
+      state = Object.assign({}, state, {
+        display: "post-content"
+      });
       break;
 
     case player.constants.SET_TIME:

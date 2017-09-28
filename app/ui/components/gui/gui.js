@@ -1,6 +1,8 @@
 import imageOptimizer from "../../helpers/image-optimizer"
 import controlBar from "../control-bar/control-bar";
 import breakOverlay from "../break-overlay/break-overlay";
+import playNext from "../post-content/play-next";
+import relatedContent from "../post-content/play-next";
 
 import transpileJSX from "../../helpers/transpile-jsx"
 const className = "video-gui";
@@ -32,6 +34,13 @@ function isAdBrake(state) {
   return (state.display === "pause-ad" || state.display === "preroll" || state.display === "postroll")
 }
 
+function postContent(state, dispatch) {
+  if (state.playNext) {
+    return playNext(state, dispatch);
+  }
+  return relatedContent(state, dispatch);
+}
+
 function gui(state, dispatch) {
   //const dom = guiDOM(state, dispatch);
   //adOverlay(state, dispatch)
@@ -41,6 +50,7 @@ function gui(state, dispatch) {
       <div className="ad-video"></div>
       {controlBar(state, dispatch)}
       {isAdBrake(state) ? breakOverlay(state, dispatch) : <span></span>}
+      {(state.display === "post-content") ? postContent(state, dispatch) : <span></span>}
     </div>
   );
 }
