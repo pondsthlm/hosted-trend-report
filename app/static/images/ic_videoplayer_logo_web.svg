@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" [
+	<!ENTITY ns_extend "http://ns.adobe.com/Extensibility/1.0/">
+	<!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+	<!ENTITY ns_graphs "http://ns.adobe.com/Graphs/1.0/">
+	<!ENTITY ns_vars "http://ns.adobe.com/Variables/1.0/">
+	<!ENTITY ns_imrep "http://ns.adobe.com/ImageReplacement/1.0/">
+	<!ENTITY ns_sfw "http://ns.adobe.com/SaveForWeb/1.0/">
+	<!ENTITY ns_custom "http://ns.adobe.com/GenericCustomNamespace/1.0/">
+	<!ENTITY ns_adobe_xpath "http://ns.adobe.com/XPath/1.0/">
+]>
+<svg version="1.1" id="Lager_1" xmlns:x="&ns_extend;" xmlns:i="&ns_ai;" xmlns:graph="&ns_graphs;"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1257.083px"
+	 height="466.095px" viewBox="0 0 1257.083 466.095" enable-background="new 0 0 1257.083 466.095" xml:space="preserve">
+<switch>
+	<foreignObject requiredExtensions="&ns_ai;" x="0" y="0" width="1" height="1">
+		<i:pgfRef  xlink:href="#adobe_illustrator_pgf">
+		</i:pgfRef>
+	</foreignObject>
+	<g i:extraneous="self">
+		<path fill="#0976B5" d="M232.649,0C104.16,0,0,104.161,0,232.651c0,0.08,0.003,0.161,0.003,0.242
+			C0.134,361.27,104.241,465.299,232.649,465.299c128.408,0,232.516-104.029,232.648-232.406c0-0.081,0.003-0.162,0.003-0.242
+			C465.3,104.161,361.138,0,232.649,0z"/>
+		<path fill="#E91517" d="M232.649,44.222c-104.065,0-188.427,84.361-188.427,188.428c0,0.081,0.003,0.162,0.003,0.243
+			c0.132,103.951,84.44,188.183,188.424,188.183c103.982,0,188.293-84.231,188.425-188.183c0-0.081,0.003-0.162,0.003-0.243
+			C421.078,128.583,336.712,44.222,232.649,44.222z"/>
+		<g>
+			<polygon fill="#FFFFFF" points="392.195,233.083 391.89,232.897 153.173,87.993 153.173,171.84 153.173,233.524 391.468,233.524
+							"/>
+			<polygon fill="#D9D8D7" points="153.173,378.172 391.468,233.524 153.173,233.524 153.173,294.325 			"/>
+		</g>
+		<g>
+			<polygon fill="#0976B5" points="460.07,0.517 460.07,125.65 564.035,125.65 564.035,466.095 720.64,466.095 720.64,125.65
+				824.605,125.65 824.605,0.517 			"/>
+			<polygon fill="#0976B5" points="1109.032,0.517 1057.707,263.366 1005.724,0.517 842.54,0.517 970.85,466.095 1124.166,466.095
+				1257.083,0.517 			"/>
+		</g>
+	</g>
+</switch>
+</svg>

@@ -1,15 +1,17 @@
+
+@require "app/ui/stylus/mixins.styl";
+
 $control-bar-height = 30px;
 $button-icon {
   width: 20px;
   height: 20px;
   padding: 5px;
   border: 0;
-  background: none;
-  color: #fff;
+  background-color: transparent;
+  background-size: cover;
 }
 $normalize-control-element {
   display: table-cell;
-  background: none;
   height: $control-bar-height;
 }
 
@@ -17,6 +19,8 @@ $normalize-control-element {
 .control-bar__play-button {
   @extends $normalize-control-element;
   @extends $button-icon;
+  background-image: image("ikon_play.svg");
+  fill: #fff;
 }
 
 .break-overlay__play-button {

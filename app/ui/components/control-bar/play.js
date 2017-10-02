@@ -1,7 +1,7 @@
 import transpileJSX from "../../helpers/transpile-jsx"
 import actions from "../../../player/actions";
 
-import "./progress-bar.styl";
+import "./play.styl";
 
 const name = "play-button";
 
@@ -14,7 +14,7 @@ function play(state, dispatch, parentClassName) {
   const className = `${bemParent}${name}`;
 
   return (
-    <button name={name} className={className} onclick={() => clickPlay(dispatch)}>▶</button>
+    <button name={name} className={className} onclick={() => clickPlay(dispatch)}></button>
   )
 }
 

@@ -1,6 +1,7 @@
  @require "app/ui/stylus/normalize.styl";
  @require "app/ui/stylus/reset.styl";
  @require "app/ui/stylus/variables.styl";
+ @require "app/ui/stylus/mixins.styl";
 
  .exp-video {
    width: 100%;
@@ -9,11 +10,12 @@
    top: 0;
    left: 0;
    background: $black;
+   background-image: image("ikon_dela.svg");
  }
 
-  .exp-player {
-    overflow: hidden;
-    padding-top: 56.25%;
-    height: 0;
-    position: relative;
-  }
+.exp-player {
+  overflow: hidden;
+  padding-top: 56.25%;
+  height: 0;
+  position: relative;
+}

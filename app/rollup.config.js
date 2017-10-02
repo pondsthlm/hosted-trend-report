@@ -7,7 +7,44 @@ import resolve from "rollup-plugin-node-resolve";
 import stylus from "rollup-plugin-stylus-compiler";
 import uglify from "rollup-plugin-uglify";
 
-import transpileJSX from "./ui/helpers/transpile-jsx";
+import fs from "fs";
+
+const copyPlugin = function (options) {
+  return {
+    ongenerate() {
+      copy(options.src, options.targ);
+      function copy(srcDir, dstDir) {
+        let results = [];
+        const list = fs.readdirSync(srcDir);
+        let src;
+        let dst;
+        list.forEach((file) => {
+          src = `${srcDir}/${file}`;
+          dst = `${dstDir}/${file}`;
+          const stat = fs.statSync(src);
+          if (stat && stat.isDirectory()) {
+            try {
+              console.log("creating dir: ", dst);
+              fs.mkdirSync(dst);
+            } catch(e) {
+              console.log("directory already exists: ", dst);
+            }
+            results = results.concat(copy(src, dst));
+          } else {
+            try {
+              console.log("copying file:", src, "-to->", dst);
+              fs.writeFileSync(dst, fs.readFileSync(src));
+            } catch(e) {
+              console.log("could\"t copy file:", src, e);
+            }
+            results.push(src);
+          }
+        });
+        return results;
+      }
+    }
+  };
+};
 
 const isProd = process.env.NODE_ENV === "production";
 const suffix = isProd ? ".min" : "";
@@ -19,6 +56,10 @@ export default {
   plugins: [
     stylus(),
     css({dest: "public/assets/bundle.css"}),
+    copyPlugin({
+      src: "app/static",
+      targ: "public/assets"
+    }),
     commonjs(),
     resolve(),
     babel({
