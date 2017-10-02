@@ -3,9 +3,8 @@
 
 $control-bar-height = 30px;
 $button-icon {
-  width: 20px;
-  height: 20px;
-  padding: 5px;
+  width: $control-bar-height;
+  height: $control-bar-height;
   border: 0;
   background-color: transparent;
   background-size: cover;
@@ -19,7 +18,7 @@ $normalize-control-element {
 .control-bar__play-button {
   @extends $normalize-control-element;
   @extends $button-icon;
-  background-image: image("ikon_play.svg");
+  background-image: image("icon_play.svg");
   fill: #fff;
 }
 
