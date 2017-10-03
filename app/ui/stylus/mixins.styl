@@ -1,3 +1,12 @@
 image(n) {
   url("/assets/images/" + n)
 }
+
+icon(image, size) {
+  width: size;
+  height: size;
+  border: 0;
+  background-color: transparent;
+  background-size: cover;
+  background-image: image(image);
+}

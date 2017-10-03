@@ -1,12 +1,4 @@
 $control-bar-height = 30px;
-$button-icon {
-  width: 20px;
-  height: 20px;
-  padding: 5px;
-  border: 0;
-  background: none;
-  color: #fff;
-}
 $normalize-control-element {
   display: table-cell;
   background: none;
@@ -20,36 +12,18 @@ $normalize-control-element {
   display: table;
   background: rgba(#000, .7);
   transition: bottom .2s;
+  height: $control-bar-height;
 
   &--hide {
     bottom: - $control-bar-height;
   }
 
-  .control-bar__pause-button {
+  & > * {
     @extends $normalize-control-element;
-    @extends $button-icon;
-  }
-
-  .control-bar__volume {
-    @extends $normalize-control-element;
-    @extends $button-icon;
-  }
-
-  .control-bar__volume-button {
-    @extends $button-icon;
   }
 
   .control-bar__progress-bar {
     @extends $normalize-control-element;
     width: 100%;
-  }
-
-  .control-bar__fullscreen {
-    @extends $normalize-control-element;
-    @extends $button-icon;
-  }
-
-  .control-bar__fullscreen-button {
-    @extends $button-icon;
   }
 }

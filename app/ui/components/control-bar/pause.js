@@ -1,6 +1,8 @@
 import transpileJSX from "../../helpers/transpile-jsx"
 import actions from "../../../player/actions";
 
+import "./pause.styl";
+
 const name = "pause-button";
 
 function clickPause(event, dispatch) {

@@ -1,31 +1,15 @@
 
 @require "app/ui/stylus/mixins.styl";
-
 $control-bar-height = 30px;
-$button-icon {
-  width: $control-bar-height;
-  height: $control-bar-height;
-  border: 0;
-  background-color: transparent;
-  background-size: cover;
-}
-$normalize-control-element {
-  display: table-cell;
-  height: $control-bar-height;
-}
-
 
 .control-bar__play-button {
-  @extends $normalize-control-element;
-  @extends $button-icon;
-  background-image: image("icon_play.svg");
-  fill: #fff;
+  icon("icon_play.svg", $control-bar-height);
 }
 
 .break-overlay__play-button {
-  @extends $normalize-control-element;
-  @extends $button-icon;
+  icon("icon_play.svg", 50px);
   position: absolute;
   bottom: 3%;
   left: 3%;
+  background-color: rgba(#000, .7);
 }

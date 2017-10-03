@@ -48,15 +48,13 @@ function iconClicked(dispatch, state) {
 function sound(state, dispatch, parentClassName) {
   return (
     <button className={`${parentClassName}__button`} onclick={(el, e) => iconClicked(dispatch, state)}>
-      🔊
     </button>
   );
 }
 
 function mute(state, dispatch, parentClassName) {
   return (
-    <button className={`${parentClassName}__button`} onclick={(el, e) => iconClicked(dispatch, state)}>
-      🔇
+    <button className={`${parentClassName}__button--mute`} onclick={(el, e) => iconClicked(dispatch, state)}>
     </button>
   );
 }

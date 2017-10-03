@@ -1,7 +1,21 @@
- @require "app/ui/stylus/normalize.styl";
- @require "app/ui/stylus/reset.styl";
- @require "app/ui/stylus/variables.styl";
- @require "app/ui/stylus/mixins.styl";
+.exp-player {
+  @require "app/ui/stylus/normalize.styl";
+  @require "app/ui/stylus/reset.styl";
+  @require "app/ui/stylus/variables.styl";
+  @require "app/ui/stylus/mixins.styl";
+  overflow: hidden;
+  padding-top: 56.25%;
+  height: 0;
+  position: relative;
+
+  * {
+    &,
+    &:before,
+    &:after {
+      box-sizing: border-box;
+    }
+  }
+}
 
  .exp-video {
    width: 100%;
@@ -12,10 +26,3 @@
    background: $black;
    background-image: image("ikon_dela.svg");
  }
-
-.exp-player {
-  overflow: hidden;
-  padding-top: 56.25%;
-  height: 0;
-  position: relative;
-}
