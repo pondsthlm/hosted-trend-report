@@ -1,9 +1,9 @@
 import reveal from './reveal/reveal';
 import "./stylus/main.styl";
 
-(function( root, factory ) {
+(function ( root, factory ) {
 	// Browser globals.
-	root.Reveal = factory();
+	root.Reveal = reveal();
   root.Reveal.initialize({
     controls: true,
     progress: true,
@@ -22,6 +22,6 @@ import "./stylus/main.styl";
       //{ src: 'plugin/notes/notes.js', async: true }
     ]
   });
-}( window, reveal));
+}());
 
 // More info https://github.com/hakimel/reveal.js#configuration

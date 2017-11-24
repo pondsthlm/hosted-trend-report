@@ -1,4 +1,4 @@
-/* global Reveal, head */
+/* global head */
 
 const reveal = function () {
 
