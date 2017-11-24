@@ -1,5 +1,8 @@
 /* global head */
 
+import capabilities from './capabilities.js';
+import appState from './app-state.js';
+
 const reveal = function () {
 
   let Reveal;
@@ -13,262 +16,6 @@ const reveal = function () {
   const HOME_SLIDE_SELECTOR = '.slides>section:first-of-type';
   const UA = navigator.userAgent;
 
-  // Configuration defaults, can be overridden at initialization time
-  const  config = {
-
-    // The "normal" size of the presentation, aspect ratio will be preserved
-    // when the presentation is scaled to fit different resolutions
-    width: 960,
-    height: 700,
-
-    // Factor of the display size that should remain empty around the content
-    margin: 0.04,
-
-    // Bounds for smallest/largest possible scale to apply to content
-    minScale: 0.2,
-    maxScale: 2.0,
-
-    // Display presentation control arrows
-    controls: true,
-
-    // Help the user learn the controls by providing hints, for example by
-    // bouncing the down arrow when they first encounter a vertical slide
-    controlsTutorial: true,
-
-    // Determines where controls appear, "edges" or "bottom-right"
-    controlsLayout: 'bottom-right',
-
-    // Visibility rule for backwards navigation arrows; "faded", "hidden"
-    // or "visible"
-    controlsBackArrows: 'faded',
-
-    // Display a presentation progress bar
-    progress: true,
-
-    // Display the page number of the current slide
-    slideNumber: false,
-
-    // Determine which displays to show the slide number on
-    showSlideNumber: 'all',
-
-    // Push each slide change to the browser history
-    history: false,
-
-    // Enable keyboard shortcuts for navigation
-    keyboard: true,
-
-    // Optional function that blocks keyboard events when retuning false
-    keyboardCondition: null,
-
-    // Enable the slide overview mode
-    overview: true,
-
-    // Vertical centering of slides
-    center: true,
-
-    // Enables touch navigation on devices with touch input
-    touch: true,
-
-    // Loop the presentation
-    loop: false,
-
-    // Change the presentation direction to be RTL
-    rtl: false,
-
-    // Randomizes the order of slides each time the presentation loads
-    shuffle: false,
-
-    // Turns fragments on and off globally
-    fragments: true,
-
-    // Flags if the presentation is running in an embedded mode,
-    // i.e. contained within a limited portion of the screen
-    embedded: false,
-
-    // Flags if we should show a help overlay when the question-mark
-    // key is pressed
-    help: true,
-
-    // Flags if it should be possible to pause the presentation (blackout)
-    pause: true,
-
-    // Flags if speaker notes should be visible to all viewers
-    showNotes: false,
-
-    // Global override for autolaying embedded media (video/audio/iframe)
-    // - null:   Media will only autoplay if data-autoplay is present
-    // - true:   All media will autoplay, regardless of individual setting
-    // - false:  No media will autoplay, regardless of individual setting
-    autoPlayMedia: null,
-
-    // Controls automatic progression to the next slide
-    // - 0:      Auto-sliding only happens if the data-autoslide HTML attribute
-    //           is present on the current slide or fragment
-    // - 1+:     All slides will progress automatically at the given interval
-    // - false:  No auto-sliding, even if data-autoslide is present
-    autoSlide: 0,
-
-    // Stop auto-sliding after user input
-    autoSlideStoppable: true,
-
-    // Use this method for navigation when auto-sliding (defaults to navigateNext)
-    autoSlideMethod: null,
-
-    // Enable slide navigation via mouse wheel
-    mouseWheel: false,
-
-    // Apply a 3D roll to links on hover
-    rollingLinks: false,
-
-    // Hides the address bar on mobile devices
-    hideAddressBar: true,
-
-    // Opens links in an iframe preview overlay
-    previewLinks: false,
-
-    // Exposes the reveal.js API through window.postMessage
-    postMessage: true,
-
-    // Dispatches all reveal.js events to the parent window through postMessage
-    postMessageEvents: false,
-
-    // Focuses body when page changes visibility to ensure keyboard shortcuts work
-    focusBodyOnPageVisibilityChange: true,
-
-    // Transition style
-    transition: 'slide', // none/fade/slide/convex/concave/zoom
-
-    // Transition speed
-    transitionSpeed: 'default', // default/fast/slow
-
-    // Transition style for full page slide backgrounds
-    backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
-
-    // Parallax background image
-    parallaxBackgroundImage: '', // CSS syntax, e.g. "a.jpg"
-
-    // Parallax background size
-    parallaxBackgroundSize: '', // CSS syntax, e.g. "3000px 2000px"
-
-    // Amount of pixels to move the parallax background per slide step
-    parallaxBackgroundHorizontal: null,
-    parallaxBackgroundVertical: null,
-
-    // The maximum number of pages a single slide can expand onto when printing
-    // to PDF, unlimited by default
-    pdfMaxPagesPerSlide: Number.POSITIVE_INFINITY,
-
-    // Offset used to reduce the height of content within exported PDF pages.
-    // This exists to account for environment differences based on how you
-    // print to PDF. CLI printing options, like phantomjs and wkpdf, can end
-    // on precisely the total height of the document whereas in-browser
-    // printing has to end one pixel before.
-    pdfPageHeightOffset: -1,
-
-    // Number of slides away from the current that are visible
-    viewDistance: 3,
-
-    // The display mode that will be used to show slides
-    display: 'block',
-
-    // Script dependencies to load
-    dependencies: []
-
-  };
-
-  // Flags if Reveal.initialize() has been called
-  let initialized = false;
-
-  // Flags if reveal.js is loaded (has dispatched the 'ready' event)
-  let loaded = false;
-
-  // Flags if the overview mode is currently active
-  let overview = false;
-
-  // Holds the dimensions of our overview slides, including margins
-  let overviewSlideWidth = null;
-  let overviewSlideHeight = null;
-
-  // The horizontal and vertical index of the currently active slide
-  let indexh;
-  let indexv;
-
-  // The previous and current slide HTML elements
-  let previousSlide;
-  let currentSlide;
-
-  let previousBackground;
-
-  // Remember which directions that the user has navigated towards
-  let hasNavigatedRight = false;
-  let hasNavigatedDown = false;
-
-  // Slides may hold a data-state attribute which we pick up and apply
-  // as a class to the body. This list contains the combined state of
-  // all current slides.
-  let state = [];
-
-  // The current scale of the presentation (see width/height config)
-  let scale = 1;
-
-  // CSS transform that is currently applied to the slides container,
-  // split into two groups
-  const slidesTransform = { layout: '', overview: '' };
-
-  // Cached references to DOM elements
-  const dom = {};
-
-  // Features supported by the browser, see #checkCapabilities()
-  const features = {};
-
-  // Client is a mobile device, see #checkCapabilities()
-  let isMobileDevice;
-
-  // Client is a desktop Chrome, see #checkCapabilities()
-  let isChrome;
-
-  // Throttles mouse wheel navigation
-  let lastMouseWheelStep = 0;
-
-  // Delays updates to the URL due to a Chrome thumbnailer bug
-  let writeURLTimeout = 0;
-
-  // Flags if the interaction event listeners are bound
-  let eventsAreBound = false;
-
-  // The current auto-slide duration
-  let autoSlide = 0;
-
-  // Auto slide properties
-  let autoSlidePlayer;
-  let autoSlideTimeout = 0;
-  let autoSlideStartTime = -1;
-  let autoSlidePaused = false;
-
-  // Holds information about the currently ongoing touch input
-  const touch = {
-    startX: 0,
-    startY: 0,
-    startSpan: 0,
-    startCount: 0,
-    captured: false,
-    threshold: 40
-  };
-
-  // Holds information about the keyboard shortcuts
-  const keyboardShortcuts = {
-    'N, SPACE': 'Next slide',
-    'P': 'Previous slide',
-    '&#8592;,  H': 'Navigate left',
-    '&#8594;, L': 'Navigate right',
-    '&#8593;, K': 'Navigate up',
-    '&#8595;, J': 'Navigate down',
-    'Home': 'First slide',
-    'End': 'Last slide',
-    'B, .': 'Pause',
-    'F': 'Fullscreen',
-    'ESC, O': 'Slide overview'
-  };
 
   /**
   * Starts up the presentation if the client is capable.
@@ -276,29 +23,28 @@ const reveal = function () {
   function initialize(options) {
 
     // Make sure we only initialize once
-    if (initialized === true) return;
+    if (appState.initialized === true) return;
 
-    initialized = true;
+    appState.initialized = true;
 
-    checkCapabilities();
+    appState.features = Object.assign({}, appState.features, capabilities(UA));
 
-    if (!features.transforms2d && !features.transforms3d) {
+    if (!appState.features.transforms2d && !appState.features.transforms3d) {
       document.body.setAttribute('class', 'no-transforms');
 
       // Since JS won't be running any further, we load all lazy
       // loading elements upfront
-      const images = toArray(document.getElementsByTagName('img' ));
-      const iframes = toArray(document.getElementsByTagName('iframe' ));
+      const images = toArray(document.getElementsByTagName('img'));
+      const iframes = toArray(document.getElementsByTagName('iframe'));
 
       const lazyLoadable = images.concat(iframes);
 
-      for (let i = 0, len = lazyLoadable.length; i < len; i++) {
-        const element = lazyLoadable[i];
-        if (element.getAttribute('data-src' )) {
-          element.setAttribute('src', element.getAttribute('data-src' ));
+      [].forEach.call(lazyLoadable, (element) => {
+        if (element.getAttribute('data-src')) {
+          element.setAttribute('src', element.getAttribute('data-src'));
           element.removeAttribute('data-src');
         }
-      }
+      });
 
       // If the browser doesn't support core features we won't be
       // using JavaScript to control the presentation
@@ -306,22 +52,21 @@ const reveal = function () {
     }
 
     // Cache references to key DOM elements
-    dom.wrapper = document.querySelector('.reveal');
+    appState.dom.wrapper = document.querySelector('.reveal');
 
-    dom.slides = document.querySelector('.reveal .slides');
+    appState.dom.slides = document.querySelector('.reveal .slides');
 
     // Force a layout when the whole page, incl fonts, has loaded
     window.addEventListener('load', layout, false);
 
     const query = Reveal.getQueryHash();
 
-    // Do not accept new dependencies via query config to avoid
+    // Do not accept new dependencies via query appState.config to avoid
     // the potential of malicious script injection
     if (typeof query.dependencies !== 'undefined' ) delete query.dependencies;
 
-    // Copy options over to our config object
-    extend(config, options);
-    extend(config, query);
+    // Copy options over to our appState.config object
+    appState.config = Object.assign({}, appState.config, options, query);
 
     // Hide the address bar in mobile browsers
     hideAddressBar();
@@ -332,48 +77,8 @@ const reveal = function () {
   }
 
   /**
-  * Inspect the client to see what it's capable of, this
-  * should only happens once per runtime.
-  */
-  function checkCapabilities() {
-
-    isMobileDevice = /(iphone|ipod|ipad|android)/gi.test(UA);
-    isChrome = /chrome/i.test(UA ) && !/edge/i.test(UA);
-
-    const testElement = document.createElement('div');
-
-    features.transforms3d = 'WebkitPerspective' in testElement.style ||
-    'MozPerspective' in testElement.style ||
-    'msPerspective' in testElement.style ||
-    'OPerspective' in testElement.style ||
-    'perspective' in testElement.style;
-
-    features.transforms2d = 'WebkitTransform' in testElement.style ||
-    'MozTransform' in testElement.style ||
-    'msTransform' in testElement.style ||
-    'OTransform' in testElement.style ||
-    'transform' in testElement.style;
-
-    features.requestAnimationFrameMethod = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame;
-    features.requestAnimationFrame = typeof features.requestAnimationFrameMethod === 'function';
-
-    features.canvas = !!document.createElement('canvas' ).getContext;
-
-    // Transitions in the overview are disabled in desktop and
-    // Safari due to lag
-    features.overviewTransitions = !/Version\/[\d.]+.*Safari/.test(UA);
-
-    // Flags if we should use zoom instead of transform to scale
-    // up slides. Zoom produces crisper results but has a lot of
-    // xbrowser quirks so we only use it in whitelsited browsers.
-    features.zoom = 'zoom' in testElement.style && !isMobileDevice &&
-    (isChrome || /Version\/[\d.]+.*Safari/.test(UA ));
-
-  }
-
-  /**
   * Loads the dependencies of reveal.js. Dependencies are
-  * defined via the configuration option 'dependencies'
+  * defined via the appState.configuration option 'dependencies'
   * and will be loaded prior to starting/binding reveal.js.
   * Some dependencies may have an 'async' flag, if so they
   * will load after reveal.js has been started up.
@@ -407,8 +112,8 @@ const reveal = function () {
       });
     }
 
-    for (let i = 0, len = config.dependencies.length; i < len; i++) {
-      const s = config.dependencies[i];
+    for (let i = 0, len = appState.config.dependencies.length; i < len; i++) {
+      const s = appState.config.dependencies[i];
 
       // Load if there's no condition or the condition is truthy
       if (!s.condition || s.condition()) {
@@ -439,7 +144,7 @@ const reveal = function () {
   */
   function start() {
 
-    loaded = true;
+    appState.loaded = true;
 
     // Make sure we've got all the DOM elements we need
     setupDOM();
@@ -453,7 +158,7 @@ const reveal = function () {
     // Resets all vertical slides so that only the first is visible
     resetVerticalSlides();
 
-    // Updates the presentation to match the current configuration values
+    // Updates the presentation to match the current appState.configuration values
     configure();
 
     // Read the initial hash
@@ -466,18 +171,18 @@ const reveal = function () {
     // timeout to ensure it's not fired synchronously after #initialize()
     setTimeout(() => {
       // Enable transitions now that we're loaded
-      dom.slides.classList.remove('no-transition');
+      appState.dom.slides.classList.remove('no-transition');
 
-      dom.wrapper.classList.add('ready');
+      appState.dom.wrapper.classList.add('ready');
 
       dispatchEvent('ready', {
-        'indexh': indexh,
-        'indexv': indexv,
-        'currentSlide': currentSlide
+        'indexh': appState.indexh,
+        'indexv': appState.indexv,
+        'currentSlide': appState.currentSlide
       });
     }, 1);
 
-    // Special setup and config is required when printing to PDF
+    // Special setup and appState.config is required when printing to PDF
     if (isPrintingPDF()) {
       removeEventListeners();
 
@@ -500,60 +205,60 @@ const reveal = function () {
   function setupDOM() {
 
     // Prevent transitions while we're loading
-    dom.slides.classList.add('no-transition');
+    appState.dom.slides.classList.add('no-transition');
 
-    if (isMobileDevice) {
-      dom.wrapper.classList.add('no-hover');
+    if (appState.features.isMobileDevice) {
+      appState.dom.wrapper.classList.add('no-hover');
     } else {
-      dom.wrapper.classList.remove('no-hover');
+      appState.dom.wrapper.classList.remove('no-hover');
     }
 
     if (/iphone/gi.test(UA )) {
-      dom.wrapper.classList.add('ua-iphone');
+      appState.dom.wrapper.classList.add('ua-iphone');
     } else {
-      dom.wrapper.classList.remove('ua-iphone');
+      appState.dom.wrapper.classList.remove('ua-iphone');
     }
 
     // Background element
-    dom.background = createSingletonNode(dom.wrapper, 'div', 'backgrounds', null);
+    appState.dom.background = createSingletonNode(appState.dom.wrapper, 'div', 'backgrounds', null);
 
     // Progress bar
-    dom.progress = createSingletonNode(dom.wrapper, 'div', 'progress', '<span></span>');
-    dom.progressbar = dom.progress.querySelector('span');
+    appState.dom.progress = createSingletonNode(appState.dom.wrapper, 'div', 'progress', '<span></span>');
+    appState.dom.progressbar = appState.dom.progress.querySelector('span');
 
     // Arrow controls
-    dom.controls = createSingletonNode(dom.wrapper, 'aside', 'controls',
+    appState.dom.controls = createSingletonNode(appState.dom.wrapper, 'aside', 'controls',
     '<button class="navigate-left" aria-label="previous slide"><div class="controls-arrow"></div></button>' +
     '<button class="navigate-right" aria-label="next slide"><div class="controls-arrow"></div></button>' +
     '<button class="navigate-up" aria-label="above slide"><div class="controls-arrow"></div></button>' +
     '<button class="navigate-down" aria-label="below slide"><div class="controls-arrow"></div></button>');
 
     // Slide number
-    dom.slideNumber = createSingletonNode(dom.wrapper, 'div', 'slide-number', '');
+    appState.dom.slideNumber = createSingletonNode(appState.dom.wrapper, 'div', 'slide-number', '');
 
     // Element containing notes that are visible to the audience
-    dom.speakerNotes = createSingletonNode(dom.wrapper, 'div', 'speaker-notes', null);
-    dom.speakerNotes.setAttribute('data-prevent-swipe', '');
-    dom.speakerNotes.setAttribute('tabindex', '0');
+    appState.dom.speakerNotes = createSingletonNode(appState.dom.wrapper, 'div', 'speaker-notes', null);
+    appState.dom.speakerNotes.setAttribute('data-prevent-swipe', '');
+    appState.dom.speakerNotes.setAttribute('tabindex', '0');
 
     // Overlay graphic which is displayed during the paused mode
-    createSingletonNode(dom.wrapper, 'div', 'pause-overlay', null);
+    createSingletonNode(appState.dom.wrapper, 'div', 'pause-overlay', null);
 
-    dom.wrapper.setAttribute('role', 'application');
+    appState.dom.wrapper.setAttribute('role', 'application');
 
     // There can be multiple instances of controls throughout the page
-    dom.controlsLeft = toArray(document.querySelectorAll('.navigate-left' ));
-    dom.controlsRight = toArray(document.querySelectorAll('.navigate-right' ));
-    dom.controlsUp = toArray(document.querySelectorAll('.navigate-up' ));
-    dom.controlsDown = toArray(document.querySelectorAll('.navigate-down' ));
-    dom.controlsPrev = toArray(document.querySelectorAll('.navigate-prev' ));
-    dom.controlsNext = toArray(document.querySelectorAll('.navigate-next' ));
+    appState.dom.controlsLeft = toArray(document.querySelectorAll('.navigate-left' ));
+    appState.dom.controlsRight = toArray(document.querySelectorAll('.navigate-right' ));
+    appState.dom.controlsUp = toArray(document.querySelectorAll('.navigate-up' ));
+    appState.dom.controlsDown = toArray(document.querySelectorAll('.navigate-down' ));
+    appState.dom.controlsPrev = toArray(document.querySelectorAll('.navigate-prev' ));
+    appState.dom.controlsNext = toArray(document.querySelectorAll('.navigate-next' ));
 
     // The right and down arrows in the standard reveal.js controls
-    dom.controlsRightArrow = dom.controls.querySelector('.navigate-right');
-    dom.controlsDownArrow = dom.controls.querySelector('.navigate-down');
+    appState.dom.controlsRightArrow = appState.dom.controls.querySelector('.navigate-right');
+    appState.dom.controlsDownArrow = appState.dom.controls.querySelector('.navigate-down');
 
-    dom.statusDiv = createStatusDiv();
+    appState.dom.statusDiv = createStatusDiv();
   }
 
   /**
@@ -576,7 +281,7 @@ const reveal = function () {
       statusDiv.setAttribute('id', 'aria-status-div');
       statusDiv.setAttribute('aria-live', 'polite');
       statusDiv.setAttribute('aria-atomic','true');
-      dom.wrapper.appendChild(statusDiv);
+      appState.dom.wrapper.appendChild(statusDiv);
     }
     return statusDiv;
 
@@ -622,8 +327,8 @@ const reveal = function () {
     const slideSize = getComputedSlideSize(window.innerWidth, window.innerHeight);
 
     // Dimensions of the PDF pages
-    const pageWidth = Math.floor(slideSize.width * (1 + config.margin ));
-    const pageHeight = Math.floor(slideSize.height * (1 + config.margin ));
+    const pageWidth = Math.floor(slideSize.width * (1 + appState.config.margin ));
+    const pageHeight = Math.floor(slideSize.height * (1 + appState.config.margin ));
 
     // Dimensions of slides within the pages
     const slideWidth = slideSize.width;
@@ -644,7 +349,7 @@ const reveal = function () {
 
     // Add each slide's index as attributes on itself, we need these
     // indices to generate slide numbers below
-    toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR)).forEach((hslide, h) => {
+    toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR)).forEach((hslide, h) => {
       hslide.setAttribute('data-index-h', h);
 
       if (hslide.classList.contains('stack' )) {
@@ -656,7 +361,7 @@ const reveal = function () {
     });
 
     // Slide and slide background layout
-    toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach((slide) => {
+    toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach((slide) => {
 
       // Vertical stacks are not centred since their section
       // children will be
@@ -669,10 +374,10 @@ const reveal = function () {
         let numberOfPages = Math.max(Math.ceil(contentHeight / pageHeight ), 1);
 
         // Adhere to configured pages per slide limit
-        numberOfPages = Math.min(numberOfPages, config.pdfMaxPagesPerSlide);
+        numberOfPages = Math.min(numberOfPages, appState.config.pdfMaxPagesPerSlide);
 
         // Center slides vertically
-        if (numberOfPages === 1 && config.center || slide.classList.contains('center' )) {
+        if (numberOfPages === 1 && appState.config.center || slide.classList.contains('center' )) {
           top = Math.max((pageHeight - contentHeight ) / 2, 0);
         }
 
@@ -680,7 +385,7 @@ const reveal = function () {
         // so that no page ever flows onto another
         const page = document.createElement('div');
         page.className = 'pdf-page';
-        page.style.height = ((pageHeight + config.pdfPageHeightOffset ) * numberOfPages ) + 'px';
+        page.style.height = ((pageHeight + appState.config.pdfPageHeightOffset ) * numberOfPages ) + 'px';
         slide.parentNode.insertBefore(page, slide);
         page.appendChild(slide);
 
@@ -694,14 +399,14 @@ const reveal = function () {
         }
 
         // Inject notes if `showNotes` is enabled
-        if (config.showNotes) {
+        if (appState.config.showNotes) {
 
           // Are there notes for this slide?
           const notes = getSlideNotes(slide);
           if (notes) {
 
             const notesSpacing = 8;
-            const notesLayout = typeof config.showNotes === 'string' ? config.showNotes : 'inline';
+            const notesLayout = typeof appState.config.showNotes === 'string' ? appState.config.showNotes : 'inline';
             const notesElement = document.createElement('div');
             notesElement.classList.add('speaker-notes');
             notesElement.classList.add('speaker-notes-pdf');
@@ -722,7 +427,7 @@ const reveal = function () {
         }
 
         // Inject slide numbers if `slideNumbers` are enabled
-        if (config.slideNumber && /all|print/i.test(config.showSlideNumber )) {
+        if (appState.config.slideNumber && /all|print/i.test(appState.config.showSlideNumber )) {
           const slideNumberH = parseInt(slide.getAttribute('data-index-h' ), 10 ) + 1,
           slideNumberV = parseInt(slide.getAttribute('data-index-v' ), 10 ) + 1;
 
@@ -737,7 +442,7 @@ const reveal = function () {
     });
 
     // Show all fragments
-    toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' .fragment' ) ).forEach((fragment) => {
+    toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' .fragment' ) ).forEach((fragment) => {
       fragment.classList.add('visible');
     });
 
@@ -758,9 +463,9 @@ const reveal = function () {
   function setupScrollPrevention() {
 
     setInterval(() => {
-      if (dom.wrapper.scrollTop !== 0 || dom.wrapper.scrollLeft !== 0) {
-        dom.wrapper.scrollTop = 0;
-        dom.wrapper.scrollLeft = 0;
+      if (appState.dom.wrapper.scrollTop !== 0 || appState.dom.wrapper.scrollLeft !== 0) {
+        appState.dom.wrapper.scrollTop = 0;
+        appState.dom.wrapper.scrollLeft = 0;
       }
     }, 1000);
 
@@ -814,13 +519,13 @@ const reveal = function () {
     const printMode = isPrintingPDF();
 
     // Clear prior backgrounds
-    dom.background.innerHTML = '';
-    dom.background.classList.add('no-transition');
+    appState.dom.background.innerHTML = '';
+    appState.dom.background.classList.add('no-transition');
 
     // Iterate over all horizontal slides
-    toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (slideh) => {
+    toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (slideh) => {
 
-      const backgroundStack = createBackground(slideh, dom.background);
+      const backgroundStack = createBackground(slideh, appState.dom.background);
 
       // Iterate over all vertical slides
       toArray(slideh.querySelectorAll('section' ) ).forEach( (slidev) => {
@@ -834,23 +539,23 @@ const reveal = function () {
     });
 
     // Add parallax background if specified
-    if (config.parallaxBackgroundImage) {
+    if (appState.config.parallaxBackgroundImage) {
 
-      dom.background.style.backgroundImage = 'url("' + config.parallaxBackgroundImage + '")';
-      dom.background.style.backgroundSize = config.parallaxBackgroundSize;
+      appState.dom.background.style.backgroundImage = 'url("' + appState.config.parallaxBackgroundImage + '")';
+      appState.dom.background.style.backgroundSize = appState.config.parallaxBackgroundSize;
 
       // Make sure the below properties are set on the element - these properties are
       // needed for proper transitions to be set on the element via CSS. To remove
       // annoying background slide-in effect when the presentation starts, apply
       // these properties after short time delay
       setTimeout( () => {
-        dom.wrapper.classList.add('has-parallax-background');
+        appState.dom.wrapper.classList.add('has-parallax-background');
       }, 1);
 
     } else {
 
-      dom.background.style.backgroundImage = '';
-      dom.wrapper.classList.remove('has-parallax-background');
+      appState.dom.background.style.backgroundImage = '';
+      appState.dom.wrapper.classList.remove('has-parallax-background');
 
     }
 
@@ -958,7 +663,7 @@ const reveal = function () {
   */
   function setupPostMessage() {
 
-    if (config.postMessage) {
+    if (appState.config.postMessage) {
       window.addEventListener('message', (event) => {
         let data = event.data;
 
@@ -977,69 +682,69 @@ const reveal = function () {
   }
 
   /**
-  * Applies the configuration settings from the config
+  * Applies the appState.configuration settings from the appState.config
   * object. May be called multiple times.
   *
   * @param {object} options
   */
   function configure(options) {
 
-    const oldTransition = config.transition;
+    const oldTransition = appState.config.transition;
 
-    // New config options may be passed when this method
+    // New appState.config options may be passed when this method
     // is invoked through the API after initialization
-    if (typeof options === 'object' ) extend(config, options);
+    if (typeof options === 'object' ) Object.assign(config, options);
 
-    // Abort if reveal.js hasn't finished loading, config
+    // Abort if reveal.js hasn't finished loading, appState.config
     // changes will be applied automatically once loading
     // finishes
-    if (loaded === false ) return;
+    if (appState.loaded === false ) return;
 
-    const numberOfSlides = dom.wrapper.querySelectorAll(SLIDES_SELECTOR ).length;
+    const numberOfSlides = appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ).length;
 
     // Remove the previously configured transition class
-    dom.wrapper.classList.remove(oldTransition);
+    appState.dom.wrapper.classList.remove(oldTransition);
 
     // Force linear transition based on browser capabilities
-    if (features.transforms3d === false ) config.transition = 'linear';
+    if (appState.features.transforms3d === false ) appState.config.transition = 'linear';
 
-    dom.wrapper.classList.add(config.transition);
+    appState.dom.wrapper.classList.add(appState.config.transition);
 
-    dom.wrapper.setAttribute('data-transition-speed', config.transitionSpeed);
-    dom.wrapper.setAttribute('data-background-transition', config.backgroundTransition);
+    appState.dom.wrapper.setAttribute('data-transition-speed', appState.config.transitionSpeed);
+    appState.dom.wrapper.setAttribute('data-background-transition', appState.config.backgroundTransition);
 
-    dom.controls.style.display = config.controls ? 'block' : 'none';
-    dom.progress.style.display = config.progress ? 'block' : 'none';
+    appState.dom.controls.style.display = appState.config.controls ? 'block' : 'none';
+    appState.dom.progress.style.display = appState.config.progress ? 'block' : 'none';
 
-    dom.controls.setAttribute('data-controls-layout', config.controlsLayout);
-    dom.controls.setAttribute('data-controls-back-arrows', config.controlsBackArrows);
+    appState.dom.controls.setAttribute('data-controls-layout', appState.config.controlsLayout);
+    appState.dom.controls.setAttribute('data-controls-back-arrows', appState.config.controlsBackArrows);
 
-    if (config.shuffle) {
+    if (appState.config.shuffle) {
       shuffle();
     }
 
-    if (config.rtl) {
-      dom.wrapper.classList.add('rtl');
+    if (appState.config.rtl) {
+      appState.dom.wrapper.classList.add('rtl');
     } else {
-      dom.wrapper.classList.remove('rtl');
+      appState.dom.wrapper.classList.remove('rtl');
     }
 
-    if (config.center) {
-      dom.wrapper.classList.add('center');
+    if (appState.config.center) {
+      appState.dom.wrapper.classList.add('center');
     } else {
-      dom.wrapper.classList.remove('center');
+      appState.dom.wrapper.classList.remove('center');
     }
 
     // Exit the paused mode if it was configured off
-    if (config.pause === false) {
+    if (appState.config.pause === false) {
       resume();
     }
 
-    if (config.showNotes) {
-      dom.speakerNotes.setAttribute('data-layout', typeof config.showNotes === 'string' ? config.showNotes : 'inline');
+    if (appState.config.showNotes) {
+      appState.dom.speakerNotes.setAttribute('data-layout', typeof appState.config.showNotes === 'string' ? appState.config.showNotes : 'inline');
     }
 
-    if (config.mouseWheel) {
+    if (appState.config.mouseWheel) {
       document.addEventListener('DOMMouseScroll', onDocumentMouseScroll, false); // FF
       document.addEventListener('mousewheel', onDocumentMouseScroll, false);
     } else {
@@ -1048,14 +753,14 @@ const reveal = function () {
     }
 
     // Rolling 3D links
-    if (config.rollingLinks) {
+    if (appState.config.rollingLinks) {
       enableRollingLinks();
     } else {
       disableRollingLinks();
     }
 
     // Iframe link previews
-    if (config.previewLinks) {
+    if (appState.config.previewLinks) {
       enablePreviewLinks();
       disablePreviewLinks('[data-preview-link=false]');
     } else {
@@ -1064,24 +769,24 @@ const reveal = function () {
     }
 
     // Remove existing auto-slide controls
-    if (autoSlidePlayer) {
-      autoSlidePlayer.destroy();
-      autoSlidePlayer = null;
+    if (appState.autoSlidePlayer) {
+      appState.autoSlidePlayer.destroy();
+      appState.autoSlidePlayer = null;
     }
 
     // Generate auto-slide controls if needed
-    if (numberOfSlides > 1 && config.autoSlide && config.autoSlideStoppable && features.canvas && features.requestAnimationFrame) {
-      autoSlidePlayer = new Playback(dom.wrapper, () => {
-        return Math.min(Math.max((Date.now() - autoSlideStartTime ) / autoSlide, 0 ), 1);
+    if (numberOfSlides > 1 && appState.config.autoSlide && appState.config.autoSlideStoppable && appState.features.canvas && appState.features.requestAnimationFrame) {
+      appState.autoSlidePlayer = new Playback(appState.dom.wrapper, () => {
+        return Math.min(Math.max((Date.now() - appState.autoSlideStartTime ) / appState.autoSlide, 0 ), 1);
       });
 
-      autoSlidePlayer.on('click', onAutoSlidePlayerClick);
-      autoSlidePaused = false;
+      appState.autoSlidePlayer.on('click', onAutoSlidePlayerClick);
+      appState.autoSlidePaused = false;
     }
 
     // When fragments are turned off they should be visible
-    if (config.fragments === false) {
-      toArray(dom.slides.querySelectorAll('.fragment' ) ).forEach( (element) => {
+    if (appState.config.fragments === false) {
+      toArray(appState.dom.slides.querySelectorAll('.fragment' ) ).forEach( (element) => {
         element.classList.add('visible');
         element.classList.remove('current-fragment');
       });
@@ -1089,15 +794,15 @@ const reveal = function () {
 
     // Slide numbers
     let slideNumberDisplay = 'none';
-    if (config.slideNumber && !isPrintingPDF()) {
-      if (config.showSlideNumber === 'all') {
+    if (appState.config.slideNumber && !isPrintingPDF()) {
+      if (appState.config.showSlideNumber === 'all') {
         slideNumberDisplay = 'block';
-      } else if (config.showSlideNumber === 'speaker' && isSpeakerNotes()) {
+      } else if (appState.config.showSlideNumber === 'speaker' && isSpeakerNotes()) {
         slideNumberDisplay = 'block';
       }
     }
 
-    dom.slideNumber.style.display = slideNumberDisplay;
+    appState.dom.slideNumber.style.display = slideNumberDisplay;
 
     sync();
 
@@ -1108,40 +813,40 @@ const reveal = function () {
   */
   function addEventListeners() {
 
-    eventsAreBound = true;
+    appState.eventsAreBound = true;
 
     window.addEventListener('hashchange', onWindowHashChange, false);
     window.addEventListener('resize', onWindowResize, false);
 
-    if (config.touch) {
-      dom.wrapper.addEventListener('touchstart', onTouchStart, false);
-      dom.wrapper.addEventListener('touchmove', onTouchMove, false);
-      dom.wrapper.addEventListener('touchend', onTouchEnd, false);
+    if (appState.config.touch) {
+      appState.dom.wrapper.addEventListener('touchstart', onTouchStart, false);
+      appState.dom.wrapper.addEventListener('touchmove', onTouchMove, false);
+      appState.dom.wrapper.addEventListener('touchend', onTouchEnd, false);
 
       // Support pointer-style touch interaction as well
       if (window.navigator.pointerEnabled) {
         // IE 11 uses un-prefixed version of pointer events
-        dom.wrapper.addEventListener('pointerdown', onPointerDown, false);
-        dom.wrapper.addEventListener('pointermove', onPointerMove, false);
-        dom.wrapper.addEventListener('pointerup', onPointerUp, false);
+        appState.dom.wrapper.addEventListener('pointerdown', onPointerDown, false);
+        appState.dom.wrapper.addEventListener('pointermove', onPointerMove, false);
+        appState.dom.wrapper.addEventListener('pointerup', onPointerUp, false);
       } else if (window.navigator.msPointerEnabled) {
         // IE 10 uses prefixed version of pointer events
-        dom.wrapper.addEventListener('MSPointerDown', onPointerDown, false);
-        dom.wrapper.addEventListener('MSPointerMove', onPointerMove, false);
-        dom.wrapper.addEventListener('MSPointerUp', onPointerUp, false);
+        appState.dom.wrapper.addEventListener('MSPointerDown', onPointerDown, false);
+        appState.dom.wrapper.addEventListener('MSPointerMove', onPointerMove, false);
+        appState.dom.wrapper.addEventListener('MSPointerUp', onPointerUp, false);
       }
     }
 
-    if (config.keyboard) {
+    if (appState.config.keyboard) {
       document.addEventListener('keydown', onDocumentKeyDown, false);
       document.addEventListener('keypress', onDocumentKeyPress, false);
     }
 
-    if (config.progress && dom.progress) {
-      dom.progress.addEventListener('click', onProgressClicked, false);
+    if (appState.config.progress && appState.dom.progress) {
+      appState.dom.progress.addEventListener('click', onProgressClicked, false);
     }
 
-    if (config.focusBodyOnPageVisibilityChange) {
+    if (appState.config.focusBodyOnPageVisibilityChange) {
       let visibilityChange;
 
       if ('hidden' in document) {
@@ -1168,12 +873,12 @@ const reveal = function () {
     }
 
     pointerEvents.forEach( (eventName) => {
-      dom.controlsLeft.forEach( (el) => el.addEventListener(eventName, onNavigateLeftClicked, false) );
-      dom.controlsRight.forEach( (el) => el.addEventListener(eventName, onNavigateRightClicked, false) );
-      dom.controlsUp.forEach( (el) => el.addEventListener(eventName, onNavigateUpClicked, false) );
-      dom.controlsDown.forEach( (el) => el.addEventListener(eventName, onNavigateDownClicked, false) );
-      dom.controlsPrev.forEach( (el) => el.addEventListener(eventName, onNavigatePrevClicked, false) );
-      dom.controlsNext.forEach( (el) => el.addEventListener(eventName, onNavigateNextClicked, false) );
+      appState.dom.controlsLeft.forEach( (el) => el.addEventListener(eventName, onNavigateLeftClicked, false) );
+      appState.dom.controlsRight.forEach( (el) => el.addEventListener(eventName, onNavigateRightClicked, false) );
+      appState.dom.controlsUp.forEach( (el) => el.addEventListener(eventName, onNavigateUpClicked, false) );
+      appState.dom.controlsDown.forEach( (el) => el.addEventListener(eventName, onNavigateDownClicked, false) );
+      appState.dom.controlsPrev.forEach( (el) => el.addEventListener(eventName, onNavigatePrevClicked, false) );
+      appState.dom.controlsNext.forEach( (el) => el.addEventListener(eventName, onNavigateNextClicked, false) );
     });
 
   }
@@ -1183,60 +888,44 @@ const reveal = function () {
   */
   function removeEventListeners() {
 
-    eventsAreBound = false;
+    appState.eventsAreBound = false;
 
     document.removeEventListener('keydown', onDocumentKeyDown, false);
     document.removeEventListener('keypress', onDocumentKeyPress, false);
     window.removeEventListener('hashchange', onWindowHashChange, false);
     window.removeEventListener('resize', onWindowResize, false);
 
-    dom.wrapper.removeEventListener('touchstart', onTouchStart, false);
-    dom.wrapper.removeEventListener('touchmove', onTouchMove, false);
-    dom.wrapper.removeEventListener('touchend', onTouchEnd, false);
+    appState.dom.wrapper.removeEventListener('touchstart', onTouchStart, false);
+    appState.dom.wrapper.removeEventListener('touchmove', onTouchMove, false);
+    appState.dom.wrapper.removeEventListener('touchend', onTouchEnd, false);
 
     // IE11
     if (window.navigator.pointerEnabled) {
-      dom.wrapper.removeEventListener('pointerdown', onPointerDown, false);
-      dom.wrapper.removeEventListener('pointermove', onPointerMove, false);
-      dom.wrapper.removeEventListener('pointerup', onPointerUp, false);
+      appState.dom.wrapper.removeEventListener('pointerdown', onPointerDown, false);
+      appState.dom.wrapper.removeEventListener('pointermove', onPointerMove, false);
+      appState.dom.wrapper.removeEventListener('pointerup', onPointerUp, false);
     } else if (window.navigator.msPointerEnabled) {
       // IE10
-      dom.wrapper.removeEventListener('MSPointerDown', onPointerDown, false);
-      dom.wrapper.removeEventListener('MSPointerMove', onPointerMove, false);
-      dom.wrapper.removeEventListener('MSPointerUp', onPointerUp, false);
+      appState.dom.wrapper.removeEventListener('MSPointerDown', onPointerDown, false);
+      appState.dom.wrapper.removeEventListener('MSPointerMove', onPointerMove, false);
+      appState.dom.wrapper.removeEventListener('MSPointerUp', onPointerUp, false);
     }
 
-    if (config.progress && dom.progress) {
-      dom.progress.removeEventListener('click', onProgressClicked, false);
+    if (appState.config.progress && appState.dom.progress) {
+      appState.dom.progress.removeEventListener('click', onProgressClicked, false);
     }
 
     [ 'touchstart', 'click' ].forEach( (eventName) => {
-      dom.controlsLeft.forEach( (el) => el.removeEventListener(eventName, onNavigateLeftClicked, false));
-      dom.controlsRight.forEach( (el) => el.removeEventListener(eventName, onNavigateRightClicked, false));
-      dom.controlsUp.forEach( (el) => el.removeEventListener(eventName, onNavigateUpClicked, false));
-      dom.controlsDown.forEach( (el) => el.removeEventListener(eventName, onNavigateDownClicked, false));
-      dom.controlsPrev.forEach( (el) => el.removeEventListener(eventName, onNavigatePrevClicked, false));
-      dom.controlsNext.forEach( (el) => el.removeEventListener(eventName, onNavigateNextClicked, false));
+      appState.dom.controlsLeft.forEach( (el) => el.removeEventListener(eventName, onNavigateLeftClicked, false));
+      appState.dom.controlsRight.forEach( (el) => el.removeEventListener(eventName, onNavigateRightClicked, false));
+      appState.dom.controlsUp.forEach( (el) => el.removeEventListener(eventName, onNavigateUpClicked, false));
+      appState.dom.controlsDown.forEach( (el) => el.removeEventListener(eventName, onNavigateDownClicked, false));
+      appState.dom.controlsPrev.forEach( (el) => el.removeEventListener(eventName, onNavigatePrevClicked, false));
+      appState.dom.controlsNext.forEach( (el) => el.removeEventListener(eventName, onNavigateNextClicked, false));
     });
 
   }
 
-  /**
-  * Extend object a with the properties of object b.
-  * If there's a conflict, object b takes precedence.
-  *
-  * @param {object} a
-  * @param {object} b
-  */
-  function extend(a, b) {
-
-    for (const i in b) {
-      a[ i ] = b[ i ];
-    }
-
-    return a;
-
-  }
 
   /**
   * Converts the target object to an array.
@@ -1309,14 +998,14 @@ const reveal = function () {
   function transformSlides(transforms) {
 
     // Pick up new transforms from arguments
-    if (typeof transforms.layout === 'string' ) slidesTransform.layout = transforms.layout;
-    if (typeof transforms.overview === 'string' ) slidesTransform.overview = transforms.overview;
+    if (typeof transforms.layout === 'string' ) appState.slidesTransform.layout = transforms.layout;
+    if (typeof transforms.overview === 'string' ) appState.slidesTransform.overview = transforms.overview;
 
     // Apply the transforms to the slides container
-    if (slidesTransform.layout) {
-      transformElement(dom.slides, slidesTransform.layout + ' ' + slidesTransform.overview);
+    if (appState.slidesTransform.layout) {
+      transformElement(appState.dom.slides, appState.slidesTransform.layout + ' ' + appState.slidesTransform.overview);
     } else {
-      transformElement(dom.slides, slidesTransform.overview);
+      transformElement(appState.dom.slides, appState.slidesTransform.overview);
     }
 
   }
@@ -1498,7 +1187,7 @@ const reveal = function () {
   */
   function hideAddressBar() {
 
-    if (config.hideAddressBar && isMobileDevice) {
+    if (appState.config.hideAddressBar && appState.features.isMobileDevice) {
       // Events that should trigger the address bar to hide
       window.addEventListener('load', removeAddressBar, false);
       window.addEventListener('orientationchange', removeAddressBar, false);
@@ -1526,12 +1215,12 @@ const reveal = function () {
 
     const event = document.createEvent('HTMLEvents', 1, 2);
     event.initEvent(type, true, true);
-    extend(event, args);
-    dom.wrapper.dispatchEvent(event);
+    Object.assign(event, args);
+    appState.dom.wrapper.dispatchEvent(event);
 
     // If we're in an iframe, post each reveal.js event to the
     // parent window. Used by the notes plugin
-    if (config.postMessageEvents && window.parent !== window.self) {
+    if (appState.config.postMessageEvents && window.parent !== window.self) {
       window.parent.postMessage(JSON.stringify({ namespace: 'reveal', eventName: type, state: getState() }), '*');
     }
 
@@ -1542,8 +1231,8 @@ const reveal = function () {
   */
   function enableRollingLinks() {
 
-    if (features.transforms3d && !('msPerspective' in document.body.style )) {
-      const anchors = dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' a');
+    if (appState.features.transforms3d && !('msPerspective' in document.body.style )) {
+      const anchors = appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' a');
 
       for (let i = 0, len = anchors.length; i < len; i++) {
         const anchor = anchors[i];
@@ -1567,7 +1256,7 @@ const reveal = function () {
   */
   function disableRollingLinks() {
 
-    const anchors = dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' a.roll');
+    const anchors = appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ' a.roll');
 
     for (let i = 0, len = anchors.length; i < len; i++) {
       const anchor = anchors[i];
@@ -1622,12 +1311,12 @@ const reveal = function () {
 
     closeOverlay();
 
-    dom.overlay = document.createElement('div');
-    dom.overlay.classList.add('overlay');
-    dom.overlay.classList.add('overlay-preview');
-    dom.wrapper.appendChild(dom.overlay);
+    appState.dom.overlay = document.createElement('div');
+    appState.dom.overlay.classList.add('overlay');
+    appState.dom.overlay.classList.add('overlay-preview');
+    appState.dom.wrapper.appendChild(appState.dom.overlay);
 
-    dom.overlay.innerHTML = [
+    appState.dom.overlay.innerHTML = [
       '<header>',
       '<a class="close" href="#"><span class="icon"></span></a>',
       '<a class="external" href="'+ url +'" target="_blank"><span class="icon"></span></a>',
@@ -1641,21 +1330,21 @@ const reveal = function () {
       '</div>'
     ].join('');
 
-    dom.overlay.querySelector('iframe' ).addEventListener('load', () => {
-      dom.overlay.classList.add('loaded');
+    appState.dom.overlay.querySelector('iframe' ).addEventListener('load', () => {
+      appState.dom.overlay.classList.add('loaded');
     }, false);
 
-    dom.overlay.querySelector('.close' ).addEventListener('click', (event) => {
+    appState.dom.overlay.querySelector('.close' ).addEventListener('click', (event) => {
       closeOverlay();
       event.preventDefault();
     }, false);
 
-    dom.overlay.querySelector('.external' ).addEventListener('click', () => {
+    appState.dom.overlay.querySelector('.external' ).addEventListener('click', () => {
       closeOverlay();
     }, false);
 
     setTimeout( () => {
-      dom.overlay.classList.add('visible');
+      appState.dom.overlay.classList.add('visible');
     }, 1);
 
   }
@@ -1672,7 +1361,7 @@ const reveal = function () {
     if (typeof override === 'boolean') {
       override ? showHelp() : closeOverlay();
     } else {
-      if (dom.overlay) {
+      if (appState.dom.overlay) {
         closeOverlay();
       } else {
         showHelp();
@@ -1685,14 +1374,14 @@ const reveal = function () {
   */
   function showHelp() {
 
-    if (config.help) {
+    if (appState.config.help) {
 
       closeOverlay();
 
-      dom.overlay = document.createElement('div');
-      dom.overlay.classList.add('overlay');
-      dom.overlay.classList.add('overlay-help');
-      dom.wrapper.appendChild(dom.overlay);
+      appState.dom.overlay = document.createElement('div');
+      appState.dom.overlay.classList.add('overlay');
+      appState.dom.overlay.classList.add('overlay-help');
+      appState.dom.wrapper.appendChild(appState.dom.overlay);
 
       let html = '<p class="title">Keyboard Shortcuts</p><br/>';
 
@@ -1703,7 +1392,7 @@ const reveal = function () {
 
       html += '</table>';
 
-      dom.overlay.innerHTML = [
+      appState.dom.overlay.innerHTML = [
         '<header>',
         '<a class="close" href="#"><span class="icon"></span></a>',
         '</header>',
@@ -1712,13 +1401,13 @@ const reveal = function () {
         '</div>'
       ].join('');
 
-      dom.overlay.querySelector('.close' ).addEventListener('click', (event) => {
+      appState.dom.overlay.querySelector('.close' ).addEventListener('click', (event) => {
         closeOverlay();
         event.preventDefault();
       }, false);
 
       setTimeout( () => {
-        dom.overlay.classList.add('visible');
+        appState.dom.overlay.classList.add('visible');
       }, 1);
 
     }
@@ -1730,9 +1419,9 @@ const reveal = function () {
   */
   function closeOverlay() {
 
-    if (dom.overlay) {
-      dom.overlay.parentNode.removeChild(dom.overlay);
-      dom.overlay = null;
+    if (appState.dom.overlay) {
+      appState.dom.overlay.parentNode.removeChild(appState.dom.overlay);
+      appState.dom.overlay = null;
     }
 
   }
@@ -1743,55 +1432,55 @@ const reveal = function () {
   */
   function layout() {
 
-    if (dom.wrapper && !isPrintingPDF()) {
+    if (appState.dom.wrapper && !isPrintingPDF()) {
 
       const size = getComputedSlideSize();
 
       // Layout the contents of the slides
-      layoutSlideContents(config.width, config.height);
+      layoutSlideContents(appState.config.width, appState.config.height);
 
-      dom.slides.style.width = size.width + 'px';
-      dom.slides.style.height = size.height + 'px';
+      appState.dom.slides.style.width = size.width + 'px';
+      appState.dom.slides.style.height = size.height + 'px';
 
       // Determine scale of content to fit within available space
-      scale = Math.min(size.presentationWidth / size.width, size.presentationHeight / size.height);
+      appState.scale = Math.min(size.presentationWidth / size.width, size.presentationHeight / size.height);
 
       // Respect max/min scale settings
-      scale = Math.max(scale, config.minScale);
-      scale = Math.min(scale, config.maxScale);
+      appState.scale = Math.max(appState.scale, appState.config.minScale);
+      appState.scale = Math.min(appState.scale, appState.config.maxScale);
 
       // Don't apply any scaling styles if scale is 1
-      if (scale === 1) {
-        dom.slides.style.zoom = '';
-        dom.slides.style.left = '';
-        dom.slides.style.top = '';
-        dom.slides.style.bottom = '';
-        dom.slides.style.right = '';
+      if (appState.scale === 1) {
+        appState.dom.slides.style.zoom = '';
+        appState.dom.slides.style.left = '';
+        appState.dom.slides.style.top = '';
+        appState.dom.slides.style.bottom = '';
+        appState.dom.slides.style.right = '';
         transformSlides({ layout: '' });
       } else {
         // Prefer zoom for scaling up so that content remains crisp.
         // Don't use zoom to scale down since that can lead to shifts
         // in text layout/line breaks.
-        if (scale > 1 && features.zoom) {
-          dom.slides.style.zoom = scale;
-          dom.slides.style.left = '';
-          dom.slides.style.top = '';
-          dom.slides.style.bottom = '';
-          dom.slides.style.right = '';
+        if (appState.scale > 1 && appState.features.zoom) {
+          appState.dom.slides.style.zoom = appState.scale;
+          appState.dom.slides.style.left = '';
+          appState.dom.slides.style.top = '';
+          appState.dom.slides.style.bottom = '';
+          appState.dom.slides.style.right = '';
           transformSlides({ layout: '' });
         } else {
           // Apply scale transform as a fallback
-          dom.slides.style.zoom = '';
-          dom.slides.style.left = '50%';
-          dom.slides.style.top = '50%';
-          dom.slides.style.bottom = 'auto';
-          dom.slides.style.right = 'auto';
-          transformSlides({ layout: 'translate(-50%, -50%) scale('+ scale +')' });
+          appState.dom.slides.style.zoom = '';
+          appState.dom.slides.style.left = '50%';
+          appState.dom.slides.style.top = '50%';
+          appState.dom.slides.style.bottom = 'auto';
+          appState.dom.slides.style.right = 'auto';
+          transformSlides({ layout: 'translate(-50%, -50%) scale('+ appState.scale +')' });
         }
       }
 
       // Select all slides, vertical and horizontal
-      const slides = toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR ));
+      const slides = toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ));
 
       for (let i = 0, len = slides.length; i < len; i++) {
         let slide = slides[ i ];
@@ -1801,7 +1490,7 @@ const reveal = function () {
           continue;
         }
 
-        if (config.center || slide.classList.contains('center' )) {
+        if (appState.config.center || slide.classList.contains('center' )) {
           // Vertical stacks are not centred since their section
           // children will be
           if (slide.classList.contains('stack' )) {
@@ -1836,7 +1525,7 @@ const reveal = function () {
   function layoutSlideContents(width, height) {
 
     // Handle sizing of elements with the 'stretch' class
-    toArray(dom.slides.querySelectorAll('section > .stretch' ) ).forEach( (element) => {
+    toArray(appState.dom.slides.querySelectorAll('section > .stretch' ) ).forEach( (element) => {
 
       // Determine how much vertical space we can use
       const remainingHeight = getRemainingHeight(element, height);
@@ -1862,7 +1551,7 @@ const reveal = function () {
 
   /**
   * Calculates the computed pixel size of our slides. These
-  * values are based on the width and height configuration
+  * values are based on the width and height appState.configuration
   * options.
   *
   * @param {number} [presentationWidth=dom.wrapper.offsetWidth]
@@ -1872,17 +1561,17 @@ const reveal = function () {
 
     const size = {
       // Slide size
-      width: config.width,
-      height: config.height,
+      width: appState.config.width,
+      height: appState.config.height,
 
       // Presentation size
-      presentationWidth: presentationWidth || dom.wrapper.offsetWidth,
-      presentationHeight: presentationHeight || dom.wrapper.offsetHeight
+      presentationWidth: presentationWidth || appState.dom.wrapper.offsetWidth,
+      presentationHeight: presentationHeight || appState.dom.wrapper.offsetHeight
     };
 
     // Reduce available space by margin
-    size.presentationWidth -= (size.presentationWidth * config.margin);
-    size.presentationHeight -= (size.presentationHeight * config.margin);
+    size.presentationWidth -= (size.presentationWidth * appState.config.margin);
+    size.presentationHeight -= (size.presentationHeight * appState.config.margin);
 
     // Slide width may be a percentage of available width
     if (typeof size.width === 'string' && /%$/.test(size.width )) {
@@ -1924,7 +1613,7 @@ const reveal = function () {
   function getPreviousVerticalIndex(stack) {
 
     if (typeof stack === 'object' && typeof stack.setAttribute === 'function' && stack.classList.contains('stack' )) {
-      // Prefer manually defined start-indexv
+      // Prefer manually defined start-appState.indexv
       const attributeName = stack.hasAttribute('data-start-indexv' ) ? 'data-start-indexv' : 'data-previous-indexv';
 
       return parseInt(stack.getAttribute(attributeName ) || 0, 10);
@@ -1940,17 +1629,17 @@ const reveal = function () {
   */
   function activateOverview() {
 
-    // Only proceed if enabled in config
-    if (config.overview && !isOverview()) {
+    // Only proceed if enabled in appState.config
+    if (appState.config.overview && !isOverview()) {
 
-      overview = true;
+      appState.overview = true;
 
-      dom.wrapper.classList.add('overview');
-      dom.wrapper.classList.remove('overview-deactivating');
+      appState.dom.wrapper.classList.add('overview');
+      appState.dom.wrapper.classList.remove('overview-deactivating');
 
-      if (features.overviewTransitions) {
+      if (appState.features.overviewTransitions) {
         setTimeout( () => {
-          dom.wrapper.classList.add('overview-animated');
+          appState.dom.wrapper.classList.add('overview-animated');
         }, 1);
       }
 
@@ -1959,10 +1648,10 @@ const reveal = function () {
 
       // Move the backgrounds element into the slide container to
       // that the same scaling is applied
-      dom.slides.appendChild(dom.background);
+      appState.dom.slides.appendChild(appState.dom.background);
 
       // Clicking on an overview slide navigates to it
-      toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
+      toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
         if (!slide.classList.contains('stack' )) {
           slide.addEventListener('click', onOverviewSlideClicked, true);
         }
@@ -1975,7 +1664,7 @@ const reveal = function () {
       overviewSlideHeight = slideSize.height + margin;
 
       // Reverse in RTL mode
-      if (config.rtl) {
+      if (appState.config.rtl) {
         overviewSlideWidth = -overviewSlideWidth;
       }
 
@@ -1987,9 +1676,9 @@ const reveal = function () {
 
       // Notify observers of the overview showing
       dispatchEvent('overviewshown', {
-        'indexh': indexh,
-        'indexv': indexv,
-        'currentSlide': currentSlide
+        'indexh': appState.indexh,
+        'indexv': appState.indexv,
+        'currentSlide': appState.currentSlide
       });
 
     }
@@ -2003,7 +1692,7 @@ const reveal = function () {
   function layoutOverview() {
 
     // Layout slides
-    toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (hslide, h) => {
+    toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (hslide, h) => {
       hslide.setAttribute('data-index-h', h);
       transformElement(hslide, 'translate3d(' + (h * overviewSlideWidth ) + 'px, 0, 0)');
 
@@ -2020,7 +1709,7 @@ const reveal = function () {
     });
 
     // Layout slide backgrounds
-    toArray(dom.background.childNodes ).forEach( (hbackground, h) => {
+    toArray(appState.dom.background.childNodes ).forEach( (hbackground, h) => {
       transformElement(hbackground, 'translate3d(' + (h * overviewSlideWidth ) + 'px, 0, 0)');
 
       toArray(hbackground.querySelectorAll('.slide-background' ) ).forEach( (vbackground, v) => {
@@ -2042,8 +1731,8 @@ const reveal = function () {
     transformSlides({
       overview: [
         'scale('+ scale +')',
-        'translateX('+ (-indexh * overviewSlideWidth ) +'px)',
-        'translateY('+ (-indexv * overviewSlideHeight ) +'px)'
+        'translateX('+ (-appState.indexh * overviewSlideWidth ) +'px)',
+        'translateY('+ (-appState.indexv * overviewSlideHeight ) +'px)'
       ].join(' ' )
     });
 
@@ -2055,41 +1744,41 @@ const reveal = function () {
   */
   function deactivateOverview() {
 
-    // Only proceed if enabled in config
-    if (config.overview) {
+    // Only proceed if enabled in appState.config
+    if (appState.config.overview) {
 
-      overview = false;
+      appState.overview = false;
 
-      dom.wrapper.classList.remove('overview');
-      dom.wrapper.classList.remove('overview-animated');
+      appState.dom.wrapper.classList.remove('overview');
+      appState.dom.wrapper.classList.remove('overview-animated');
 
       // Temporarily add a class so that transitions can do different things
       // depending on whether they are exiting/entering overview, or just
       // moving from slide to slide
-      dom.wrapper.classList.add('overview-deactivating');
+      appState.dom.wrapper.classList.add('overview-deactivating');
 
       setTimeout( () => {
-        dom.wrapper.classList.remove('overview-deactivating');
+        appState.dom.wrapper.classList.remove('overview-deactivating');
       }, 1);
 
       // Move the background element back out
-      dom.wrapper.appendChild(dom.background);
+      appState.dom.wrapper.appendChild(appState.dom.background);
 
       // Clean up changes made to slides
-      toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
+      toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
         transformElement(slide, '');
 
         slide.removeEventListener('click', onOverviewSlideClicked, true);
       });
 
       // Clean up changes made to backgrounds
-      toArray(dom.background.querySelectorAll('.slide-background' ) ).forEach( (background) => {
+      toArray(appState.dom.background.querySelectorAll('.slide-background' ) ).forEach( (background) => {
         transformElement(background, '');
       });
 
       transformSlides({ overview: '' });
 
-      navigateSlide(indexh, indexv);
+      navigateSlide(appState.indexh, appState.indexv);
 
       layout();
 
@@ -2097,9 +1786,9 @@ const reveal = function () {
 
       // Notify observers of the overview hiding
       dispatchEvent('overviewhidden', {
-        'indexh': indexh,
-        'indexv': indexv,
-        'currentSlide': currentSlide
+        'indexh': appState.indexh,
+        'indexv': appState.indexv,
+        'currentSlide': appState.currentSlide
       });
 
     }
@@ -2130,7 +1819,7 @@ const reveal = function () {
   */
   function isOverview() {
 
-    return overview;
+    return appState.overview;
 
   }
 
@@ -2138,14 +1827,14 @@ const reveal = function () {
   * Checks if the current or specified slide is vertical
   * (nested within another slide).
   *
-  * @param {HTMLElement} [slide=currentSlide] The slide to check
+  * @param {HTMLElement} [slide=appState.currentSlide] The slide to check
   * orientation of
   * @return {Boolean}
   */
   function isVerticalSlide(slide) {
 
     // Prefer slide argument, otherwise use current slide
-    slide = slide ? slide : currentSlide;
+    slide = slide ? slide : appState.currentSlide;
 
     return slide && slide.parentNode && !!slide.parentNode.nodeName.match(/section/i);
 
@@ -2180,11 +1869,11 @@ const reveal = function () {
   */
   function pause() {
 
-    if (config.pause) {
-      const wasPaused = dom.wrapper.classList.contains('paused');
+    if (appState.config.pause) {
+      const wasPaused = appState.dom.wrapper.classList.contains('paused');
 
       cancelAutoSlide();
-      dom.wrapper.classList.add('paused');
+      appState.dom.wrapper.classList.add('paused');
 
       if (wasPaused === false) {
         dispatchEvent('paused');
@@ -2198,8 +1887,8 @@ const reveal = function () {
   */
   function resume() {
 
-    const wasPaused = dom.wrapper.classList.contains('paused');
-    dom.wrapper.classList.remove('paused');
+    const wasPaused = appState.dom.wrapper.classList.contains('paused');
+    appState.dom.wrapper.classList.remove('paused');
 
     cueAutoSlide();
 
@@ -2229,7 +1918,7 @@ const reveal = function () {
   */
   function isPaused() {
 
-    return dom.wrapper.classList.contains('paused');
+    return appState.dom.wrapper.classList.contains('paused');
 
   }
 
@@ -2259,7 +1948,7 @@ const reveal = function () {
   */
   function isAutoSliding() {
 
-    return !!(autoSlide && !autoSlidePaused);
+    return !!(appState.autoSlide && !appState.autoSlidePaused);
 
   }
 
@@ -2277,10 +1966,10 @@ const reveal = function () {
   function navigateSlide(h, v, f, o) {
 
     // Remember where we were at before
-    previousSlide = currentSlide;
+    appState.previousSlide = appState.currentSlide;
 
     // Query all horizontal slides in the deck
-    const horizontalSlides = dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR);
+    const horizontalSlides = appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR);
 
     // Abort if there are no slides
     if (horizontalSlides.length === 0 ) return;
@@ -2293,22 +1982,22 @@ const reveal = function () {
 
     // If we were on a vertical stack, remember what vertical index
     // it was on so we can resume at the same position when returning
-    if (previousSlide && previousSlide.parentNode && previousSlide.parentNode.classList.contains('stack' )) {
-      setPreviousVerticalIndex(previousSlide.parentNode, indexv);
+    if (appState.previousSlide && appState.previousSlide.parentNode && appState.previousSlide.parentNode.classList.contains('stack' )) {
+      setPreviousVerticalIndex(appState.previousSlide.parentNode, appState.indexv);
     }
 
     // Remember the state before this slide
-    const stateBefore = state.concat();
+    const stateBefore = appState.state.concat();
 
     // Reset the state array
-    state.length = 0;
+    appState.state.length = 0;
 
-    const indexhBefore = indexh || 0;
-    const indexvBefore = indexv || 0;
+    const indexhBefore = appState.indexh || 0;
+    const indexvBefore = appState.indexv || 0;
 
     // Activate and transition to the new slide
-    indexh = updateSlides(HORIZONTAL_SLIDES_SELECTOR, h === undefined ? indexh : h);
-    indexv = updateSlides(VERTICAL_SLIDES_SELECTOR, v === undefined ? indexv : v);
+    appState.indexh = updateSlides(HORIZONTAL_SLIDES_SELECTOR, h === undefined ? appState.indexh : h);
+    appState.indexv = updateSlides(VERTICAL_SLIDES_SELECTOR, v === undefined ? appState.indexv : v);
 
     // Update the visibility of slides now that the indices have changed
     updateSlidesVisibility();
@@ -2316,20 +2005,20 @@ const reveal = function () {
     layout();
 
     // Apply the new state
-    for (let i = 0, len = state.length; i < len; i++) {
+    for (let i = 0, len = appState.state.length; i < len; i++) {
       // Check if this state existed on the previous slide. If it
       // did, we will avoid adding it repeatedly
       for (let j = 0; j < stateBefore.length; j++) {
-        if (stateBefore[j] === state[i]) {
+        if (stateBefore[j] === appState.state[i]) {
           stateBefore.splice(j, 1);
           //continue;
         }
       }
 
-      document.documentElement.classList.add(state[i]);
+      document.documentElement.classList.add(appState.state[i]);
 
       // Dispatch custom event matching the state's name
-      dispatchEvent(state[i]);
+      dispatchEvent(appState.state[i]);
     }
 
     // Clean up the remains of the previous state
@@ -2344,11 +2033,11 @@ const reveal = function () {
 
     // Find the current horizontal slide and any possible vertical slides
     // within it
-    const currentHorizontalSlide = horizontalSlides[ indexh ];
+    const currentHorizontalSlide = horizontalSlides[ appState.indexh ];
     const currentVerticalSlides = currentHorizontalSlide.querySelectorAll('section');
 
     // Store references to the previous and current slides
-    currentSlide = currentVerticalSlides[ indexv ] || currentHorizontalSlide;
+    appState.currentSlide = currentVerticalSlides[ appState.indexv ] || currentHorizontalSlide;
 
     // Show fragment, if specified
     if (typeof f !== 'undefined') {
@@ -2356,33 +2045,33 @@ const reveal = function () {
     }
 
     // Dispatch an event if the slide changed
-    const slideChanged = (indexh !== indexhBefore || indexv !== indexvBefore);
+    const slideChanged = (appState.indexh !== indexhBefore || appState.indexv !== indexvBefore);
     if (slideChanged) {
       dispatchEvent('slidechanged', {
-        'indexh': indexh,
-        'indexv': indexv,
-        'previousSlide': previousSlide,
-        'currentSlide': currentSlide,
+        'indexh': appState.indexh,
+        'indexv': appState.indexv,
+        'previousSlide': appState.previousSlide,
+        'currentSlide': appState.currentSlide,
         'origin': o
       });
     } else {
       // Ensure that the previous slide is never the same as the current
-      previousSlide = null;
+      appState.previousSlide = null;
     }
 
     // Solves an edge case where the previous slide maintains the
     // 'present' class when navigating between adjacent vertical
     // stacks
-    if (previousSlide) {
-      previousSlide.classList.remove('present');
-      previousSlide.setAttribute('aria-hidden', 'true');
+    if (appState.previousSlide) {
+      appState.previousSlide.classList.remove('present');
+      appState.previousSlide.setAttribute('aria-hidden', 'true');
 
       // Reset all slides upon navigate to home
       // Issue: #285
-      if (dom.wrapper.querySelector(HOME_SLIDE_SELECTOR ).classList.contains('present' )) {
+      if (appState.dom.wrapper.querySelector(HOME_SLIDE_SELECTOR ).classList.contains('present' )) {
         // Launch async task
         setTimeout( () => {
-          const slides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.stack'), i);
+          const slides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.stack'), i);
           for (i in slides) {
             if (slides[i]) {
               // Reset stack
@@ -2394,13 +2083,13 @@ const reveal = function () {
     }
 
     // Handle embedded content
-    if (slideChanged || !previousSlide) {
-      stopEmbeddedContent(previousSlide);
-      startEmbeddedContent(currentSlide);
+    if (slideChanged || !appState.previousSlide) {
+      stopEmbeddedContent(appState.previousSlide);
+      startEmbeddedContent(appState.currentSlide);
     }
 
     // Announce the current slide contents, for screen readers
-    dom.statusDiv.textContent = getStatusText(currentSlide);
+    appState.dom.statusDiv.textContent = getStatusText(appState.currentSlide);
 
     updateControls();
     updateProgress();
@@ -2419,7 +2108,7 @@ const reveal = function () {
   /**
   * Syncs the presentation with the current DOM. Useful
   * when new slides or control elements are added or when
-  * the configuration has changed.
+  * the appState.configuration has changed.
   */
   function sync() {
 
@@ -2427,11 +2116,11 @@ const reveal = function () {
     removeEventListeners();
     addEventListeners();
 
-    // Force a layout to make sure the current config is accounted for
+    // Force a layout to make sure the current appState.config is accounted for
     layout();
 
     // Reflect the current autoSlide value
-    autoSlide = config.autoSlide;
+    appState.autoSlide = appState.config.autoSlide;
 
     // Start auto-sliding if it's enabled
     cueAutoSlide();
@@ -2454,11 +2143,11 @@ const reveal = function () {
 
     formatEmbeddedContent();
 
-    // Start or stop embedded content depending on global config
-    if (config.autoPlayMedia === false) {
-      stopEmbeddedContent(currentSlide, { unloadIframes: false });
+    // Start or stop embedded content depending on global appState.config
+    if (appState.config.autoPlayMedia === false) {
+      stopEmbeddedContent(appState.currentSlide, { unloadIframes: false });
     } else {
-      startEmbeddedContent(currentSlide);
+      startEmbeddedContent(appState.currentSlide);
     }
 
     if (isOverview()) {
@@ -2473,7 +2162,7 @@ const reveal = function () {
   */
   function resetVerticalSlides() {
 
-    const horizontalSlides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+    const horizontalSlides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
     horizontalSlides.forEach( (horizontalSlide) => {
 
       const verticalSlides = toArray(horizontalSlide.querySelectorAll('section' ));
@@ -2498,7 +2187,7 @@ const reveal = function () {
   */
   function sortAllFragments() {
 
-    const horizontalSlides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+    const horizontalSlides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
     horizontalSlides.forEach( (horizontalSlide) => {
 
       const verticalSlides = toArray(horizontalSlide.querySelectorAll('section' ));
@@ -2519,13 +2208,13 @@ const reveal = function () {
   */
   function shuffle() {
 
-    const slides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+    const slides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
 
     slides.forEach( (slide) => {
 
       // Insert this slide next to another random slide. This may
       // cause the slide to insert before itself but that's fine.
-      dom.slides.insertBefore(slide, slides[ Math.floor(Math.random() * slides.length ) ]);
+      appState.dom.slides.insertBefore(slide, slides[ Math.floor(Math.random() * slides.length ) ]);
 
     });
 
@@ -2548,7 +2237,7 @@ const reveal = function () {
 
     // Select all slides and convert the NodeList result to
     // an array
-    const slides = toArray(dom.wrapper.querySelectorAll(selector ) );
+    const slides = toArray(appState.dom.wrapper.querySelectorAll(selector ) );
     const slidesLength = slides.length;
 
     const printMode = isPrintingPDF();
@@ -2556,7 +2245,7 @@ const reveal = function () {
     if (slidesLength) {
 
       // Should the index loop?
-      if (config.loop) {
+      if (appState.config.loop) {
         index %= slidesLength;
 
         if (index < 0) {
@@ -2570,7 +2259,7 @@ const reveal = function () {
       for (let i = 0; i < slidesLength; i++) {
         const element = slides[i];
 
-        const reverse = config.rtl && !isVerticalSlide(element);
+        const reverse = appState.config.rtl && !isVerticalSlide(element);
 
         element.classList.remove('past');
         element.classList.remove('present');
@@ -2595,7 +2284,7 @@ const reveal = function () {
           // Any element previous to index is given the 'past' class
           element.classList.add(reverse ? 'future' : 'past');
 
-          if (config.fragments) {
+          if (appState.config.fragments) {
             const pastFragments = toArray(element.querySelectorAll('.fragment' ));
 
             // Show all fragments on prior slides
@@ -2609,7 +2298,7 @@ const reveal = function () {
           // Any element subsequent to index is given the 'future' class
           element.classList.add(reverse ? 'past' : 'future');
 
-          if (config.fragments) {
+          if (appState.config.fragments) {
             const futureFragments = toArray(element.querySelectorAll('.fragment.visible' ));
 
             // No fragments in future slides should be visible ahead of time
@@ -2631,7 +2320,7 @@ const reveal = function () {
       // onto the current state of the deck
       const slideState = slides[index].getAttribute('data-state');
       if (slideState) {
-        state = state.concat(slideState.split(' ' ));
+        appState.state = appState.state.concat(slideState.split(' ' ));
       }
 
     } else {
@@ -2652,19 +2341,19 @@ const reveal = function () {
 
     // Select all slides and convert the NodeList result to
     // an array
-    const horizontalSlides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+    const horizontalSlides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
     const horizontalSlidesLength = horizontalSlides.length;
     let distanceX;
     let distanceY;
 
-    if (horizontalSlidesLength && typeof indexh !== 'undefined') {
+    if (horizontalSlidesLength && typeof appState.indexh !== 'undefined') {
 
       // The number of steps away from the present slide that will
       // be visible
-      let viewDistance = isOverview() ? 10 : config.viewDistance;
+      let viewDistance = isOverview() ? 10 : appState.config.viewDistance;
 
       // Limit view distance on weaker devices
-      if (isMobileDevice) {
+      if (appState.features.isMobileDevice) {
         viewDistance = isOverview() ? 6 : 2;
       }
 
@@ -2680,12 +2369,12 @@ const reveal = function () {
         const verticalSlidesLength = verticalSlides.length;
 
         // Determine how far away this slide is from the present
-        distanceX = Math.abs((indexh || 0 ) - x ) || 0;
+        distanceX = Math.abs((appState.indexh || 0 ) - x ) || 0;
 
         // If the presentation is looped, distance should measure
         // 1 between the first and last slides
-        if (config.loop) {
-          distanceX = Math.abs(((indexh || 0 ) - x ) % (horizontalSlidesLength - viewDistance ) ) || 0;
+        if (appState.config.loop) {
+          distanceX = Math.abs(((appState.indexh || 0 ) - x ) % (horizontalSlidesLength - viewDistance ) ) || 0;
         }
 
         // Show the horizontal slide if it's within the view distance
@@ -2702,7 +2391,7 @@ const reveal = function () {
           for (let y = 0; y < verticalSlidesLength; y++) {
             const verticalSlide = verticalSlides[y];
 
-            distanceY = x === (indexh || 0 ) ? Math.abs((indexv || 0 ) - y ) : Math.abs(y - oy);
+            distanceY = x === (appState.indexh || 0 ) ? Math.abs((appState.indexv || 0 ) - y ) : Math.abs(y - oy);
 
             if (distanceX + distanceY < viewDistance) {
               loadSlide(verticalSlide);
@@ -2715,17 +2404,17 @@ const reveal = function () {
       }
 
       // Flag if there are ANY vertical slides, anywhere in the deck
-      if (dom.wrapper.querySelectorAll('.slides>section>section' ).length) {
-        dom.wrapper.classList.add('has-vertical-slides');
+      if (appState.dom.wrapper.querySelectorAll('.slides>section>section' ).length) {
+        appState.dom.wrapper.classList.add('has-vertical-slides');
       } else {
-        dom.wrapper.classList.remove('has-vertical-slides');
+        appState.dom.wrapper.classList.remove('has-vertical-slides');
       }
 
       // Flag if there are ANY horizontal slides, anywhere in the deck
-      if (dom.wrapper.querySelectorAll('.slides>section' ).length > 1) {
-        dom.wrapper.classList.add('has-horizontal-slides');
+      if (appState.dom.wrapper.querySelectorAll('.slides>section' ).length > 1) {
+        appState.dom.wrapper.classList.add('has-horizontal-slides');
       } else {
-        dom.wrapper.classList.remove('has-horizontal-slides');
+        appState.dom.wrapper.classList.remove('has-horizontal-slides');
       }
 
     }
@@ -2736,13 +2425,13 @@ const reveal = function () {
   * Pick up notes from the current slide and display them
   * to the viewer.
   *
-  * @see {@link config.showNotes}
+  * @see {@link appState.config.showNotes}
   */
   function updateNotes() {
 
-    if (config.showNotes && dom.speakerNotes && currentSlide && !isPrintingPDF()) {
+    if (appState.config.showNotes && appState.dom.speakerNotes && appState.currentSlide && !isPrintingPDF()) {
 
-      dom.speakerNotes.innerHTML = getSlideNotes() || '<span class="notes-placeholder">No notes on this slide.</span>';
+      appState.dom.speakerNotes.innerHTML = getSlideNotes() || '<span class="notes-placeholder">No notes on this slide.</span>';
 
     }
 
@@ -2756,10 +2445,10 @@ const reveal = function () {
   */
   function updateNotesVisibility() {
 
-    if (config.showNotes && hasNotes()) {
-      dom.wrapper.classList.add('show-notes');
+    if (appState.config.showNotes && hasNotes()) {
+      appState.dom.wrapper.classList.add('show-notes');
     } else {
-      dom.wrapper.classList.remove('show-notes');
+      appState.dom.wrapper.classList.remove('show-notes');
     }
 
   }
@@ -2770,7 +2459,7 @@ const reveal = function () {
   */
   function hasNotes() {
 
-    return dom.slides.querySelectorAll('[data-notes], aside.notes' ).length > 0;
+    return appState.dom.slides.querySelectorAll('[data-notes], aside.notes' ).length > 0;
 
   }
 
@@ -2780,9 +2469,9 @@ const reveal = function () {
   function updateProgress() {
 
     // Update progress if enabled
-    if (config.progress && dom.progressbar) {
+    if (appState.config.progress && appState.dom.progressbar) {
 
-      dom.progressbar.style.width = getProgress() * dom.wrapper.offsetWidth + 'px';
+      appState.dom.progressbar.style.width = getProgress() * appState.dom.wrapper.offsetWidth + 'px';
 
     }
 
@@ -2800,14 +2489,14 @@ const reveal = function () {
   function updateSlideNumber() {
 
     // Update slide number if enabled
-    if (config.slideNumber && dom.slideNumber) {
+    if (appState.config.slideNumber && appState.dom.slideNumber) {
 
       const value = [];
       let format = 'h.v';
 
       // Check if a custom number format is available
-      if (typeof config.slideNumber === 'string') {
-        format = config.slideNumber;
+      if (typeof appState.config.slideNumber === 'string') {
+        format = appState.config.slideNumber;
       }
 
       switch(format) {
@@ -2818,15 +2507,15 @@ const reveal = function () {
         value.push(getSlidePastCount() + 1, '/', getTotalSlides());
         break;
         case 'h/v':
-        value.push(indexh + 1);
-        if (isVerticalSlide() ) value.push('/', indexv + 1);
+        value.push(appState.indexh + 1);
+        if (isVerticalSlide() ) value.push('/', appState.indexv + 1);
         break;
         default:
-        value.push(indexh + 1);
-        if (isVerticalSlide() ) value.push('.', indexv + 1);
+        value.push(appState.indexh + 1);
+        if (isVerticalSlide() ) value.push('.', appState.indexv + 1);
       }
 
-      dom.slideNumber.innerHTML = formatSlideNumber(value[0], value[1], value[2]);
+      appState.dom.slideNumber.innerHTML = formatSlideNumber(value[0], value[1], value[2]);
     }
 
   }
@@ -2861,11 +2550,11 @@ const reveal = function () {
     const fragments = availableFragments();
 
     // Remove the 'enabled' class from all directions
-    dom.controlsLeft.concat(dom.controlsRight )
-      .concat(dom.controlsUp )
-      .concat(dom.controlsDown )
-      .concat(dom.controlsPrev )
-      .concat(dom.controlsNext ).forEach( (node) => {
+    appState.dom.controlsLeft.concat(appState.dom.controlsRight )
+      .concat(appState.dom.controlsUp )
+      .concat(appState.dom.controlsDown )
+      .concat(appState.dom.controlsPrev )
+      .concat(appState.dom.controlsNext ).forEach( (node) => {
         node.classList.remove('enabled');
         node.classList.remove('fragmented');
 
@@ -2875,25 +2564,25 @@ const reveal = function () {
 
     // Add the 'enabled' class to the available routes; remove 'disabled' attribute to enable buttons
     if (routes.left ) {
-      dom.controlsLeft.forEach( (el) => {
+      appState.dom.controlsLeft.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
     }
     if (routes.right ) {
-      dom.controlsRight.forEach( (el) => {
+      appState.dom.controlsRight.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
     }
     if (routes.up ) {
-      dom.controlsUp.forEach( (el) => {
+      appState.dom.controlsUp.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
     }
     if (routes.down ) {
-      dom.controlsDown.forEach( (el) => {
+      appState.dom.controlsDown.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
@@ -2901,30 +2590,30 @@ const reveal = function () {
 
     // Prev/next buttons
     if (routes.left || routes.up ) {
-      dom.controlsPrev.forEach( (el) => {
+      appState.dom.controlsPrev.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
     }
     if (routes.right || routes.down ) {
-      dom.controlsNext.forEach( (el) => {
+      appState.dom.controlsNext.forEach( (el) => {
         el.classList.add('enabled');
         el.removeAttribute('disabled');
       });
     }
 
     // Highlight fragment directions
-    if (currentSlide) {
+    if (appState.currentSlide) {
 
       // Always apply fragment decorator to prev/next buttons
       if (fragments.prev ) {
-        dom.controlsPrev.forEach( (el) => {
+        appState.dom.controlsPrev.forEach( (el) => {
           el.classList.add('fragmented', 'enabled');
           el.removeAttribute('disabled');
         });
       }
       if (fragments.next ) {
-        dom.controlsNext.forEach( (el) => {
+        appState.dom.controlsNext.forEach( (el) => {
           el.classList.add('fragmented', 'enabled');
           el.removeAttribute('disabled');
         });
@@ -2932,28 +2621,28 @@ const reveal = function () {
 
       // Apply fragment decorators to directional buttons based on
       // what slide axis they are in
-      if (isVerticalSlide(currentSlide )) {
+      if (isVerticalSlide(appState.currentSlide )) {
         if (fragments.prev ) {
-          dom.controlsUp.forEach( (el) => {
+          appState.dom.controlsUp.forEach( (el) => {
             el.classList.add('fragmented', 'enabled');
             el.removeAttribute('disabled');
           });
         }
         if (fragments.next ) {
-          dom.controlsDown.forEach( (el) => {
+          appState.dom.controlsDown.forEach( (el) => {
             el.classList.add('fragmented', 'enabled');
             el.removeAttribute('disabled');
           });
         }
       } else {
         if (fragments.prev ) {
-          dom.controlsLeft.forEach( (el) => {
+          appState.dom.controlsLeft.forEach( (el) => {
             el.classList.add('fragmented', 'enabled');
             el.removeAttribute('disabled');
           });
         }
         if (fragments.next ) {
-          dom.controlsRight.forEach( (el) => {
+          appState.dom.controlsRight.forEach( (el) => {
             el.classList.add('fragmented', 'enabled');
             el.removeAttribute('disabled');
           });
@@ -2962,19 +2651,19 @@ const reveal = function () {
 
     }
 
-    if (config.controlsTutorial) {
+    if (appState.config.controlsTutorial) {
 
       // Highlight control arrows with an animation to ensure
       // that the viewer knows how to navigate
-      if (!hasNavigatedDown && routes.down) {
-        dom.controlsDownArrow.classList.add('highlight');
+      if (!appState.hasNavigatedDown && routes.down) {
+        appState.dom.controlsDownArrow.classList.add('highlight');
       } else {
-        dom.controlsDownArrow.classList.remove('highlight');
+        appState.dom.controlsDownArrow.classList.remove('highlight');
 
-        if (!hasNavigatedRight && routes.right && indexv === 0) {
-          dom.controlsRightArrow.classList.add('highlight');
+        if (!appState.hasNavigatedRight && routes.right && appState.indexv === 0) {
+          appState.dom.controlsRightArrow.classList.add('highlight');
         } else {
-          dom.controlsRightArrow.classList.remove('highlight');
+          appState.dom.controlsRightArrow.classList.remove('highlight');
         }
       }
 
@@ -2994,20 +2683,20 @@ const reveal = function () {
     let currentBackground = null;
 
     // Reverse past/future classes when in RTL mode
-    const horizontalPast = config.rtl ? 'future' : 'past';
-    const horizontalFuture = config.rtl ? 'past' : 'future';
+    const horizontalPast = appState.config.rtl ? 'future' : 'past';
+    const horizontalFuture = appState.config.rtl ? 'past' : 'future';
 
     // Update the classes of all backgrounds to match the
     // states of their slides (past/present/future)
-    toArray(dom.background.childNodes ).forEach( (backgroundh, h) => {
+    toArray(appState.dom.background.childNodes ).forEach( (backgroundh, h) => {
 
       backgroundh.classList.remove('past');
       backgroundh.classList.remove('present');
       backgroundh.classList.remove('future');
 
-      if (h < indexh) {
+      if (h < appState.indexh) {
         backgroundh.classList.add(horizontalPast);
-      } else if (h > indexh) {
+      } else if (h > appState.indexh) {
         backgroundh.classList.add(horizontalFuture);
       } else {
         backgroundh.classList.add('present');
@@ -3016,22 +2705,22 @@ const reveal = function () {
         currentBackground = backgroundh;
       }
 
-      if (includeAll || h === indexh) {
+      if (includeAll || h === appState.indexh) {
         toArray(backgroundh.querySelectorAll('.slide-background' ) ).forEach( (backgroundv, v) => {
 
           backgroundv.classList.remove('past');
           backgroundv.classList.remove('present');
           backgroundv.classList.remove('future');
 
-          if (v < indexv) {
+          if (v < appState.indexv) {
             backgroundv.classList.add('past');
-          } else if (v > indexv) {
+          } else if (v > appState.indexv) {
             backgroundv.classList.add('future');
           } else {
             backgroundv.classList.add('present');
 
             // Only if this is the present horizontal and vertical slide
-            if (h === indexh ) currentBackground = backgroundv;
+            if (h === appState.indexh ) currentBackground = backgroundv;
           }
 
         });
@@ -3040,9 +2729,9 @@ const reveal = function () {
     });
 
     // Stop content inside of previous backgrounds
-    if (previousBackground) {
+    if (appState.previousBackground) {
 
-      stopEmbeddedContent(previousBackground);
+      stopEmbeddedContent(appState.previousBackground);
 
     }
 
@@ -3056,37 +2745,37 @@ const reveal = function () {
       // Restart GIFs (doesn't work in Firefox)
       if (/\.gif/i.test(backgroundImageURL )) {
         currentBackground.style.backgroundImage = '';
-        window.getComputedStyle(currentBackground ).opacity;
+        window.getComputedStyle(currentBackground).opacity;
         currentBackground.style.backgroundImage = backgroundImageURL;
       }
 
       // Don't transition between identical backgrounds. This
       // prevents unwanted flicker.
-      const previousBackgroundHash = previousBackground ? previousBackground.getAttribute('data-background-hash' ) : null;
+      const previousBackgroundHash = appState.previousBackground ? appState.previousBackground.getAttribute('data-background-hash' ) : null;
       const currentBackgroundHash = currentBackground.getAttribute('data-background-hash');
-      if (currentBackgroundHash && currentBackgroundHash === previousBackgroundHash && currentBackground !== previousBackground) {
-        dom.background.classList.add('no-transition');
+      if (currentBackgroundHash && currentBackgroundHash === previousBackgroundHash && currentBackground !== appState.previousBackground) {
+        appState.dom.background.classList.add('no-transition');
       }
 
-      previousBackground = currentBackground;
+      appState.previousBackground = currentBackground;
 
     }
 
     // If there's a background brightness flag for this slide,
     // bubble it to the .reveal container
-    if (currentSlide) {
+    if (appState.currentSlide) {
       [ 'has-light-background', 'has-dark-background' ].forEach( (classToBubble) => {
-        if (currentSlide.classList.contains(classToBubble )) {
-          dom.wrapper.classList.add(classToBubble);
+        if (appState.currentSlide.classList.contains(classToBubble )) {
+          appState.dom.wrapper.classList.add(classToBubble);
         } else {
-          dom.wrapper.classList.remove(classToBubble);
+          appState.dom.wrapper.classList.remove(classToBubble);
         }
       });
     }
 
     // Allow the first background to apply without transition
     setTimeout( () => {
-      dom.background.classList.remove('no-transition');
+      appState.dom.background.classList.remove('no-transition');
     }, 1);
 
   }
@@ -3097,12 +2786,12 @@ const reveal = function () {
   */
   function updateParallax() {
 
-    if (config.parallaxBackgroundImage) {
+    if (appState.config.parallaxBackgroundImage) {
 
-      const horizontalSlides = dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ),
-      verticalSlides = dom.wrapper.querySelectorAll(VERTICAL_SLIDES_SELECTOR);
+      const horizontalSlides = appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ),
+      verticalSlides = appState.dom.wrapper.querySelectorAll(VERTICAL_SLIDES_SELECTOR);
 
-      const backgroundSize = dom.background.style.backgroundSize.split(' ');
+      const backgroundSize = appState.dom.background.style.backgroundSize.split(' ');
       let backgroundWidth;
       let backgroundHeight;
 
@@ -3113,31 +2802,31 @@ const reveal = function () {
         backgroundHeight = parseInt(backgroundSize[1], 10);
       }
 
-      const slideWidth = dom.background.offsetWidth;
+      const slideWidth = appState.dom.background.offsetWidth;
       const horizontalSlideCount = horizontalSlides.length;
       let horizontalOffsetMultiplier;
 
-      if (typeof config.parallaxBackgroundHorizontal === 'number') {
-        horizontalOffsetMultiplier = config.parallaxBackgroundHorizontal;
+      if (typeof appState.config.parallaxBackgroundHorizontal === 'number') {
+        horizontalOffsetMultiplier = appState.config.parallaxBackgroundHorizontal;
       } else {
         horizontalOffsetMultiplier = horizontalSlideCount > 1 ? (backgroundWidth - slideWidth ) / (horizontalSlideCount-1 ) : 0;
       }
 
-      const horizontalOffset = horizontalOffsetMultiplier * indexh * -1;
+      const horizontalOffset = horizontalOffsetMultiplier * appState.indexh * -1;
 
-      const slideHeight = dom.background.offsetHeight;
+      const slideHeight = appState.dom.background.offsetHeight;
       const verticalSlideCount = verticalSlides.length;
       let verticalOffsetMultiplier;
 
-      if (typeof config.parallaxBackgroundVertical === 'number') {
-        verticalOffsetMultiplier = config.parallaxBackgroundVertical;
+      if (typeof appState.config.parallaxBackgroundVertical === 'number') {
+        verticalOffsetMultiplier = appState.config.parallaxBackgroundVertical;
       } else {
         verticalOffsetMultiplier = (backgroundHeight - slideHeight ) / (verticalSlideCount-1);
       }
 
-      const verticalOffset = verticalSlideCount > 0 ?  verticalOffsetMultiplier * indexv : 0;
+      const verticalOffset = verticalSlideCount > 0 ?  verticalOffsetMultiplier * appState.indexv : 0;
 
-      dom.background.style.backgroundPosition = horizontalOffset + 'px ' + -verticalOffset + 'px';
+      appState.dom.background.style.backgroundPosition = horizontalOffset + 'px ' + -verticalOffset + 'px';
 
     }
 
@@ -3155,7 +2844,7 @@ const reveal = function () {
     options = options || {};
 
     // Show the slide element
-    slide.style.display = config.display;
+    slide.style.display = appState.config.display;
 
     // Media elements with data-src attributes
     toArray(slide.querySelectorAll('img[data-src], video[data-src], audio[data-src]' ) ).forEach( (element) => {
@@ -3217,7 +2906,7 @@ const reveal = function () {
           // Inline video playback works (at least in Mobile Safari) as
           // long as the video is muted and the `playsinline` attribute is
           // present
-          if (isMobileDevice) {
+          if (appState.features.isMobileDevice) {
             video.muted = true;
             video.autoplay = true;
             video.setAttribute('playsinline', '');
@@ -3296,18 +2985,18 @@ const reveal = function () {
   */
   function availableRoutes() {
 
-    const horizontalSlides = dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR );
-    const verticalSlides = dom.wrapper.querySelectorAll(VERTICAL_SLIDES_SELECTOR);
+    const horizontalSlides = appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR );
+    const verticalSlides = appState.dom.wrapper.querySelectorAll(VERTICAL_SLIDES_SELECTOR);
 
     const routes = {
-      left: indexh > 0 || config.loop,
-      right: indexh < horizontalSlides.length - 1 || config.loop,
-      up: indexv > 0,
-      down: indexv < verticalSlides.length - 1
+      left: appState.indexh > 0 || appState.config.loop,
+      right: appState.indexh < horizontalSlides.length - 1 || appState.config.loop,
+      up: appState.indexv > 0,
+      down: appState.indexv < verticalSlides.length - 1
     };
 
     // reverse horizontal controls for rtl
-    if (config.rtl) {
+    if (appState.config.rtl) {
       const left = routes.left;
       routes.left = routes.right;
       routes.right = left;
@@ -3325,9 +3014,9 @@ const reveal = function () {
   */
   function availableFragments() {
 
-    if (currentSlide && config.fragments) {
-      const fragments = currentSlide.querySelectorAll('.fragment');
-      const hiddenFragments = currentSlide.querySelectorAll('.fragment:not(.visible)');
+    if (appState.currentSlide && appState.config.fragments) {
+      const fragments = appState.currentSlide.querySelectorAll('.fragment');
+      const hiddenFragments = appState.currentSlide.querySelectorAll('.fragment:not(.visible)');
 
       return {
         prev: fragments.length - hiddenFragments.length > 0,
@@ -3345,7 +3034,7 @@ const reveal = function () {
   function formatEmbeddedContent() {
 
     const _appendParamToIframeSource = function (sourceAttribute, sourceURL, param) {
-      toArray(dom.slides.querySelectorAll('iframe['+ sourceAttribute +'*="'+ sourceURL +'"]' ) ).forEach( (el) => {
+      toArray(appState.dom.slides.querySelectorAll('iframe['+ sourceAttribute +'*="'+ sourceURL +'"]' ) ).forEach( (el) => {
         const src = el.getAttribute(sourceAttribute);
         if (src && src.indexOf(param ) === -1) {
           el.setAttribute(sourceAttribute, src + (!/\?/.test(src ) ? '?' : '&' ) + param);
@@ -3362,8 +3051,8 @@ const reveal = function () {
     _appendParamToIframeSource('data-src', 'player.vimeo.com/', 'api=1');
 
     // Always show media controls on mobile devices
-    if (isMobileDevice) {
-      toArray(dom.slides.querySelectorAll('video, audio' ) ).forEach( (el) => {
+    if (appState.features.isMobileDevice) {
+      toArray(appState.dom.slides.querySelectorAll('video, audio' ) ).forEach( (el) => {
         el.controls = true;
       });
     }
@@ -3394,7 +3083,7 @@ const reveal = function () {
         }
 
         // Prefer an explicit global autoplay setting
-        let autoplay = config.autoPlayMedia;
+        let autoplay = appState.config.autoPlayMedia;
 
         // If no global setting is available, fall back on the element's
         // own autoplay setting
@@ -3478,7 +3167,7 @@ const reveal = function () {
       if (isAttachedToDOM && isVisible) {
 
         // Prefer an explicit global autoplay setting
-        let autoplay = config.autoPlayMedia;
+        let autoplay = appState.config.autoPlayMedia;
 
         // If no global setting is available, fall back on the element's
         // own autoplay setting
@@ -3511,7 +3200,7 @@ const reveal = function () {
   */
   function stopEmbeddedContent(element, options) {
 
-    options = extend({
+    options = Object.assign({
       // Defaults
       unloadIframes: true
     }, options || {});
@@ -3566,7 +3255,7 @@ const reveal = function () {
   */
   function getSlidePastCount() {
 
-    const horizontalSlides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+    const horizontalSlides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
 
     // The number of past slides
     let pastCount = 0;
@@ -3616,14 +3305,14 @@ const reveal = function () {
     const totalCount = getTotalSlides();
     let pastCount = getSlidePastCount();
 
-    if (currentSlide) {
+    if (appState.currentSlide) {
 
-      const allFragments = currentSlide.querySelectorAll('.fragment');
+      const allFragments = appState.currentSlide.querySelectorAll('.fragment');
 
       // If there are fragments in the current slide those should be
       // accounted for in the progress.
       if (allFragments.length > 0) {
-        const visibleFragments = currentSlide.querySelectorAll('.fragment.visible');
+        const visibleFragments = appState.currentSlide.querySelectorAll('.fragment.visible');
 
         // This value represents how big a portion of the slide progress
         // that is made up by its fragments (0-1)
@@ -3679,14 +3368,14 @@ const reveal = function () {
         navigateSlide(indices.h, indices.v);
       } else {
         // If the slide doesn't exist, navigate to the current slide
-        navigateSlide(indexh || 0, indexv || 0);
+        navigateSlide(appState.indexh || 0, appState.indexv || 0);
       }
     } else {
       // Read the index components of the hash
       const h = parseInt(bits[0], 10 ) || 0;
       const v = parseInt(bits[1], 10 ) || 0;
 
-      if (h !== indexh || v !== indexv) {
+      if (h !== appState.indexh || v !== appState.indexv) {
         navigateSlide(h, v);
       }
     }
@@ -3702,19 +3391,19 @@ const reveal = function () {
   */
   function writeURL(delay) {
 
-    if (config.history) {
+    if (appState.config.history) {
 
       // Make sure there's never more than one timeout running
-      clearTimeout(writeURLTimeout);
+      clearTimeout(appState.writeURLTimeout);
 
       // If a delay is specified, timeout this call
       if (typeof delay === 'number') {
-        writeURLTimeout = setTimeout(writeURL, delay);
-      } else if (currentSlide) {
+        appState.writeURLTimeout = setTimeout(writeURL, delay);
+      } else if (appState.currentSlide) {
         let url = '/';
 
         // Attempt to create a named link based on the slide's ID
-        let id = currentSlide.getAttribute('id');
+        let id = appState.currentSlide.getAttribute('id');
         if (id) {
           id = id.replace(/[^a-zA-Z0-9\-_:.]/g, '');
         }
@@ -3724,8 +3413,8 @@ const reveal = function () {
           url = '/' + id;
         } else {
           // Otherwise use the /h/v index
-          if (indexh > 0 || indexv > 0 ) url += indexh;
-          if (indexv > 0 ) url += '/' + indexv;
+          if (appState.indexh > 0 || appState.indexv > 0 ) url += appState.indexh;
+          if (appState.indexv > 0 ) url += '/' + appState.indexv;
         }
 
         window.location.hash = url;
@@ -3746,8 +3435,8 @@ const reveal = function () {
   function getIndices(slide) {
 
     // By default, return the current indices
-    let h = indexh;
-    let v = indexv;
+    let h = appState.indexh;
+    let v = appState.indexv;
     let f;
 
     // If a slide is specified, return the indices of that slide
@@ -3756,7 +3445,7 @@ const reveal = function () {
       const slideh = isVertical ? slide.parentNode : slide;
 
       // Select all horizontal slides
-      const horizontalSlides = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
+      const horizontalSlides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
 
       // Now that we know which the horizontal slide is, get its index
       h = Math.max(horizontalSlides.indexOf(slideh ), 0);
@@ -3770,14 +3459,14 @@ const reveal = function () {
       }
     }
 
-    if (!slide && currentSlide) {
-      const hasFragments = currentSlide.querySelectorAll('.fragment' ).length > 0;
+    if (!slide && appState.currentSlide) {
+      const hasFragments = appState.currentSlide.querySelectorAll('.fragment' ).length > 0;
       if (hasFragments) {
-        const currentFragment = currentSlide.querySelector('.current-fragment');
+        const currentFragment = appState.currentSlide.querySelector('.current-fragment');
         if (currentFragment && currentFragment.hasAttribute('data-fragment-index' )) {
           f = parseInt(currentFragment.getAttribute('data-fragment-index' ), 10);
         } else {
-          f = currentSlide.querySelectorAll('.fragment.visible' ).length - 1;
+          f = appState.currentSlide.querySelectorAll('.fragment.visible' ).length - 1;
         }
       }
     }
@@ -3791,7 +3480,7 @@ const reveal = function () {
   */
   function getSlides() {
 
-    return toArray(dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ':not(.stack)' ));
+    return toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR + ':not(.stack)' ));
 
   }
 
@@ -3813,7 +3502,7 @@ const reveal = function () {
   */
   function getSlide(x, y) {
 
-    const horizontalSlide = dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR )[ x ];
+    const horizontalSlide = appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR )[ x ];
     const verticalSlides = horizontalSlide && horizontalSlide.querySelectorAll('section');
 
     if (verticalSlides && verticalSlides.length && typeof y === 'number') {
@@ -3851,13 +3540,13 @@ const reveal = function () {
   * 1. As a data-notes attribute on the slide <section>
   * 2. As an <aside class="notes"> inside of the slide
   *
-  * @param {HTMLElement} [slide=currentSlide]
+  * @param {HTMLElement} [slide=appState.currentSlide]
   * @return {(string|null)}
   */
   function getSlideNotes(slide) {
 
     // Default to the current slide
-    slide = slide || currentSlide;
+    slide = slide || appState.currentSlide;
 
     // Notes can be specified via the data-notes attribute...
     if (slide.hasAttribute('data-notes' )) {
@@ -3996,14 +3685,14 @@ const reveal = function () {
   */
   function navigateFragment(index, offset) {
 
-    if (currentSlide && config.fragments) {
+    if (appState.currentSlide && appState.config.fragments) {
 
-      const fragments = sortFragments(currentSlide.querySelectorAll('.fragment' ));
+      const fragments = sortFragments(appState.currentSlide.querySelectorAll('.fragment' ));
       if (fragments.length) {
 
         // If no index is specified, find the current
         if (typeof index !== 'number') {
-          const lastVisibleFragment = sortFragments(currentSlide.querySelectorAll('.fragment.visible' ) ).pop();
+          const lastVisibleFragment = sortFragments(appState.currentSlide.querySelectorAll('.fragment.visible' ) ).pop();
 
           if (lastVisibleFragment) {
             index = parseInt(lastVisibleFragment.getAttribute('data-fragment-index' ) || 0, 10);
@@ -4033,7 +3722,7 @@ const reveal = function () {
             element.classList.remove('current-fragment');
 
             // Announce the fragments one by one to the Screen Reader
-            dom.statusDiv.textContent = getStatusText(element);
+            appState.dom.statusDiv.textContent = getStatusText(element);
 
             if (i === index) {
               element.classList.add('current-fragment');
@@ -4094,23 +3783,23 @@ const reveal = function () {
   }
 
   /**
-  * Cues a new automated slide if enabled in the config.
+  * Cues a new automated slide if enabled in the appState.config.
   */
   function cueAutoSlide() {
 
     cancelAutoSlide();
 
-    if (currentSlide && config.autoSlide !== false) {
+    if (appState.currentSlide && appState.config.autoSlide !== false) {
 
-      let fragment = currentSlide.querySelector('.current-fragment');
+      let fragment = appState.currentSlide.querySelector('.current-fragment');
 
       // When the slide first appears there is no "current" fragment so
       // we look for a data-autoslide timing on the first fragment
-      if (!fragment ) fragment = currentSlide.querySelector('.fragment');
+      if (!fragment ) fragment = appState.currentSlide.querySelector('.fragment');
 
       const fragmentAutoSlide = fragment ? fragment.getAttribute('data-autoslide' ) : null;
-      const parentAutoSlide = currentSlide.parentNode ? currentSlide.parentNode.getAttribute('data-autoslide' ) : null;
-      const slideAutoSlide = currentSlide.getAttribute('data-autoslide');
+      const parentAutoSlide = appState.currentSlide.parentNode ? appState.currentSlide.parentNode.getAttribute('data-autoslide' ) : null;
+      const slideAutoSlide = appState.currentSlide.getAttribute('data-autoslide');
 
       // Pick value in the following priority order:
       // 1. Current fragment's data-autoslide
@@ -4118,13 +3807,13 @@ const reveal = function () {
       // 3. Parent slide's data-autoslide
       // 4. Global autoSlide setting
       if (fragmentAutoSlide) {
-        autoSlide = parseInt(fragmentAutoSlide, 10);
+        appState.autoSlide = parseInt(fragmentAutoSlide, 10);
       } else if (slideAutoSlide) {
-        autoSlide = parseInt(slideAutoSlide, 10);
+        appState.autoSlide = parseInt(slideAutoSlide, 10);
       } else if (parentAutoSlide) {
-        autoSlide = parseInt(parentAutoSlide, 10);
+        appState.autoSlide = parseInt(parentAutoSlide, 10);
       } else {
-        autoSlide = config.autoSlide;
+        appState.autoSlide = appState.config.autoSlide;
       }
 
       // If there are media elements with data-autoplay,
@@ -4132,11 +3821,11 @@ const reveal = function () {
       // length of that media. Not applicable if the slide
       // is divided up into fragments.
       // playbackRate is accounted for in the duration.
-      if (currentSlide.querySelectorAll('.fragment' ).length === 0) {
-        toArray(currentSlide.querySelectorAll('video, audio' ) ).forEach( (el) => {
+      if (appState.currentSlide.querySelectorAll('.fragment' ).length === 0) {
+        toArray(appState.currentSlide.querySelectorAll('video, audio' ) ).forEach( (el) => {
           if (el.hasAttribute('data-autoplay' )) {
-            if (autoSlide && (el.duration * 1000 / el.playbackRate ) > autoSlide) {
-              autoSlide = (el.duration * 1000 / el.playbackRate ) + 1000;
+            if (appState.autoSlide && (el.duration * 1000 / el.playbackRate ) > appState.autoSlide) {
+              appState.autoSlide = (el.duration * 1000 / el.playbackRate ) + 1000;
             }
           }
         });
@@ -4148,16 +3837,16 @@ const reveal = function () {
       // - The presentation isn't paused
       // - The overview isn't active
       // - The presentation isn't over
-      if (autoSlide && !autoSlidePaused && !isPaused() && !isOverview() && (!Reveal.isLastSlide() || availableFragments().next || config.loop === true )) {
-        autoSlideTimeout = setTimeout( () => {
-          typeof config.autoSlideMethod === 'function' ? config.autoSlideMethod() : navigateNext();
+      if (appState.autoSlide && !appState.autoSlidePaused && !isPaused() && !isOverview() && (!Reveal.isLastSlide() || availableFragments().next || appState.config.loop === true )) {
+        appState.autoSlideTimeout = setTimeout( () => {
+          typeof appState.config.autoSlideMethod === 'function' ? appState.config.autoSlideMethod() : navigateNext();
           cueAutoSlide();
-        }, autoSlide);
-        autoSlideStartTime = Date.now();
+        }, appState.autoSlide);
+        appState.autoSlideStartTime = Date.now();
       }
 
-      if (autoSlidePlayer) {
-        autoSlidePlayer.setPlaying(autoSlideTimeout !== -1);
+      if (appState.autoSlidePlayer) {
+        appState.autoSlidePlayer.setPlaying(appState.autoSlideTimeout !== -1);
       }
 
     }
@@ -4169,20 +3858,20 @@ const reveal = function () {
   */
   function cancelAutoSlide() {
 
-    clearTimeout(autoSlideTimeout);
-    autoSlideTimeout = -1;
+    clearTimeout(appState.autoSlideTimeout);
+    appState.autoSlideTimeout = -1;
 
   }
 
   function pauseAutoSlide() {
 
-    if (autoSlide && !autoSlidePaused) {
-      autoSlidePaused = true;
+    if (appState.autoSlide && !appState.autoSlidePaused) {
+      appState.autoSlidePaused = true;
       dispatchEvent('autoslidepaused');
-      clearTimeout(autoSlideTimeout);
+      clearTimeout(appState.autoSlideTimeout);
 
-      if (autoSlidePlayer) {
-        autoSlidePlayer.setPlaying(false);
+      if (appState.autoSlidePlayer) {
+        appState.autoSlidePlayer.setPlaying(false);
       }
     }
 
@@ -4190,8 +3879,8 @@ const reveal = function () {
 
   function resumeAutoSlide() {
 
-    if (autoSlide && autoSlidePaused) {
-      autoSlidePaused = false;
+    if (appState.autoSlide && appState.autoSlidePaused) {
+      appState.autoSlidePaused = false;
       dispatchEvent('autoslideresumed');
       cueAutoSlide();
     }
@@ -4201,29 +3890,29 @@ const reveal = function () {
   function navigateLeft() {
 
     // Reverse for RTL
-    if (config.rtl) {
+    if (appState.config.rtl) {
       if ((isOverview() || nextFragment() === false ) && availableRoutes().left) {
-        navigateSlide(indexh + 1);
+        navigateSlide(appState.indexh + 1);
       }
     } else if ((isOverview() || previousFragment() === false ) && availableRoutes().left) {
       // Normal navigation
-      navigateSlide(indexh - 1);
+      navigateSlide(appState.indexh - 1);
     }
 
   }
 
   function navigateRight() {
 
-    hasNavigatedRight = true;
+    appState.hasNavigatedRight = true;
 
     // Reverse for RTL
-    if (config.rtl) {
+    if (appState.config.rtl) {
       if ((isOverview() || previousFragment() === false ) && availableRoutes().right) {
-        navigateSlide(indexh - 1);
+        navigateSlide(appState.indexh - 1);
       }
     } else if ((isOverview() || nextFragment() === false ) && availableRoutes().right) {
       // Normal navigation
-      navigateSlide(indexh + 1);
+      navigateSlide(appState.indexh + 1);
     }
 
   }
@@ -4232,7 +3921,7 @@ const reveal = function () {
 
     // Prioritize hiding fragments
     if ((isOverview() || previousFragment() === false ) && availableRoutes().up) {
-      navigateSlide(indexh, indexv - 1);
+      navigateSlide(appState.indexh, appState.indexv - 1);
     }
 
   }
@@ -4243,7 +3932,7 @@ const reveal = function () {
 
     // Prioritize revealing fragments
     if ((isOverview() || nextFragment() === false ) && availableRoutes().down) {
-      navigateSlide(indexh, indexv + 1);
+      navigateSlide(appState.indexh, appState.indexv + 1);
     }
 
   }
@@ -4264,15 +3953,15 @@ const reveal = function () {
         // Fetch the previous horizontal slide, if there is one
         let previousSlide;
 
-        if (config.rtl) {
-          previousSlide = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.future' ) ).pop();
+        if (appState.config.rtl) {
+          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.future' ) ).pop();
         } else {
-          previousSlide = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.past' ) ).pop();
+          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.past' ) ).pop();
         }
 
         if (previousSlide) {
           const v = (previousSlide.querySelectorAll('section' ).length - 1 ) || undefined;
-          const h = indexh - 1;
+          const h = appState.indexh - 1;
           navigateSlide(h, v);
         }
       }
@@ -4285,14 +3974,14 @@ const reveal = function () {
   */
   function navigateNext() {
 
-    hasNavigatedRight = true;
-    hasNavigatedDown = true;
+    appState.hasNavigatedRight = true;
+    appState.hasNavigatedDown = true;
 
     // Prioritize revealing fragments
     if (nextFragment() === false) {
       if (availableRoutes().down) {
         navigateDown();
-      } else if (config.rtl) {
+      } else if (appState.config.rtl) {
         navigateLeft();
       } else {
         navigateRight();
@@ -4329,7 +4018,7 @@ const reveal = function () {
   */
   function onUserInput() {
 
-    if (config.autoSlideStoppable) {
+    if (appState.config.autoSlideStoppable) {
       pauseAutoSlide();
     }
 
@@ -4358,12 +4047,12 @@ const reveal = function () {
 
     // If there's a condition specified and it returns false,
     // ignore this event
-    if (typeof config.keyboardCondition === 'function' && config.keyboardCondition() === false) {
+    if (typeof appState.config.keyboardCondition === 'function' && appState.config.keyboardCondition() === false) {
       return true;
     }
 
     // Remember if auto-sliding was paused so we can toggle it
-    const autoSlideWasPaused = autoSlidePaused;
+    const autoSlideWasPaused = appState.autoSlidePaused;
 
     onUserInput(event);
 
@@ -4382,9 +4071,9 @@ const reveal = function () {
     let key;
 
     // Custom key bindings for togglePause should be able to resume
-    if (typeof config.keyboard === 'object') {
-      for (key in config.keyboard) {
-        if (config.keyboard[key] === 'togglePause') {
+    if (typeof appState.config.keyboard === 'object') {
+      for (key in appState.config.keyboard) {
+        if (appState.config.keyboard[key] === 'togglePause') {
           resumeKeyCodes.push(parseInt(key, 10 ));
         }
       }
@@ -4397,14 +4086,14 @@ const reveal = function () {
     let triggered = false;
 
     // 1. User defined key bindings
-    if (typeof config.keyboard === 'object') {
+    if (typeof appState.config.keyboard === 'object') {
 
-      for (key in config.keyboard) {
+      for (key in appState.config.keyboard) {
 
         // Check if this binding matches the pressed key
         if (parseInt(key, 10 ) === event.keyCode) {
 
-          const value = config.keyboard[ key ];
+          const value = appState.config.keyboard[ key ];
 
           // Callback function
           if (typeof value === 'function') {
@@ -4454,7 +4143,7 @@ const reveal = function () {
         // f
         case 70: enterFullscreen(); break;
         // a
-        case 65: if (config.autoSlideStoppable ) toggleAutoSlide(autoSlideWasPaused); break;
+        case 65: if (appState.config.autoSlideStoppable ) toggleAutoSlide(autoSlideWasPaused); break;
         default:
         triggered = false;
       }
@@ -4465,9 +4154,9 @@ const reveal = function () {
     // the browsers default behavior
     if (triggered) {
       event.preventDefault();
-    } else if ((event.keyCode === 27 || event.keyCode === 79 ) && features.transforms3d) {
+    } else if ((event.keyCode === 27 || event.keyCode === 79 ) && appState.features.transforms3d) {
       // ESC or O key
-      if (dom.overlay) {
+      if (appState.dom.overlay) {
         closeOverlay();
       } else {
         toggleOverview();
@@ -4498,7 +4187,7 @@ const reveal = function () {
 
     // If there's two touches we need to memorize the distance
     // between those two points to detect pinching
-    if (event.touches.length === 2 && config.overview) {
+    if (event.touches.length === 2 && appState.config.overview) {
       touch.startSpan = distanceBetween({
         x: event.touches[1].clientX,
         y: event.touches[1].clientY
@@ -4528,7 +4217,7 @@ const reveal = function () {
 
       // If the touch started with two points and still has
       // two active touches; test for the pinch gesture
-      if (event.touches.length === 2 && touch.startCount === 2 && config.overview) {
+      if (event.touches.length === 2 && touch.startCount === 2 && appState.config.overview) {
 
         // The current distance in pixels between the two touch points
         const currentSpan = distanceBetween({
@@ -4575,8 +4264,8 @@ const reveal = function () {
 
         // If we're embedded, only block touch events if they have
         // triggered an action
-        if (config.embedded) {
-          if (touch.captured || isVerticalSlide(currentSlide )) {
+        if (appState.config.embedded) {
+          if (touch.captured || isVerticalSlide(appState.currentSlide )) {
             event.preventDefault();
           }
         } else {
@@ -4684,10 +4373,10 @@ const reveal = function () {
 
     event.preventDefault();
 
-    const slidesTotal = toArray(dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).length;
-    let slideIndex = Math.floor((event.clientX / dom.wrapper.offsetWidth ) * slidesTotal);
+    const slidesTotal = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).length;
+    let slideIndex = Math.floor((event.clientX / appState.dom.wrapper.offsetWidth ) * slidesTotal);
 
-    if (config.rtl) {
+    if (appState.config.rtl) {
       slideIndex = slidesTotal - slideIndex;
     }
 
@@ -4783,7 +4472,7 @@ const reveal = function () {
 
     // TODO There's a bug here where the event listeners are not
     // removed after deactivating the overview.
-    if (eventsAreBound && isOverview()) {
+    if (appState.eventsAreBound && isOverview()) {
       event.preventDefault();
 
       let element = event.target;
@@ -4834,7 +4523,7 @@ const reveal = function () {
   function onAutoSlidePlayerClick() {
 
     // Replay
-    if (Reveal.isLastSlide() && config.loop === false) {
+    if (Reveal.isLastSlide() && appState.config.loop === false) {
       navigateSlide(0, 0);
       resumeAutoSlide();
     } else if (autoSlidePaused) {
@@ -4929,7 +4618,7 @@ const reveal = function () {
     this.render();
 
     if (this.playing) {
-      features.requestAnimationFrameMethod.call(window, this.animate.bind(this ));
+      appState.features.requestAnimationFrameMethod.call(window, this.animate.bind(this ));
     }
 
   };
@@ -5124,17 +4813,17 @@ const reveal = function () {
 
     // Returns the current slide element
     getCurrentSlide: function () {
-      return currentSlide;
+      return appState.currentSlide;
     },
 
     // Returns the current scale of the presentation content
     getScale: function () {
-      return scale;
+      return appState.scale;
     },
 
-    // Returns the current configuration object
+    // Returns the current appState.configuration object
     getConfig: function () {
-      return config;
+      return appState.config;
     },
 
     // Helper method, retrieves query string as a key/value hash
@@ -5157,17 +4846,17 @@ const reveal = function () {
 
     // Returns true if we're currently on the first slide
     isFirstSlide: function () {
-      return (indexh === 0 && indexv === 0);
+      return (appState.indexh === 0 && appState.indexv === 0);
     },
 
     // Returns true if we're currently on the last slide
     isLastSlide: function () {
-      if (currentSlide) {
+      if (appState.currentSlide) {
         // Does this slide has next a sibling?
-        if (currentSlide.nextElementSibling ) return false;
+        if (appState.currentSlide.nextElementSibling ) return false;
 
         // If it's vertical, does its parent have a next sibling?
-        if (isVerticalSlide(currentSlide ) && currentSlide.parentNode.nextElementSibling ) return false;
+        if (isVerticalSlide(appState.currentSlide ) && appState.currentSlide.parentNode.nextElementSibling ) return false;
 
         return true;
       }
@@ -5177,18 +4866,18 @@ const reveal = function () {
 
     // Checks if reveal.js has been loaded and is ready for use
     isReady: function () {
-      return loaded;
+      return appState.loaded;
     },
 
     // Forward event binding to the reveal DOM element
     addEventListener: function (type, listener, useCapture) {
       if ('addEventListener' in window) {
-        (dom.wrapper || document.querySelector('.reveal' ) ).addEventListener(type, listener, useCapture);
+        (appState.dom.wrapper || document.querySelector('.reveal' ) ).addEventListener(type, listener, useCapture);
       }
     },
     removeEventListener: function (type, listener, useCapture) {
       if ('addEventListener' in window) {
-        (dom.wrapper || document.querySelector('.reveal' ) ).removeEventListener(type, listener, useCapture);
+        (appState.dom.wrapper || document.querySelector('.reveal' ) ).removeEventListener(type, listener, useCapture);
       }
     },
 

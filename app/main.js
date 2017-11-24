@@ -1,10 +1,10 @@
 import reveal from './reveal/reveal';
 import "./stylus/main.styl";
 
-(function ( root, factory ) {
+(function () {
 	// Browser globals.
-	root.Reveal = reveal();
-  root.Reveal.initialize({
+	window.Reveal = reveal();
+  window.Reveal.initialize({
     controls: true,
     progress: true,
     history: true,
