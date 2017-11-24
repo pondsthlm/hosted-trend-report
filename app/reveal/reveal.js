@@ -2288,7 +2288,7 @@ const reveal = function () {
             const pastFragments = toArray(element.querySelectorAll('.fragment' ));
 
             // Show all fragments on prior slides
-            while(pastFragments.length) {
+            while (pastFragments.length) {
               const pastFragment = pastFragments.pop();
               pastFragment.classList.add('visible');
               pastFragment.classList.remove('current-fragment');
@@ -2302,7 +2302,7 @@ const reveal = function () {
             const futureFragments = toArray(element.querySelectorAll('.fragment.visible' ));
 
             // No fragments in future slides should be visible ahead of time
-            while(futureFragments.length) {
+            while (futureFragments.length) {
               const futureFragment = futureFragments.pop();
               futureFragment.classList.remove('visible');
               futureFragment.classList.remove('current-fragment');
@@ -3928,7 +3928,7 @@ const reveal = function () {
 
   function navigateDown() {
 
-    hasNavigatedDown = true;
+    appState.hasNavigatedDown = true;
 
     // Prioritize revealing fragments
     if ((isOverview() || nextFragment() === false ) && availableRoutes().down) {
@@ -3996,7 +3996,7 @@ const reveal = function () {
   */
   function isSwipePrevented(target) {
 
-    while(target && typeof target.hasAttribute === 'function') {
+    while (target && typeof target.hasAttribute === 'function') {
       if (target.hasAttribute('data-prevent-swipe' ) ) return true;
       target = target.parentNode;
     }
