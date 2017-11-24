@@ -1,0 +1,30 @@
+@require "app/stylus/normalize.styl";
+@require "app/stylus/reset.styl";
+@require "app/stylus/variables.styl";
+@require "app/stylus/mixins.styl";
+@require "app/stylus/reveal.styl";
+
+.exp-player {
+  overflow: hidden;
+  padding-top: 56.25%;
+  height: 0;
+  position: relative;
+
+  * {
+    &,
+    &:before,
+    &:after {
+      box-sizing: border-box;
+    }
+  }
+}
+
+ .exp-video {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+   background: $black;
+   background-image: image("ikon_dela.svg");
+ }

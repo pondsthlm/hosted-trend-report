@@ -1,33 +1,27 @@
-import player from "./player";
-import { createStore } from "redux";
-import enhancers from "./enhancers/index.js";
-import reducers from "./reducers";
+import reveal from './reveal/reveal';
+import "./stylus/main.styl";
 
-window.Ponyo = window.Ponyo || {};
+(function( root, factory ) {
+	// Browser globals.
+	root.Reveal = factory();
+  root.Reveal.initialize({
+    controls: true,
+    progress: true,
+    history: true,
+    center: true,
 
-window.Ponyo.newVideo = (elementContainer, webtvArticle, optionInput = {}) => {
+    transition: 'slide', // none/fade/slide/convex/concave/zoom
 
-  const options = {
-    abTestClass: optionInput.hasOwnProperty("abTestClass") ? optionInput.abTestClass : undefined,
-    autoPlay: optionInput.hasOwnProperty("autoplay") && optionInput.autoplay === "true" ? true : undefined,
-    channel: optionInput.hasOwnProperty("channel") ? optionInput.channel : undefined,
-    deviceType: optionInput.hasOwnProperty("deviceType") ? optionInput.deviceType : undefined,
-    external: optionInput.hasOwnProperty("external") ? optionInput.external : undefined,
-    partnerId: optionInput.hasOwnProperty("partnerId") ? optionInput.partnerId : undefined,
-    startNextVideo: optionInput.hasOwnProperty("startNextVideo") ? optionInput.startNextVideo : undefined,
-    currentTime: optionInput.hasOwnProperty("starttime") ? optionInput.starttime : undefined,
-    volume: optionInput.hasOwnProperty("startVolume") ? optionInput.startVolume : undefined,
-    topbar: optionInput.hasOwnProperty("topbar") ? optionInput.topbar : undefined,
-  };
+    // More info https://github.com/hakimel/reveal.js#dependencies
+    dependencies: [
+      { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+      //{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+      { src: 'plugin/search/search.js', async: true },
+      //{ src: 'plugin/zoom-js/zoom.js', async: true },
+      //{ src: 'plugin/notes/notes.js', async: true }
+    ]
+  });
+}( window, reveal));
 
-  for (const key in options) {
-    if (options[key] === undefined) {
-      delete options[key];
-      continue;
-    }
-  }
-
-  const store = createStore(reducers(), {}, enhancers());
-
-  store.dispatch(player.actions.setupPlayer(elementContainer, webtvArticle, options));
-};
+// More info https://github.com/hakimel/reveal.js#configuration
