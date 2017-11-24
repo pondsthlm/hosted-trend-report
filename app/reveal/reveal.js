@@ -1,7 +1,5 @@
 const reveal = function() {
 
-	'use strict';
-
 	var Reveal;
 
 	// The reveal.js version
@@ -307,7 +305,7 @@ const reveal = function() {
 
 		// Cache references to key DOM elements
 		dom.wrapper = document.querySelector( '.reveal' );
-    console.log(dom.wrapper);
+
 		dom.slides = document.querySelector( '.reveal .slides' );
 
 		// Force a layout when the whole page, incl fonts, has loaded
