@@ -15,21 +15,207 @@ import {
   setPreviousVerticalIndex,
   getPreviousVerticalIndex,
   enterFullscreen,
-  removeAddressBar
+  removeAddressBar,
+  formatSlideNumber,
+  isSpeakerNotes
 } from './helpers.js';
 
 const reveal = function () {
 
-  let Reveal;
-
   // The reveal.js version
   const VERSION = '3.6.0';
-
   const SLIDES_SELECTOR = '.slides section';
   const HORIZONTAL_SLIDES_SELECTOR = '.slides>section';
   const VERTICAL_SLIDES_SELECTOR = '.slides>section.present>section';
   const HOME_SLIDE_SELECTOR = '.slides>section:first-of-type';
   const UA = navigator.userAgent;
+
+  // --------------------------------------------------------------------//
+  // ------------------------------- API --------------------------------//
+  // --------------------------------------------------------------------//
+
+
+  const Reveal = {
+    VERSION: VERSION,
+
+    initialize: initialize,
+    configure: configure,
+    sync: sync,
+
+    // Navigation methods
+    slide: navigateSlide,
+    left: navigateLeft,
+    right: navigateRight,
+    up: navigateUp,
+    down: navigateDown,
+    prev: navigatePrev,
+    next: navigateNext,
+
+    // Fragment methods
+    navigateFragment: navigateFragment,
+    prevFragment: previousFragment,
+    nextFragment: nextFragment,
+
+    // Deprecated aliases
+    navigateTo: navigateSlide,
+    navigateLeft: navigateLeft,
+    navigateRight: navigateRight,
+    navigateUp: navigateUp,
+    navigateDown: navigateDown,
+    navigatePrev: navigatePrev,
+    navigateNext: navigateNext,
+
+    // Forces an update in slide layout
+    layout: layout,
+
+    // Randomizes the order of slides
+    shuffle: shuffle,
+
+    // Returns an object with the available routes as booleans (left/right/top/bottom)
+    availableRoutes: availableRoutes,
+
+    // Returns an object with the available fragments as booleans (prev/next)
+    availableFragments: availableFragments,
+
+    // Toggles a help overlay with keyboard shortcuts
+    toggleHelp: toggleHelp,
+
+    // Toggles the overview mode on/off
+    toggleOverview: toggleOverview,
+
+    // Toggles the "black screen" mode on/off
+    togglePause: togglePause,
+
+    // Toggles the auto slide mode on/off
+    toggleAutoSlide: toggleAutoSlide,
+
+    // State checks
+    isOverview: isOverview,
+    isPaused: isPaused,
+    isAutoSliding: isAutoSliding,
+    isSpeakerNotes: isSpeakerNotes,
+
+    // Slide preloading
+    loadSlide: loadSlide,
+    unloadSlide: unloadSlide,
+
+    // Adds or removes all internal event listeners (such as keyboard)
+    addEventListeners: addEventListeners,
+    removeEventListeners: removeEventListeners,
+
+    // Facility for persisting and restoring the presentation state
+    getState: getState,
+    setState: setState,
+
+    // Presentation progress
+    getSlidePastCount: getSlidePastCount,
+
+    // Presentation progress on range of 0-1
+    getProgress: getProgress,
+
+    // Returns the indices of the current, or specified, slide
+    getIndices: getIndices,
+
+    // Returns an Array of all slides
+    getSlides: getSlides,
+
+    // Returns the total number of slides
+    getTotalSlides: getTotalSlides,
+
+    // Returns the slide element at the specified index
+    getSlide: getSlide,
+
+    // Returns the slide background element at the specified index
+    getSlideBackground: getSlideBackground,
+
+    // Returns the speaker notes string for a slide, or null
+    getSlideNotes: getSlideNotes,
+
+    // Returns the previous slide element, may be null
+    getPreviousSlide: function () {
+      return appState.previousSlide;
+    },
+
+    // Returns the current slide element
+    getCurrentSlide: function () {
+      return appState.currentSlide;
+    },
+
+    // Returns the current scale of the presentation content
+    getScale: function () {
+      return appState.scale;
+    },
+
+    // Returns the current appState.configuration object
+    getConfig: function () {
+      return appState.config;
+    },
+
+    // Helper method, retrieves query string as a key/value hash
+    getQueryHash: function () {
+      const query = {};
+
+      location.search.replace(/[A-Z0-9]+?=([\w.%-]*)/gi, (a) => {
+        query[ a.split('=' ).shift() ] = a.split('=' ).pop();
+      });
+
+      // Basic deserialization
+      for (const i in query) {
+        const value = query[ i ];
+
+        query[ i ] = deserialize(unescape(value ));
+      }
+
+      return query;
+    },
+
+    // Returns true if we're currently on the first slide
+    isFirstSlide: function () {
+      return (appState.indexh === 0 && appState.indexv === 0);
+    },
+
+    // Returns true if we're currently on the last slide
+    isLastSlide: function () {
+      if (appState.currentSlide) {
+        // Does this slide has next a sibling?
+        if (appState.currentSlide.nextElementSibling ) return false;
+
+        // If it's vertical, does its parent have a next sibling?
+        if (isVerticalSlide(appState.currentSlide ) && appState.currentSlide.parentNode.nextElementSibling ) return false;
+
+        return true;
+      }
+
+      return false;
+    },
+
+    // Checks if reveal.js has been loaded and is ready for use
+    isReady: function () {
+      return appState.loaded;
+    },
+
+    // Forward event binding to the reveal DOM element
+    addEventListener: function (type, listener, useCapture) {
+      if ('addEventListener' in window) {
+        (appState.dom.wrapper || document.querySelector('.reveal' ) ).addEventListener(type, listener, useCapture);
+      }
+    },
+    removeEventListener: function (type, listener, useCapture) {
+      if ('addEventListener' in window) {
+        (appState.dom.wrapper || document.querySelector('.reveal' ) ).removeEventListener(type, listener, useCapture);
+      }
+    },
+
+    // Programatically triggers a keyboard event
+    triggerKey: function (keyCode) {
+      onDocumentKeyDown({ keyCode: keyCode });
+    },
+
+    // Registers a new shortcut to include in the help overlay
+    registerKeyboardShortcut: function (key, value) {
+      appState.keyboardShortcuts[key] = value;
+    }
+  };
 
 
   /**
@@ -69,7 +255,6 @@ const reveal = function () {
 
     // Cache references to key DOM elements
     appState.dom.wrapper = document.querySelector('.reveal');
-
     appState.dom.slides = document.querySelector('.reveal .slides');
 
     // Force a layout when the whole page, incl fonts, has loaded
@@ -296,7 +481,7 @@ const reveal = function () {
       statusDiv.style.clip = 'rect(1px, 1px, 1px, 1px)';
       statusDiv.setAttribute('id', 'aria-status-div');
       statusDiv.setAttribute('aria-live', 'polite');
-      statusDiv.setAttribute('aria-atomic','true');
+      statusDiv.setAttribute('aria-atomic', 'true');
       appState.dom.wrapper.appendChild(statusDiv);
     }
     return statusDiv;
@@ -351,7 +536,7 @@ const reveal = function () {
     const slideHeight = slideSize.height;
 
     // Let the browser know what page size we want to print
-    injectStyleSheet('@page{size:'+ pageWidth +'px '+ pageHeight +'px; margin: 0px;}');
+    injectStyleSheet('@page{size:' + pageWidth + 'px '+ pageHeight + 'px; margin: 0px;}');
 
     // Limit the size of certain elements to the dimensions of the slide
     injectStyleSheet('.reveal section>img, .reveal section>video, .reveal section>iframe{max-width: '+ slideWidth +'px; max-height:'+ slideHeight +'px}');
@@ -532,24 +717,19 @@ const reveal = function () {
   */
   function createBackgrounds() {
 
-    const printMode = isPrintingPDF();
-
     // Clear prior backgrounds
     appState.dom.background.innerHTML = '';
     appState.dom.background.classList.add('no-transition');
 
     // Iterate over all horizontal slides
-    toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (slideh) => {
+    [].forEach.call(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR), (slideh) => {
 
       const backgroundStack = createBackground(slideh, appState.dom.background);
 
       // Iterate over all vertical slides
-      toArray(slideh.querySelectorAll('section' ) ).forEach( (slidev) => {
-
+      [].forEach.call(slideh.querySelectorAll('section'), (slidev) => {
         createBackground(slidev, backgroundStack);
-
         backgroundStack.classList.add('stack');
-
       });
 
     });
@@ -557,7 +737,7 @@ const reveal = function () {
     // Add parallax background if specified
     if (appState.config.parallaxBackgroundImage) {
 
-      appState.dom.background.style.backgroundImage = 'url("' + appState.config.parallaxBackgroundImage + '")';
+      appState.dom.background.style.backgroundImage = `url("${appState.config.parallaxBackgroundImage}")`;
       appState.dom.background.style.backgroundSize = appState.config.parallaxBackgroundSize;
 
       // Make sure the below properties are set on the element - these properties are
@@ -602,7 +782,7 @@ const reveal = function () {
     const element = document.createElement('div');
 
     // Carry over custom classes from the slide to the background
-    element.className = 'slide-background ' + slide.className.replace(/present|past|future/, '');
+    element.className = `slide-background ${slide.className.replace(/present|past|future/, '')}`;
 
     if (data.background) {
       // Auto-wrap image urls in url(...)
@@ -617,15 +797,18 @@ const reveal = function () {
     // This is used to determine when two slide backgrounds are
     // the same.
     if (data.background || data.backgroundColor || data.backgroundImage || data.backgroundVideo || data.backgroundIframe) {
-      element.setAttribute('data-background-hash', data.background +
-      data.backgroundSize +
-      data.backgroundImage +
-      data.backgroundVideo +
-      data.backgroundIframe +
-      data.backgroundColor +
-      data.backgroundRepeat +
-      data.backgroundPosition +
-      data.backgroundTransition);
+      element.setAttribute(
+        'data-background-hash',
+        data.background +
+        data.backgroundSize +
+        data.backgroundImage +
+        data.backgroundVideo +
+        data.backgroundIframe +
+        data.backgroundColor +
+        data.backgroundRepeat +
+        data.backgroundPosition +
+        data.backgroundTransition
+      );
     }
 
     // Additional and optional background properties
@@ -709,7 +892,7 @@ const reveal = function () {
 
     // New appState.config options may be passed when this method
     // is invoked through the API after initialization
-    if (typeof options === 'object' ) Object.assign(config, options);
+    if (typeof options === 'object') Object.assign(appState.config, options);
 
     // Abort if reveal.js hasn't finished loading, appState.config
     // changes will be applied automatically once loading
@@ -1001,19 +1184,6 @@ const reveal = function () {
   }
 
   /**
-  * Hides the address bar if we're on a mobile device.
-  */
-  function hideAddressBar() {
-
-    if (appState.config.hideAddressBar && appState.features.isMobileDevice) {
-      // Events that should trigger the address bar to hide
-      window.addEventListener('load', removeAddressBar, false);
-      window.addEventListener('orientationchange', removeAddressBar, false);
-    }
-
-  }
-
-  /**
   * Dispatches an event of the specified type from the
   * reveal DOM element.
   */
@@ -1162,10 +1332,11 @@ const reveal = function () {
   * toggle logic and forcibly sets the desired state. True means
   * help is open, false means it's closed.
   */
-  function toggleHelp(override ) {
+  function toggleHelp(override = null) {
 
     if (typeof override === 'boolean') {
-      override ? showHelp() : closeOverlay();
+      if (override) return showHelp();
+      closeOverlay();
     } else {
       if (appState.dom.overlay) {
         closeOverlay();
@@ -1189,25 +1360,28 @@ const reveal = function () {
       appState.dom.overlay.classList.add('overlay-help');
       appState.dom.wrapper.appendChild(appState.dom.overlay);
 
-      let html = '<p class="title">Keyboard Shortcuts</p><br/>';
+      let tableCells = '';
 
-      html += '<table><th>KEY</th><th>ACTION</th>';
-      for (const key in keyboardShortcuts) {
-        html += '<tr><td>' + key + '</td><td>' + keyboardShortcuts[ key ] + '</td></tr>';
+      for (const key in appState.keyboardShortcuts) {
+        tableCells += `<tr><td>${key}</td><td>${appState.keyboardShortcuts[key]}</td></tr>`;
       }
 
-      html += '</table>';
+      const html = `
+        <header>
+          <a class="close" href="#"><span class="icon"></span></a>
+        </header>
+        <div class="viewport">
+          <div class="viewport-inner">
+            <p class="title">Keyboard Shortcuts</p><br/>
+            <table><th>KEY</th><th>ACTION</th>
+              ${tableCells}
+            </table>
+          </div>
+        </div>`;
 
-      appState.dom.overlay.innerHTML = [
-        '<header>',
-        '<a class="close" href="#"><span class="icon"></span></a>',
-        '</header>',
-        '<div class="viewport">',
-        '<div class="viewport-inner">'+ html +'</div>',
-        '</div>'
-      ].join('');
+      appState.dom.overlay.innerHTML = html;
 
-      appState.dom.overlay.querySelector('.close' ).addEventListener('click', (event) => {
+      appState.dom.overlay.querySelector('.close').addEventListener('click', (event) => {
         closeOverlay();
         event.preventDefault();
       }, false);
@@ -1245,8 +1419,8 @@ const reveal = function () {
       // Layout the contents of the slides
       layoutSlideContents(appState.config.width, appState.config.height);
 
-      appState.dom.slides.style.width = size.width + 'px';
-      appState.dom.slides.style.height = size.height + 'px';
+      appState.dom.slides.style.width = `${size.width}px`;
+      appState.dom.slides.style.height = `${size.height}px`;
 
       // Determine scale of content to fit within available space
       appState.scale = Math.min(size.presentationWidth / size.width, size.presentationHeight / size.height);
@@ -1281,34 +1455,28 @@ const reveal = function () {
           appState.dom.slides.style.top = '50%';
           appState.dom.slides.style.bottom = 'auto';
           appState.dom.slides.style.right = 'auto';
-          transformSlides({ layout: 'translate(-50%, -50%) scale('+ appState.scale +')' });
+          transformSlides({ layout: `translate(-50%, -50%) scale(${appState.scale})`});
         }
       }
 
       // Select all slides, vertical and horizontal
-      const slides = toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ));
+      const slides = toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR));
 
-      for (let i = 0, len = slides.length; i < len; i++) {
-        let slide = slides[ i ];
+      slides.forEach((slide) => {
 
-        // Don't bother updating invisible slides
-        if (slide.style.display === 'none') {
-          continue;
-        }
-
-        if (appState.config.center || slide.classList.contains('center' )) {
+        if (slide.style.display !== 'none' && (appState.config.center || slide.classList.contains('center'))) {
           // Vertical stacks are not centred since their section
           // children will be
-          if (slide.classList.contains('stack' )) {
+          if (slide.classList.contains('stack')) {
             slide.style.top = 0;
           } else {
-            slide.style.top = Math.max((size.height - slide.scrollHeight ) / 2, 0 ) + 'px';
+            slide.style.top = `${Math.max((size.height - slide.scrollHeight) / 2, 0)}px`;
           }
         } else {
           slide.style.top = '';
         }
 
-      }
+      });
 
       updateProgress();
       updateParallax();
@@ -1329,26 +1497,26 @@ const reveal = function () {
   * @param {string|number} height
   */
   function layoutSlideContents(width, height) {
+    const elements = appState.dom.slides.querySelectorAll('section > .stretch');
 
     // Handle sizing of elements with the 'stretch' class
-    toArray(appState.dom.slides.querySelectorAll('section > .stretch' ) ).forEach( (element) => {
+    [].forEach.call(elements, (element) => {
 
       // Determine how much vertical space we can use
       const remainingHeight = getRemainingHeight(element, height);
 
       // Consider the aspect ratio of media elements
-      if (/(img|video)/gi.test(element.nodeName )) {
+      if (/(img|video)/gi.test(element.nodeName)) {
         const nw = element.naturalWidth || element.videoWidth;
         const nh = element.naturalHeight || element.videoHeight;
-
         const es = Math.min(width / nw, remainingHeight / nh);
 
-        element.style.width = (nw * es ) + 'px';
-        element.style.height = (nh * es ) + 'px';
+        element.style.width = `${(nw * es)}px`;
+        element.style.height = `${(nh * es)}px`;
 
       } else {
-        element.style.width = width + 'px';
-        element.style.height = remainingHeight + 'px';
+        element.style.width = `${width}px`;
+        element.style.height = `${width}px`;
       }
 
     });
@@ -1380,17 +1548,16 @@ const reveal = function () {
     size.presentationHeight -= (size.presentationHeight * appState.config.margin);
 
     // Slide width may be a percentage of available width
-    if (typeof size.width === 'string' && /%$/.test(size.width )) {
-      size.width = parseInt(size.width, 10 ) / 100 * size.presentationWidth;
+    if (typeof size.width === 'string' && /%$/.test(size.width)) {
+      size.width = parseInt(size.width, 10) / 100 * size.presentationWidth;
     }
 
     // Slide height may be a percentage of available height
-    if (typeof size.height === 'string' && /%$/.test(size.height )) {
-      size.height = parseInt(size.height, 10 ) / 100 * size.presentationHeight;
+    if (typeof size.height === 'string' && /%$/.test(size.height)) {
+      size.height = parseInt(size.height, 10) / 100 * size.presentationHeight;
     }
 
     return size;
-
   }
 
   /**
@@ -1421,7 +1588,7 @@ const reveal = function () {
       appState.dom.slides.appendChild(appState.dom.background);
 
       // Clicking on an overview slide navigates to it
-      toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
+      [].forEach.call(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR), (slide) => {
         if (!slide.classList.contains('stack' )) {
           slide.addEventListener('click', onOverviewSlideClicked, true);
         }
@@ -1430,12 +1597,12 @@ const reveal = function () {
       // Calculate slide sizes
       const margin = 70;
       const slideSize = getComputedSlideSize();
-      overviewSlideWidth = slideSize.width + margin;
-      overviewSlideHeight = slideSize.height + margin;
+      appState.overviewSlideWidth = slideSize.width + margin;
+      appState.overviewSlideHeight = slideSize.height + margin;
 
       // Reverse in RTL mode
       if (appState.config.rtl) {
-        overviewSlideWidth = -overviewSlideWidth;
+        appState.overviewSlideWidth =- appState.overviewSlideWidth;
       }
 
       updateSlidesVisibility();
@@ -1462,28 +1629,28 @@ const reveal = function () {
   function layoutOverview() {
 
     // Layout slides
-    toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ) ).forEach( (hslide, h) => {
+    [].forEach.call(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR), (hslide, h) => {
       hslide.setAttribute('data-index-h', h);
-      transformElement(hslide, 'translate3d(' + (h * appState.overviewSlideWidth ) + 'px, 0, 0)');
+      transformElement(hslide, `translate3d(${h * appState.overviewSlideWidth}px, 0, 0)`);
 
-      if (hslide.classList.contains('stack' )) {
+      if (hslide.classList.contains('stack')) {
 
-        toArray(hslide.querySelectorAll('section' ) ).forEach( (vslide, v) => {
+        [].forEach.call(hslide.querySelectorAll('section'), (vslide, v) => {
           vslide.setAttribute('data-index-h', h);
           vslide.setAttribute('data-index-v', v);
 
-          transformElement(vslide, 'translate3d(0, ' + (v * appState.overviewSlideHeight ) + 'px, 0)');
+          transformElement(vslide, `translate3d(0, ${v * appState.overviewSlideHeight}px, 0)`);
         });
 
       }
     });
 
     // Layout slide backgrounds
-    toArray(appState.dom.background.childNodes ).forEach( (hbackground, h) => {
-      transformElement(hbackground, 'translate3d(' + (h * appState.overviewSlideWidth ) + 'px, 0, 0)');
+    [].forEach.call(appState.dom.background.childNodes, (hbackground, h) => {
+      transformElement(hbackground, `translate3d(${h * appState.overviewSlideWidth}px, 0, 0)`);
 
-      toArray(hbackground.querySelectorAll('.slide-background' ) ).forEach( (vbackground, v) => {
-        transformElement(vbackground, 'translate3d(0, ' + (v * appState.overviewSlideHeight ) + 'px, 0)');
+      [].forEach.call(hbackground.querySelectorAll('.slide-background'), (vbackground, v) => {
+        transformElement(vbackground, `translate3d(0, ${v * appState.overviewSlideHeight}px, 0)`);
       });
     });
 
@@ -1500,10 +1667,10 @@ const reveal = function () {
 
     transformSlides({
       overview: [
-        'scale('+ scale +')',
-        'translateX('+ (-appState.indexh * overviewSlideWidth ) +'px)',
-        'translateY('+ (-appState.indexv * overviewSlideHeight ) +'px)'
-      ].join(' ' )
+        `scale(${scale})`,
+        `translateX(${-appState.indexh * appState.overviewSlideWidth}px)`,
+        `translateY(${-appState.indexv * appState.overviewSlideHeight}px)`
+      ].join(' ')
     });
 
   }
@@ -1518,7 +1685,6 @@ const reveal = function () {
     if (appState.config.overview) {
 
       appState.overview = false;
-
       appState.dom.wrapper.classList.remove('overview');
       appState.dom.wrapper.classList.remove('overview-animated');
 
@@ -1527,7 +1693,7 @@ const reveal = function () {
       // moving from slide to slide
       appState.dom.wrapper.classList.add('overview-deactivating');
 
-      setTimeout( () => {
+      setTimeout(() => {
         appState.dom.wrapper.classList.remove('overview-deactivating');
       }, 1);
 
@@ -1535,14 +1701,14 @@ const reveal = function () {
       appState.dom.wrapper.appendChild(appState.dom.background);
 
       // Clean up changes made to slides
-      toArray(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR ) ).forEach( (slide) => {
+      [].forEach.call(appState.dom.wrapper.querySelectorAll(SLIDES_SELECTOR), (slide) => {
         transformElement(slide, '');
 
         slide.removeEventListener('click', onOverviewSlideClicked, true);
       });
 
       // Clean up changes made to backgrounds
-      toArray(appState.dom.background.querySelectorAll('.slide-background' ) ).forEach( (background) => {
+      [].forEach.call(appState.dom.background.querySelectorAll('.slide-background'), (background) => {
         transformElement(background, '');
       });
 
@@ -1556,9 +1722,9 @@ const reveal = function () {
 
       // Notify observers of the overview hiding
       dispatchEvent('overviewhidden', {
-        'indexh': appState.indexh,
-        'indexv': appState.indexv,
-        'currentSlide': appState.currentSlide
+        indexh: appState.indexh,
+        indexv: appState.indexv,
+        currentSlide: appState.currentSlide
       });
 
     }
@@ -1574,9 +1740,11 @@ const reveal = function () {
   function toggleOverview(override) {
 
     if (typeof override === 'boolean') {
-      override ? activateOverview() : deactivateOverview();
+      if (override) return activateOverview();
+      deactivateOverview();
     } else {
-      isOverview() ? deactivateOverview() : activateOverview();
+      if (isOverview()) return deactivateOverview();
+      activateOverview();
     }
 
   }
@@ -1588,9 +1756,7 @@ const reveal = function () {
   * false otherwise
   */
   function isOverview() {
-
     return appState.overview;
-
   }
 
   /**
@@ -1601,26 +1767,23 @@ const reveal = function () {
   * orientation of
   * @return {Boolean}
   */
-  function isVerticalSlide(slide) {
+  function isVerticalSlide(slide = appState.currentSlide) {
 
     // Prefer slide argument, otherwise use current slide
-    slide = slide ? slide : appState.currentSlide;
+    //slide = slide ? slide : appState.currentSlide;
 
     return slide && slide.parentNode && !!slide.parentNode.nodeName.match(/section/i);
-
   }
 
   /**
   * Hides the address bar if we're on a mobile device.
   */
   function hideAddressBar() {
-
     if (appState.config.hideAddressBar && appState.features.isMobileDevice) {
       // Events that should trigger the address bar to hide
       window.addEventListener('load', removeAddressBar, false);
       window.addEventListener('orientationchange', removeAddressBar, false);
     }
-
   }
 
   /**
@@ -1664,9 +1827,11 @@ const reveal = function () {
   function togglePause(override) {
 
     if (typeof override === 'boolean') {
-      override ? pause() : resume();
+      if (override) return pause();
+      resume();
     } else {
-      isPaused() ? resume() : pause();
+      if (isPaused()) return resume();
+      pause();
     }
 
   }
@@ -1677,9 +1842,7 @@ const reveal = function () {
   * @return {Boolean}
   */
   function isPaused() {
-
     return appState.dom.wrapper.classList.contains('paused');
-
   }
 
   /**
@@ -1692,11 +1855,11 @@ const reveal = function () {
   function toggleAutoSlide(override) {
 
     if (typeof override === 'boolean') {
-      override ? resumeAutoSlide() : pauseAutoSlide();
-    }
-
-    else {
-      autoSlidePaused ? resumeAutoSlide() : pauseAutoSlide();
+      if (override) return resumeAutoSlide();
+      pauseAutoSlide();
+    } else {
+      if (appState.autoSlidePaused) return resumeAutoSlide();
+      pauseAutoSlide();
     }
 
   }
@@ -1707,9 +1870,7 @@ const reveal = function () {
   * @return {Boolean}
   */
   function isAutoSliding() {
-
     return !!(appState.autoSlide && !appState.autoSlidePaused);
-
   }
 
   /**
@@ -1732,7 +1893,7 @@ const reveal = function () {
     const horizontalSlides = appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR);
 
     // Abort if there are no slides
-    if (horizontalSlides.length === 0 ) return;
+    if (horizontalSlides.length === 0) return;
 
     // If no vertical index is specified and the upcoming slide is a
     // stack, resume at its previous vertical index
@@ -1830,16 +1991,19 @@ const reveal = function () {
       // Issue: #285
       if (appState.dom.wrapper.querySelector(HOME_SLIDE_SELECTOR ).classList.contains('present' )) {
         // Launch async task
-        setTimeout( () => {
-          const slides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.stack'), i);
-          for (i in slides) {
-            if (slides[i]) {
+        setTimeout(() => {
+
+          [].forEach.call(appState.dom.wrapper.querySelectorAll(`${HORIZONTAL_SLIDES_SELECTOR}.stack`), (slide) => {
+            if (slide) {
               // Reset stack
-              setPreviousVerticalIndex(slides[i], 0);
+              setPreviousVerticalIndex(slide, 0);
             }
-          }
+          });
+
         }, 0);
+
       }
+
     }
 
     // Handle embedded content
@@ -1971,11 +2135,9 @@ const reveal = function () {
     const slides = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR ));
 
     slides.forEach( (slide) => {
-
       // Insert this slide next to another random slide. This may
       // cause the slide to insert before itself but that's fine.
       appState.dom.slides.insertBefore(slide, slides[ Math.floor(Math.random() * slides.length ) ]);
-
     });
 
   }
@@ -2427,7 +2589,7 @@ const reveal = function () {
 
     // Update the classes of all backgrounds to match the
     // states of their slides (past/present/future)
-    toArray(appState.dom.background.childNodes ).forEach( (backgroundh, h) => {
+    [].forEach.call(appState.dom.background.childNodes, (backgroundh, h) => {
 
       backgroundh.classList.remove('past');
       backgroundh.classList.remove('present');
@@ -2445,7 +2607,7 @@ const reveal = function () {
       }
 
       if (includeAll || h === appState.indexh) {
-        toArray(backgroundh.querySelectorAll('.slide-background' ) ).forEach( (backgroundv, v) => {
+        [].forEach.call(backgroundh.querySelectorAll('.slide-background'), (backgroundv, v) => {
 
           backgroundv.classList.remove('past');
           backgroundv.classList.remove('present');
@@ -2459,7 +2621,7 @@ const reveal = function () {
             backgroundv.classList.add('present');
 
             // Only if this is the present horizontal and vertical slide
-            if (h === appState.indexh ) currentBackground = backgroundv;
+            if (h === appState.indexh) currentBackground = backgroundv;
           }
 
         });
@@ -3682,13 +3844,13 @@ const reveal = function () {
         let previousSlide;
 
         if (appState.config.rtl) {
-          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.future' ) ).pop();
+          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(`${HORIZONTAL_SLIDES_SELECTOR}.future`)).pop();
         } else {
-          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(HORIZONTAL_SLIDES_SELECTOR + '.past' ) ).pop();
+          previousSlide = toArray(appState.dom.wrapper.querySelectorAll(`${HORIZONTAL_SLIDES_SELECTOR}.past`)).pop();
         }
 
         if (previousSlide) {
-          const v = (previousSlide.querySelectorAll('section' ).length - 1 ) || undefined;
+          const v = (previousSlide.querySelectorAll('section').length - 1) || undefined;
           const h = appState.indexh - 1;
           navigateSlide(h, v);
         }
@@ -3795,7 +3957,7 @@ const reveal = function () {
     if (activeElementIsCE || activeElementIsInput || activeElementIsNotes || (event.shiftKey && event.keyCode !== 32) || event.altKey || event.ctrlKey || event.metaKey ) return;
 
     // While paused only allow resume keyboard events; 'b', 'v', '.'
-    const resumeKeyCodes = [66,86,190,191];
+    const resumeKeyCodes = [66, 86, 190, 191];
     let key;
 
     // Custom key bindings for togglePause should be able to resume
@@ -3845,7 +4007,7 @@ const reveal = function () {
       // Assume true and try to prove false
       triggered = true;
 
-      switch(event.keyCode) {
+      switch (event.keyCode) {
         // p, page up
         case 80: case 33: navigatePrev(); break;
         // n, page down
@@ -3873,7 +4035,7 @@ const reveal = function () {
         // a
         case 65: if (appState.config.autoSlideStoppable ) toggleAutoSlide(autoSlideWasPaused); break;
         default:
-        triggered = false;
+          triggered = false;
       }
 
     }
@@ -3909,19 +4071,19 @@ const reveal = function () {
 
     if (isSwipePrevented(event.target ) ) return true;
 
-    touch.startX = event.touches[0].clientX;
-    touch.startY = event.touches[0].clientY;
-    touch.startCount = event.touches.length;
+    appState.touch.startX = event.touches[0].clientX;
+    appState.touch.startY = event.touches[0].clientY;
+    appState.touch.startCount = event.touches.length;
 
     // If there's two touches we need to memorize the distance
     // between those two points to detect pinching
     if (event.touches.length === 2 && appState.config.overview) {
-      touch.startSpan = distanceBetween({
+      appState.touch.startSpan = distanceBetween({
         x: event.touches[1].clientX,
         y: event.touches[1].clientY
       }, {
-        x: touch.startX,
-        y: touch.startY
+        x: appState.touch.startX,
+        y: appState.touch.startY
       });
     }
 
@@ -3937,7 +4099,7 @@ const reveal = function () {
     if (isSwipePrevented(event.target ) ) return true;
 
     // Each touch should only trigger one action
-    if (!touch.captured) {
+    if (!appState.touch.captured) {
       onUserInput(event);
 
       const currentX = event.touches[0].clientX;
@@ -3945,23 +4107,23 @@ const reveal = function () {
 
       // If the touch started with two points and still has
       // two active touches; test for the pinch gesture
-      if (event.touches.length === 2 && touch.startCount === 2 && appState.config.overview) {
+      if (event.touches.length === 2 && appState.touch.startCount === 2 && appState.config.overview) {
 
         // The current distance in pixels between the two touch points
         const currentSpan = distanceBetween({
           x: event.touches[1].clientX,
           y: event.touches[1].clientY
         }, {
-          x: touch.startX,
-          y: touch.startY
+          x: appState.touch.startX,
+          y: appState.touch.startY
         });
 
         // If the span is larger than the desire amount we've got
         // ourselves a pinch
-        if (Math.abs(touch.startSpan - currentSpan ) > touch.threshold) {
-          touch.captured = true;
+        if (Math.abs(appState.touch.startSpan - currentSpan ) > appState.touch.threshold) {
+          appState.touch.captured = true;
 
-          if (currentSpan < touch.startSpan) {
+          if (currentSpan < appState.touch.startSpan) {
             activateOverview();
           } else {
             deactivateOverview();
@@ -3970,30 +4132,30 @@ const reveal = function () {
 
         event.preventDefault();
 
-      } else if (event.touches.length === 1 && touch.startCount !== 2) {
+      } else if (event.touches.length === 1 && appState.touch.startCount !== 2) {
         // There was only one touch point, look for a swipe
 
-        const deltaX = currentX - touch.startX;
-        const deltaY = currentY - touch.startY;
+        const deltaX = currentX - appState.touch.startX;
+        const deltaY = currentY - appState.touch.startY;
 
-        if (deltaX > touch.threshold && Math.abs(deltaX ) > Math.abs(deltaY )) {
-          touch.captured = true;
+        if (deltaX > appState.touch.threshold && Math.abs(deltaX ) > Math.abs(deltaY )) {
+          appState.touch.captured = true;
           navigateLeft();
-        } else if (deltaX < -touch.threshold && Math.abs(deltaX ) > Math.abs(deltaY )) {
-          touch.captured = true;
+        } else if (deltaX < -appState.touch.threshold && Math.abs(deltaX ) > Math.abs(deltaY )) {
+          appState.touch.captured = true;
           navigateRight();
-        } else if (deltaY > touch.threshold) {
-          touch.captured = true;
+        } else if (deltaY > appState.touch.threshold) {
+          appState.touch.captured = true;
           navigateUp();
-        } else if (deltaY < -touch.threshold) {
-          touch.captured = true;
+        } else if (deltaY < -appState.touch.threshold) {
+          appState.touch.captured = true;
           navigateDown();
         }
 
         // If we're embedded, only block touch events if they have
         // triggered an action
         if (appState.config.embedded) {
-          if (touch.captured || isVerticalSlide(appState.currentSlide )) {
+          if (appState.touch.captured || isVerticalSlide(appState.currentSlide )) {
             event.preventDefault();
           }
         } else {
@@ -4003,7 +4165,7 @@ const reveal = function () {
         }
 
       }
-    } else if(UA.match(/android/gi )) {
+    } else if (UA.match(/android/gi )) {
       // There's a bug with swiping on some Android devices unless
       // the default action is always prevented
       event.preventDefault();
@@ -4018,7 +4180,7 @@ const reveal = function () {
   */
   function onTouchEnd() {
 
-    touch.captured = false;
+    appState.touch.captured = false;
 
   }
 
@@ -4029,7 +4191,7 @@ const reveal = function () {
   */
   function onPointerDown(event) {
 
-    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === "touch") {
+    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === 'touch') {
       event.touches = [{ clientX: event.clientX, clientY: event.clientY }];
       onTouchStart(event);
     }
@@ -4043,7 +4205,7 @@ const reveal = function () {
   */
   function onPointerMove(event) {
 
-    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === "touch" )  {
+    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === 'touch') {
       event.touches = [{ clientX: event.clientX, clientY: event.clientY }];
       onTouchMove(event);
     }
@@ -4057,7 +4219,7 @@ const reveal = function () {
   */
   function onPointerUp(event) {
 
-    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === "touch" )  {
+    if (event.pointerType === event.MSPOINTER_TYPE_TOUCH || event.pointerType === 'touch') {
       event.touches = [{ clientX: event.clientX, clientY: event.clientY }];
       onTouchEnd(event);
     }
@@ -4072,9 +4234,9 @@ const reveal = function () {
   */
   function onDocumentMouseScroll(event) {
 
-    if (Date.now() - lastMouseWheelStep > 600) {
+    if (Date.now() - appState.lastMouseWheelStep > 600) {
 
-      lastMouseWheelStep = Date.now();
+      appState.lastMouseWheelStep = Date.now();
 
       const delta = event.detail || -event.wheelDelta;
       if (delta > 0) {
@@ -4175,9 +4337,9 @@ const reveal = function () {
   */
   function onPageVisibilityChange() {
 
-    const isHidden =  document.webkitHidden ||
-    document.msHidden ||
-    document.hidden;
+    const isHidden = document.webkitHidden ||
+      document.msHidden ||
+      document.hidden;
 
     // If, after clicking a link or similar and we're coming back,
     // focus the document.body to ensure we can use keyboard shortcuts
@@ -4254,7 +4416,7 @@ const reveal = function () {
     if (Reveal.isLastSlide() && appState.config.loop === false) {
       navigateSlide(0, 0);
       resumeAutoSlide();
-    } else if (autoSlidePaused) {
+    } else if (appState.autoSlidePaused) {
       // Resume
       resumeAutoSlide();
     } else {
@@ -4284,7 +4446,7 @@ const reveal = function () {
 
     // Cosmetics
     this.diameter = 100;
-    this.diameter2 = this.diameter/2;
+    this.diameter2 = this.diameter / 2;
     this.thickness = 6;
 
     // Flags if we are currently playing
@@ -4303,8 +4465,8 @@ const reveal = function () {
     this.canvas.className = 'playback';
     this.canvas.width = this.diameter;
     this.canvas.height = this.diameter;
-    this.canvas.style.width = this.diameter2 + 'px';
-    this.canvas.style.height = this.diameter2 + 'px';
+    this.canvas.style.width = `${this.diameter2}px`;
+    this.canvas.style.height = `${this.diameter2}px`;
     this.context = this.canvas.getContext('2d');
 
     this.container.appendChild(this.canvas);
@@ -4356,17 +4518,17 @@ const reveal = function () {
   */
   Playback.prototype.render = function () {
 
-    const progress = this.playing ? this.progress : 0,
-    radius = (this.diameter2 ) - this.thickness,
-    x = this.diameter2,
-    y = this.diameter2,
-    iconSize = 28;
+    const progress = this.playing ? this.progress : 0;
+    const radius = (this.diameter2 ) - this.thickness;
+    const x = this.diameter2;
+    const y = this.diameter2;
+    const iconSize = 28;
 
     // Ease towards 1
     this.progressOffset += (1 - this.progressOffset ) * 0.1;
 
-    const endAngle = (- Math.PI / 2 ) + (progress * (Math.PI * 2 ));
-    const startAngle = (- Math.PI / 2 ) + (this.progressOffset * (Math.PI * 2 ));
+    const endAngle = (-Math.PI / 2) + (progress * (Math.PI * 2));
+    const startAngle = (-Math.PI / 2 ) + (this.progressOffset * (Math.PI * 2 ));
 
     this.context.save();
     this.context.clearRect(0, 0, this.diameter, this.diameter);
@@ -4432,193 +4594,6 @@ const reveal = function () {
 
   };
 
-
-  // --------------------------------------------------------------------//
-  // ------------------------------- API --------------------------------//
-  // --------------------------------------------------------------------//
-
-
-  Reveal = {
-    VERSION: VERSION,
-
-    initialize: initialize,
-    configure: configure,
-    sync: sync,
-
-    // Navigation methods
-    slide: navigateSlide,
-    left: navigateLeft,
-    right: navigateRight,
-    up: navigateUp,
-    down: navigateDown,
-    prev: navigatePrev,
-    next: navigateNext,
-
-    // Fragment methods
-    navigateFragment: navigateFragment,
-    prevFragment: previousFragment,
-    nextFragment: nextFragment,
-
-    // Deprecated aliases
-    navigateTo: navigateSlide,
-    navigateLeft: navigateLeft,
-    navigateRight: navigateRight,
-    navigateUp: navigateUp,
-    navigateDown: navigateDown,
-    navigatePrev: navigatePrev,
-    navigateNext: navigateNext,
-
-    // Forces an update in slide layout
-    layout: layout,
-
-    // Randomizes the order of slides
-    shuffle: shuffle,
-
-    // Returns an object with the available routes as booleans (left/right/top/bottom)
-    availableRoutes: availableRoutes,
-
-    // Returns an object with the available fragments as booleans (prev/next)
-    availableFragments: availableFragments,
-
-    // Toggles a help overlay with keyboard shortcuts
-    toggleHelp: toggleHelp,
-
-    // Toggles the overview mode on/off
-    toggleOverview: toggleOverview,
-
-    // Toggles the "black screen" mode on/off
-    togglePause: togglePause,
-
-    // Toggles the auto slide mode on/off
-    toggleAutoSlide: toggleAutoSlide,
-
-    // State checks
-    isOverview: isOverview,
-    isPaused: isPaused,
-    isAutoSliding: isAutoSliding,
-    isSpeakerNotes: isSpeakerNotes,
-
-    // Slide preloading
-    loadSlide: loadSlide,
-    unloadSlide: unloadSlide,
-
-    // Adds or removes all internal event listeners (such as keyboard)
-    addEventListeners: addEventListeners,
-    removeEventListeners: removeEventListeners,
-
-    // Facility for persisting and restoring the presentation state
-    getState: getState,
-    setState: setState,
-
-    // Presentation progress
-    getSlidePastCount: getSlidePastCount,
-
-    // Presentation progress on range of 0-1
-    getProgress: getProgress,
-
-    // Returns the indices of the current, or specified, slide
-    getIndices: getIndices,
-
-    // Returns an Array of all slides
-    getSlides: getSlides,
-
-    // Returns the total number of slides
-    getTotalSlides: getTotalSlides,
-
-    // Returns the slide element at the specified index
-    getSlide: getSlide,
-
-    // Returns the slide background element at the specified index
-    getSlideBackground: getSlideBackground,
-
-    // Returns the speaker notes string for a slide, or null
-    getSlideNotes: getSlideNotes,
-
-    // Returns the previous slide element, may be null
-    getPreviousSlide: function () {
-      return appState.previousSlide;
-    },
-
-    // Returns the current slide element
-    getCurrentSlide: function () {
-      return appState.currentSlide;
-    },
-
-    // Returns the current scale of the presentation content
-    getScale: function () {
-      return appState.scale;
-    },
-
-    // Returns the current appState.configuration object
-    getConfig: function () {
-      return appState.config;
-    },
-
-    // Helper method, retrieves query string as a key/value hash
-    getQueryHash: function () {
-      const query = {};
-
-      location.search.replace(/[A-Z0-9]+?=([\w.%-]*)/gi, (a) => {
-        query[ a.split('=' ).shift() ] = a.split('=' ).pop();
-      });
-
-      // Basic deserialization
-      for (const i in query) {
-        const value = query[ i ];
-
-        query[ i ] = deserialize(unescape(value ));
-      }
-
-      return query;
-    },
-
-    // Returns true if we're currently on the first slide
-    isFirstSlide: function () {
-      return (appState.indexh === 0 && appState.indexv === 0);
-    },
-
-    // Returns true if we're currently on the last slide
-    isLastSlide: function () {
-      if (appState.currentSlide) {
-        // Does this slide has next a sibling?
-        if (appState.currentSlide.nextElementSibling ) return false;
-
-        // If it's vertical, does its parent have a next sibling?
-        if (isVerticalSlide(appState.currentSlide ) && appState.currentSlide.parentNode.nextElementSibling ) return false;
-
-        return true;
-      }
-
-      return false;
-    },
-
-    // Checks if reveal.js has been loaded and is ready for use
-    isReady: function () {
-      return appState.loaded;
-    },
-
-    // Forward event binding to the reveal DOM element
-    addEventListener: function (type, listener, useCapture) {
-      if ('addEventListener' in window) {
-        (appState.dom.wrapper || document.querySelector('.reveal' ) ).addEventListener(type, listener, useCapture);
-      }
-    },
-    removeEventListener: function (type, listener, useCapture) {
-      if ('addEventListener' in window) {
-        (appState.dom.wrapper || document.querySelector('.reveal' ) ).removeEventListener(type, listener, useCapture);
-      }
-    },
-
-    // Programatically triggers a keyboard event
-    triggerKey: function (keyCode) {
-      onDocumentKeyDown({ keyCode: keyCode });
-    },
-
-    // Registers a new shortcut to include in the help overlay
-    registerKeyboardShortcut: function (key, value) {
-      keyboardShortcuts[key] = value;
-    }
-  };
 
   return Reveal;
 
